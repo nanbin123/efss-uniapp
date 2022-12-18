@@ -4,7 +4,8 @@ uniapp手机版，支持微信小程序与钉钉版本，它是一个管理软�
 
 ### 系统截图
 
-|  ![首页](static/Demo/%E9%A6%96%E9%A1%B5.png) |  ![输入图片说明](static/Demo/%E7%AD%9B%E9%80%89%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7.png) |
-|![输入图片说明](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E5%88%97%E8%A1%A8.png)|![输入图片说明](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E8%AF%A6%E6%83%85.png)|
-|   |   |
-|   |   |
+|  ![首页](static/Demo/%E9%A6%96%E9%A1%B5.png)  | ![筛选意向客户](static/Demo/%E7%AD%9B%E9%80%89%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7.png)   |
+|---|---|
+|![客户列表](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E5%88%97%E8%A1%A8.png) |  ![客户详情](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E8%AF%A6%E6%83%85.png) |
+|---|---|
+
