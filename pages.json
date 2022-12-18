@@ -1,0 +1,129 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages       
+
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "九天智能家具"
+			}
+		},
+		{
+		    "path" : "pages/productAnalysis/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "产品分析",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/order/order_add",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "销售订单",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/cusomer/cusomer_detail",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "客户详情",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+	
+		{
+		    "path" : "pages/cusomer/cusomer_list",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "客户列表",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},		
+		{
+		    "path" : "pages/cusomer/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "意向客户",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},	
+		{
+		    "path" : "pages/cusomer/cusomer_add",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "添加客户",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/priceList/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "价格表",
+		        "enablePullDownRefresh": false
+		    }		    
+		} ,
+		{
+		    "path" : "pages/profitLoss/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "盈亏表",
+		        "enablePullDownRefresh": false
+		    }		    
+		} ,
+		{
+		    "path" : "pages/salesKanban/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "销售看板",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+			"path": "pages/receipt/index",
+			"style": {
+				"navigationBarTitleText": "收款单"
+			}
+		},
+		{
+			"path" : "pages/test/test",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}			
+		}
+        ,{
+            "path" : "pages/salesShipment/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "销售出货",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/salesShipment/shipping_details",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "销售出货明细",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "九天智能家具",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#fff"
+	}
+}
