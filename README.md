@@ -8,7 +8,10 @@ uniapp手机版，支持微信小程序与钉钉版本，它是一个管理软�
 |---|---|
 |![客户列表](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E5%88%97%E8%A1%A8.png) |  ![客户详情](static/Demo/%E6%84%8F%E5%90%91%E5%AE%A2%E6%88%B7%E8%AF%A6%E6%83%85.png) |
 |---|---|
-|  ![输入图片说明](static/Demo/%E9%94%80%E5%94%AE%E8%AE%A2%E5%8D%95.png) | ![输入图片说明](static/Demo/%E4%BB%B7%E6%A0%BC%E8%A1%A8.png)  |
+|  ![销售订单](static/Demo/%E9%94%80%E5%94%AE%E8%AE%A2%E5%8D%95.png) | ![价格表](static/Demo/%E4%BB%B7%E6%A0%BC%E8%A1%A8.png)  |
 |---|---|
+| ![产品分析](static/Demo/%E4%BA%A7%E5%93%81%E5%88%86%E6%9E%90.png)  | ![销售看板](static/Demo/%E9%94%80%E5%94%AE%E7%9C%8B%E6%9D%BF.png)  |
+|---|---|
+
 
 
