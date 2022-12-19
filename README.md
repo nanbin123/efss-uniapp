@@ -11,7 +11,7 @@ uniapp手机版，支持微信小程序与钉钉版本，它是一个管理软�
 | ![产品分析](static/Demo/%E4%BA%A7%E5%93%81%E5%88%86%E6%9E%90.png)  | ![销售看板](static/Demo/%E9%94%80%E5%94%AE%E7%9C%8B%E6%9D%BF.png)  |
 |  ![销售出货](static/Demo/%E9%94%80%E5%94%AE%E5%87%BA%E8%B4%A7.png) |  ![销售出货明细](static/Demo/%E9%94%80%E5%94%AE%E5%87%BA%E8%B4%A7%E6%98%8E%E7%BB%86.png) 
 | ![收款单](static/Demo/%E6%94%B6%E6%AC%BE%E5%8D%95.png)  | ![盈亏表](static/Demo/%E7%9B%88%E4%BA%8F%E8%A1%A8.png)  |
-|---|---|
+
 
 
 
