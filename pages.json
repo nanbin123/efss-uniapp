@@ -92,14 +92,6 @@
 			"style": {
 				"navigationBarTitleText": "收款单"
 			}
-		},
-		{
-			"path" : "pages/test/test",
-			"style" :                                                                                    
-			{
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}			
 		}
         ,{
             "path" : "pages/salesShipment/index",
@@ -118,7 +110,33 @@
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+			"path" : "pages/product/product_query",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "产品查询",
+				"enablePullDownRefresh": false
+			}			
+		},
+		{
+		    "path" : "pages/product/product_add",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "添加产品",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+			"path" : "pages/test/test",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}			
+		}
+
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

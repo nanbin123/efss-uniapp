@@ -80,12 +80,20 @@
 			</view>
 			<view class="workbench-title">日常办公</view>
 			<view class="u-grid">
-				<view class="u-grid-item">
+				<view class="u-grid-item"  @click="navTo('/pages/product/product_query')">
 					<view class="u-grid-item-box">
 						<view class="home color06">
 							 <image src="../../static/image/index/product_query.png"></image>
 						</view>
 						<view class="grid-text">产品查询</view>
+					</view>
+				</view>
+				<view class="u-grid-item"  @click="navTo('/pages/product/product_add')">
+					<view class="u-grid-item-box">
+						<view class="home color10">
+							 <image src="../../static/image/index/product_add.png"></image>
+						</view>
+						<view class="grid-text">添加产品</view>
 					</view>
 				</view>
 				<view class="u-grid-item" @click="navTo('/pages/receipt/index')">

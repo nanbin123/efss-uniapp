@@ -6,30 +6,29 @@
 	</view>
 	<view class="content">
 		<view class="left">
-			<view class="left_img">
-				<image src="../../static/image/red_add.png"></image>					
-			</view>
-			<view class="left_text">
-				<text>点击添加图片</text>
-			</view>
+			<image class="left_img" src="../../static/image/red_add.png"></image>
+			<view class="left_text">点击添加图片</view>			
 		</view>
 		<view class="right"> 
 			<view class="grid">
-				<text class="info" style="width: 50%;">品名：长茶几</text>
-				<text class="info" style="width: 50%;">型号：7707-C</text>
+				<text class="info">品名：长茶几</text>
+				<text class="info">型号：7707-C</text>
 			</view>
 			<view class="grid">
 				<text class="info" style="width: 50%;">尺寸：1400*800*500</text>
-				<text class="info" style="width: 50%;color: #1aa1cfff;">产地：东莞</text>
+				<text class="info">产地：东莞</text>
 			</view>
 			<view class="grid">
-				<text class="info" style="width: 33%;">类别：茶几</text>
-				<text class="info" style="width: 33%;">颜色：胡桃色</text>
-				<text class="info" style="width: 33%;">材质：楸木</text>
+				<text class="info" >类别：茶几</text>
+				<text class="info" >颜色：胡桃色</text>				
 			</view>
-			
-			<view class="grid-bottom">
-				<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥1300</text></text>
+			<view class="grid">
+				<text class="info">材质：楸木</text>
+				<text class="info" >库存：<text style="font-size: 12px;">30</text></text>
+			</view>	
+			<view class="grid">
+				<text class="info" >零售价：<text style="color: #d6a950ff; font-size: 12px;">￥13100</text></text>
+				<text class="info" >采购价：<text style="color: #1aa1cfff; font-size: 12px;">￥70000000</text></text>				
 			</view>	
 		</view>	
 	</view>
@@ -55,13 +54,15 @@
 .wrap {
 	width: 100%;
 	border-top: 5px solid #efeef3ff;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 .top_line{
 	width: 100%;
 	height: 10rpx;
 	background-color: #efeef3ff;
 }
-.search{	
+.search{
 	margin: 20rpx 50rpx 20rpx 50rpx;
 	background: #ffffff;
 	background-color: #ffffff;
@@ -89,54 +90,41 @@
 }
 
 .content{
-	border-radius: 5px;
-	display: flex;	
+	display: flex;
+	align-items: center;
 	background-color: #fff;
 }
 .left{
-	width: 120px;
-	height: 80px;
-	background-color: #f2f2f2ff;
+	width: 20%;
+	height: 72px;
+	background-color: #f2f2f2ff;	
+    text-align: center;
 }
 .left_text{
-	font-size: 5rpx;	
+	font-size: 10px;	
 	padding: 2px;
 	text-align: center;
 	margin-top: 5px;
 	color: #a3a3a1ff;
 }
-
 .left_img {
     width: 20px;
-    height: 20px;
-	margin: 0 auto;
-	margin-top: 15px;
-    border-radius: 20px;
-    background-color: #f86f5cff;
+    height: 20px;	
+	margin-top: 15px;	
 }
-.left_img image {
-	 width: 20px;
-	 height: 20px;	 
+.right{
+	width: 80%;
+	margin-left: 5px;
 }
-.right {
-    margin-left: 10px;
-	width: 100%;
+.grid {	
+ 	display: flex;	
+	line-height: 14px;
 }
-.grid {
-	width: 100%;
-	display: flex;
-	margin-bottom: 7px;
-}
-.grid-bottom{
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	margin-bottom: 0;
-}
-
 .info {
+   width: 50%;
    color: #030303ff;
-   font-size: 11px; 
+   font-size: 12px;
+   white-space: nowrap;  
 }
 .line{
 	height: 1px;
