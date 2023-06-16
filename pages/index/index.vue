@@ -28,7 +28,15 @@
 						</view>
 						<view class="grid-text">添加客户</view>
 					</view>
-				</view>				
+				</view>
+				<view class="u-grid-item">
+					<view class="u-grid-item-box" @click="navTo('/pages/order/order_list')">
+						<view class="home color02">
+							 <image src="../../static/image/index/order_list.png"></image>
+						</view>
+						<view class="grid-text">订单列表</view>
+					</view>
+				</view>
 				<view class="u-grid-item">
 					<view class="u-grid-item-box" @click="navTo('/pages/order/order_add')">
 						<view class="home color02">
@@ -37,7 +45,7 @@
 						<view class="grid-text">销售订单</view>
 					</view>
 				</view>
-				<view class="u-grid-item"  @click="navTo('/pages/priceList/index')">
+				<view class="u-grid-item"  @click="navTo('/pages/product/price_list')">
 					<view class="u-grid-item-box">
 						<view class="home color03">
 							 <image src="../../static/image/index/price_list.png"></image>

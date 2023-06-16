@@ -3,49 +3,51 @@
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/cusomer_name.png" mode=""></image>
 		<text class="title">客户姓名:</text>	
-		<input class="content" confirm-type="保存" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名" value="李楠">
+		<input v-model="customer.customerName" class="content" confirm-type="保存" type="text">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/cusomer_gender.png" mode=""></image>
 		<text class="title">客户性别:</text>		
 		<view class="content">
-			<view  @tap="toggle('selector')" class="gender" :style="{color:gender=='请选择'?'#a0a0a0':'#333'}">{{gender}}</view>
+			<view  @tap="toggle('selector')" class="gender" :style="{color:gender=='请选择'?'#a0a0a0':'#333'}">{{customer.sex}}</view>
 			<cPicker @confirm="hand" name="ll" mode="selector"  ref="selector" :selectList="selectList"></cPicker>
-		</view>	
+		</view>
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/customer_phone.png" mode=""></image>
 		<text class="title">客户电话:</text>
-		<input class="content" confirm-type="保存" type="number" placeholder-class="input-placeholder" placeholder="请输入客户电话" value="15832922153">
+		<input  v-model="customer.phone" class="content" confirm-type="保存" type="number">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/cusomer_address.png" mode=""></image>
 		<text class="title">客户地址:</text>
-		<input class="content" confirm-type="保存" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名" value="北京市海淀区紫竹苑小区1号楼501室">
+		<input v-model="customer.address" class="content" confirm-type="保存" type="text">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/degree.png"></image>
 		<view class="title">意向程度:</view>
 		<view class="content starLen">
-			<image class="star" @tap='changeStar(1)' :src="score>0?fullStarUrl:nullStarUrl"></image>
-			<image class="star" @tap='changeStar(2)' :src="score>1?fullStarUrl:nullStarUrl"></image>
-			<image class="star" @tap='changeStar(3)' :src="score>2?fullStarUrl:nullStarUrl"></image>
+			<image class="star" @tap='changeStar(1)' :src="customer.grade>0?fullStarUrl:nullStarUrl"></image>
+			<image class="star" @tap='changeStar(2)' :src="customer.grade>1?fullStarUrl:nullStarUrl"></image>
+			<image class="star" @tap='changeStar(3)' :src="customer.grade>2?fullStarUrl:nullStarUrl"></image>
 		</view>
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/quoted_price.png" mode=""></image>
 		<text class="title">报价:</text>
-		<text class="content">27000元</text>			
+		<input v-model="customer.quotation" class="content" confirm-type="保存" type="text">
+		<text class="input-group-addon">元</text>
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/cusomer/discount.png" mode=""></image>
-		<text class="title">折扣:</text>
-		<text class="content">5%</text>			
+		<text class="title">折扣:</text>		
+		<input v-model="customer.discount" class="content" confirm-type="保存" type="text">
+		<text class="input-group-addon">%</text>
 	</view>
 	<view class="item remarks" @click="remarksAddOrEdit()">
 		<image class="img" src="../../static/image/cusomer/arrive.png" mode=""></image>
 		<text class="title">备注:</text>		
-		<text class="content"  style="width: 0; overflow: hidden;text-overflow: ellipsis;">夫妻俩喜欢简单款，不要太复杂 。刚开始看家具，房子预计明年过年会入住，水电改完可以去上门量尺</text>
+		<text class="content"  style="width: 0; overflow: hidden;text-overflow: ellipsis;">{{customer.remark}}</text>
 	</view>
 	<view class="arrive">
 		<view class="arrive_title" @click="arriveAdd()">
@@ -53,19 +55,14 @@
 			<text class="arrive_title_left">到店记录:</text>
 			<text class="arrive_title_right">继续添加</text>	
 		</view>
-		<view class="arrive_content_line1" >
-			<text>2021-05-25</text>
-			<text>10分钟</text>
-		</view>
-		<view class="arrive_content_line2">
-			夫妻两人，都戴眼镜，女士拿红色LV贝壳包，男士已加微信，微信名字备注19.1.20焦哥
-		</view>
-		<view class="arrive_content_line1">
-			<text>2021-05-26</text>
-			<text>20分钟</text>
-		</view>
-		<view class="arrive_content_line2">
-			夫妻俩人一起过来 ，平时没时间 ，只有休息的时候有时间
+		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
+			<view class="arrive_content_line1" >
+				<text>{{item.arrivalTime}}</text>
+				<text>{{item.arrivalLength}}分钟</text>
+			</view>
+			<view class="arrive_content_line2">
+				{{item.arrivalRecord}}
+			</view>
 		</view>
 	</view>
 	<view class="arrive" style="border-bottom: 8px solid #efeef3ff;">
@@ -74,19 +71,14 @@
 			<text class="arrive_title_left">跟踪记录:</text>
 			<text class="arrive_title_right">继续添加</text>	
 		</view>
-		<view class="arrive_content_line1" >
-			<text>2021-05-25</text>
-			<text>10分钟</text>
-		</view>
-		<view class="arrive_content_line2">
-			一个人，很忙，补货，家里现有货颜色稍稍有差别
-		</view>
-		<view class="arrive_content_line1">
-			<text>2021-05-26</text>
-			<text>20分钟</text>
-		</view>
-		<view class="arrive_content_line2">
-			下周末带家人过来，已确定库房有一件可用库存
+		<view  v-for="(item,index) in customer.listCustomerTailAfter" :id="item.id">
+			<view class="arrive_content_line1" >
+				<text>{{item.arrivalTime}}</text>
+				<text>{{item.arrivalLength}}分钟</text>
+			</view>
+			<view class="arrive_content_line2">
+				{{item.arrivalRecord}}
+			</view>
 		</view>
 	</view>
 
@@ -94,7 +86,7 @@
 	2、touchmove事件：当手指在屏幕上滑动的时候连续地触发。在这个事件发生期间，调用preventDefault()事件可以阻止滚动。
 	3、touchend事件：当手指从屏幕上离开的时候触发。
 	4、touchcancel事件：当系统停止跟踪触摸的时候触发 -->
-	<view v-for="(item, index) in csListArrl"	:key="index" :data-index="index" class="product-item" 
+	<view v-for="(item, index) in customer.customerProducts"	:key="index" :data-index="index" class="product-item" 
 		@touchstart="drawStart" @touchmove="drawMove" @touchend="drawEnd"  :style="'right:'+item.right+'px'">
 			<view class="product">
 				<view class="product_img">
@@ -102,40 +94,44 @@
 				</view>
 				<view class="product_content">
 					<view class="grid">
-						<view class="info">品名：长茶几</view>
-						<view class="info">型号：7707-C</view>
+						<view class="info">品名：{{item.productName}}</view>
+						<view class="info">型号：{{item.type}}</view>
 					</view>
 					<view class="grid">
-						<view class="info">类别：茶几</view>
-						<view class="info">颜色：胡桃色</view>
-						<view class="info">材质：楸木</view>
+						<view class="info">类别：{{item.productType}}</view>
+						<view class="info">颜色：{{item.color}}</view>
+						
 					</view>
 					 <view class="grid">
-						<view class="info">尺寸：1400*800*500</view>
-						<view class="info">产地：东莞</view>
+						 <view class="info">材质：{{item.texture}}</view>
+						 <view class="info">尺寸：{{item.size}}</view>					
 					</view>
 					<view class="grid">
-						<view class="info" style="color: #e96225ff;">零售价：<text style="color: #e96225ff;">￥1300</text></view>
+						<view class="info">产地：{{item.production}}</view>
+						<view class="info" style="color: #e96225ff;">零售价：<text style="color: #e96225ff;">￥{{item.retailPrice}}</text></view>
+					</view>
+					<view class="grid">
+						<view class="info"></view>
+						<view class="product_number">
+							<view class="reduce" @click="reduce(item)">-</view>
+							<view>
+								<input disabled="disabled" type="number" :value="item.number" @input="countVal">
+							</view>
+							<view class="add" @click="add(item)">+</view>
+						</view>
 					</view>
 				</view>	
-				<view class="product_number">
-					<view class="reduce" @click="reduce">-</view>
-					<view>
-						<input type="number" v-model="total" @input="countVal">			
-					</view>
-					<view class="add" @click="add">+</view>
-				</view>
 			</view>
 			<view class="remove" @click="delData(item)">删除</view>					
 	</view>
 
 	<view class="add_img_total">
-		<view class="add_img">
+		<view class="add_img" @click="addCustomerProduct()">
 			<image src="../../static/image/red_add.png" mode=""></image>
 			<view>点击添加产品</view>
 		</view>
 		<view class="total">
-			合计:27120
+			合计:{{productRetailPriceTotal}}
 		</view>
 	</view>
 <!-- 		<view class="foot">
@@ -146,22 +142,23 @@
 <!--到店时间弹窗-->
 <view>
 	<view :hidden="arrivalHidden" class="popup_content">
-		<view class="popup_title">添加到店时间</view>
+		<view class="popup_title">{{addOrEditArrival}}</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">到店时间</text>
 		   <view class="popup_item_text">
-			 <input type="text"  placeholder-class="input-placeholder" placeholder="请选择"/>
-		   </view>              
-		</view> 
+				<view  @tap="toggle('arrival_date')" class="time" :style="{color:arrivalFormData.arrivalTime=='yyyy-MM-dd	'?'#a0a0a0':'#333'}">{{arrivalFormData.arrivalTime}}</view>
+				<cPicker mode='date' @confirm="arrivalTimeHand" ref="arrival_date"></cPicker>
+		   </view>
+		</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">停留时间</text>
 		   <view class="popup_item_text">
-			 <input type="number" />				 
+			 <input v-model="arrivalFormData.arrivalLength" type="number"  />				 
 		   </view>
 		   <text class="minute">分钟</text>
 		</view>
 		<view class="arrival_record">
-			<textarea maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
+			<textarea v-model="arrivalFormData.arrivalRecord" maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
 		</view>
 		<view class="arrival_foot">
 			<view class="cancel" @click="cancelArrival()">取消</view>
@@ -177,19 +174,20 @@
 		<view class="popup_title">添加跟踪时间</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">跟踪时间</text>
-		   <view class="popup_item_text">
-			 <input type="text"  placeholder-class="input-placeholder" placeholder="请选择"/>
-		   </view>              
+		   <view class="popup_item_text">			
+			 <view  @click="tailAfterToggle('tail_after_date')" :style="{color:tailAfterFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{tailAfterFormData.arrivalTime}}</view>
+			 <cPicker mode='date' @confirm="tailAfterTimeHand" ref='tail_after_date'></cPicker>
+		   </view>
 		</view> 
 		<view class="popup_item">
 		   <text class="popup_item_title">跟踪时长</text>
 		   <view class="popup_item_text">
-			 <input type="number" />				 
+			 <input  v-model="tailAfterFormData.arrivalLength"  type="number" />				 
 		   </view>
 		   <text class="minute">分钟</text>
 		</view>
 		<view class="arrival_record">
-			<textarea maxlength="200" placeholder="请输入跟踪记录" placeholder-class="textarea-placeholder"></textarea>
+			<textarea v-model="tailAfterFormData.arrivalRecord" maxlength="200" placeholder="请输入跟踪记录" placeholder-class="textarea-placeholder"></textarea>
 		</view>
 		<view class="arrival_foot">
 			<view class="cancel" @click="cancelTrack()">取消</view>
@@ -217,12 +215,15 @@
 	import {
 		picker
 	} from "../../components/mixins/picker.js"
-	
+	import {get,post} from "../../components/utils/request.js"
 	export default {
 		components: {
 			cPicker
 		},
 		data() {
+			 const currentDate = this.getDate({
+				format: true
+			})
 			return {
 				 total:1,
 				 selectList: [{
@@ -233,17 +234,9 @@
 				 		ll: "女",
 				 		value: 2
 				 	}
-				 ],
-				//列表数据，可根据自己的业务获取
-				csListArrl:[{
-					name:'小A',
-					age:'18',
-					right: 0
-				}],
-				gender:'男',
+				 ],	
 				fullStarUrl:'../../static/image/cusomer/star.png',
-				nullStarUrl:'../../static/image/cusomer/empty.png',
-				score:1,
+				nullStarUrl:'../../static/image/cusomer/empty.png',				
 				//左滑默认宽度
 				delBtnWidth: 80,
 				//到店记录弹窗
@@ -251,21 +244,58 @@
 				//跟踪记录
 				trackHidden:true,
 				//备注
-				remarkHidden:true
-				
+				remarkHidden:true,
+				//客户数据
+				customer:{},
+				addOrEditArrival:'添加到店时间',
+				arrivalFormData:{
+					id:"",
+					customerId:"",
+					arrivalTime:currentDate,
+					arrivalLength:"",
+					arrivalRecord:"",
+					arrivalType:"arrival"
+				},
+				tailAfterFormData:{
+					id:"",
+					customerId:"",
+					arrivalTime:currentDate,
+					arrivalLength:"",
+					arrivalRecord:"",
+					arrivalType:"arrival"
+				},
+				customerId:""//存放列表传来的意向客户id
 			}
 		},
 		methods: {
+			 getDate() {				
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+				month = month > 9 ? month : '0' + month;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			},
 			//客户性别选择
-			toggle(val) {
+			toggle(val) {				
+				this.$refs[val].show();
+			},
+			tailAfterToggle(val) {				
 				this.$refs[val].show();
 			},
 			hand(value) {
 				this.gender = value.result							
 			},
+			arrivalTimeHand(value) {
+				this.arrivalFormData.arrivalTime = value.result							
+			},
+			tailAfterTimeHand(value) {
+				this.tailAfterFormData.arrivalTime = value.result							
+			},
 			//意向程度
 			changeStar(val){
-				this.score=val;
+				this.customer.grade=val;
 			},
 			//开始触摸滑动
 			drawStart(e) {
@@ -274,57 +304,96 @@
 			},
 			//触摸滑动
 			drawMove(e) {
-				for (var index in this.csListArrl) {
-					this.$set(this.csListArrl[index],'right',0);
+				for (var index in this.customer.customerProducts) {
+					this.$set(this.customer.customerProducts[index],'right',0);
 				}
 				var touch = e.touches[0];
-				var item = this.csListArrl[e.currentTarget.dataset.index];
+				var item = this.customer.customerProducts[e.currentTarget.dataset.index];
 				var disX = this.startX - touch.clientX;
 				if (disX >= 20) {
 					if (disX > this.delBtnWidth) {
 						disX = this.delBtnWidth;
 					}
-					this.$set(this.csListArrl[e.currentTarget.dataset.index],'right',disX);
+					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',disX);
 				} else {
-					this.$set(this.csListArrl[e.currentTarget.dataset.index],'right',0);
+					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',0);
 				}
 			},
 			//触摸滑动结束
-			drawEnd(e) {				
-				var item = this.csListArrl[e.currentTarget.dataset.index];
+			drawEnd(e) {
+				var item = this.customer.customerProducts[e.currentTarget.dataset.index];
 				if (item.right >= this.delBtnWidth / 2) {
-					this.$set(this.csListArrl[e.currentTarget.dataset.index],'right',this.delBtnWidth);
+					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',this.delBtnWidth);
 				} else {
-					this.$set(this.csListArrl[e.currentTarget.dataset.index],'right',0);
+					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',0);
 				}
 			},
 			//删除方法
 			delData(item){
-				console.log("删除")
+				let customerId=item.id;
+				let that = this;
 				uni.showModal({
 					title: '提示',
 					content: "确认移除意向产品？",
 					success: function (res) {
 					if (res.confirm) {
-						console.log('用户点击确定');
+						post("customer/updateCustomerProductDelflag",{"id":customerId}).then(res =>{
+							if(200 == res.code){
+								that.customer.customerProducts = that.customer.customerProducts.filter((item) => {
+								          return !customerId.includes(item.id)
+								})								
+								uni.showToast({
+									title:'操作成功',
+									icon:"none"
+								})
+							}else{
+								uni.showToast({
+									title:'操作失败',
+									icon:"none"
+								})
+								uni.hideLoading();
+							}
+						})
 					} else if (res.cancel) {
 						console.log('用户点击取消');
 					}
 					}
 				});
 			},
-			reduce(){
-			if(this.total<=1){
-				uni.showToast({
-					title:'数值不能小于1',
-					icon:"none"
-				})
+			reduce(item){
+				if(item.number<=1){
+					uni.showToast({						
+						title:'数值不能小于1',
+						icon:"none"
+					})
 					return;
 				}
-				this.total = this.total-1;
+				post("customer/updateCustomerProductNumberReduce",{"id":item.id}).then(res =>{
+					if(200 == res.code){
+						item.number = item.number - 1;
+						uni.hideLoading();
+					}else{
+						uni.showToast({
+							title:'操作失败',
+							icon:"none"
+						})						
+						uni.hideLoading();
+					}
+				})
 			},
-			add(){
-				this.total = this.total+1;
+			add(item){				
+				post("customer/updateCustomerProductNumberAdd",{"id":item.id}).then(res =>{
+					if(200 == res.code){
+						item.number = item.number + 1;
+						uni.hideLoading();
+					}else{
+						uni.showToast({
+							title:'操作失败',
+							icon:"none"
+						})			
+						uni.hideLoading();
+					}
+				}) 
 			},
 			countVal(e){
 				if(this.total == 0){
@@ -337,7 +406,25 @@
 			},
 			//提交到店记录
 			submitArrival(){
-				this.arrivalHidden = true;
+				this.arrivalFormData.customerId = this.customer.id
+				post("customer/insertCustomerArrival",this.arrivalFormData).then(res =>{
+					if(200 == res.code){
+						for(let key in this.arrivalFormData){
+							this.arrivalFormData[key] = ''
+						}						
+						this.arrivalFormData['arrivalTime'] = this.getDate({
+							format: true
+						})
+						uni.hideLoading();
+						uni.showToast({
+							title: '添加到店记录成功',
+							icon: 'none',
+							duration: 2000
+						})
+						this.arrivalHidden = true;
+						this.getList()
+					}
+				})
 			},
 			//添加到店记录
 			arriveAdd(){
@@ -353,8 +440,27 @@
 			cancelTrack(){
 				this.trackHidden = true;
 			},
+			//提交跟踪记录 
 			submitTrack(){
-				this.trackHidden = true;
+				this.tailAfterFormData.customerId = this.customer.id
+				post("customer/insertCustomerTailAfter",this.tailAfterFormData).then(res =>{
+					if(200 == res.code){
+						for(let key in this.tailAfterFormData){
+							this.tailAfterFormData[key] = ''
+						}						
+						this.tailAfterFormData['arrivalTime'] = this.getDate({
+							format: true
+						})
+						uni.hideLoading();
+						uni.showToast({
+							title: '添加到店记录成功',
+							icon: 'none',
+							duration: 2000
+						})
+						this.trackHidden = true;
+						this.getList()
+					}
+				})
 			},
 			//备注
 			remarksAddOrEdit(){
@@ -368,12 +474,48 @@
 			},
 			hideRemark(){
 				this.remarkHidden = true;
+			},
+			getList(){
+				post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
+					if(200 == res.code){
+						this.customer = res.data
+						uni.hideLoading();
+					}
+				}) 
+			},
+			addCustomerProduct(){
+				let that = this
+				uni.navigateTo({
+					url:'/pages/cusomer/customer_product?customerId='+this.customerId
+				})
 			}
 		},
+		onLoad(option) {
+			let url = location.href;
+			this.customerId = url.substr(url.indexOf('?') + 1).split("=")[1]; //截取?后面的内容作为字符串
+			post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
+				if(200 == res.code){
+					this.customer = res.data
+					uni.hideLoading();
+				}
+			}) 
+		},
+		computed:{
+			productRetailPriceTotal(){
+				 let productRetailPriceTotal = 0;		  
+				 if(typeof(this.customer.customerProducts) !="undefined"){
+					for(let i= 0 ;i< this.customer.customerProducts.length; i++) {
+						productRetailPriceTotal += this.customer.customerProducts[i].retailPrice;
+					}
+				 }
+				return productRetailPriceTotal;
+			}
+		}
 	}
 </script>
 
 <style>
+
 .wrap{
 	width: 100%;	
 	border-top: 8px solid #efeef3ff;
@@ -401,6 +543,10 @@
 	flex-grow: 1;
 	text-align: right;	
 	white-space:nowrap;
+}
+.input-group-addon {
+   font-size: 35rpx;
+   color: #333;  
 }
 
 .starLen{
@@ -472,34 +618,33 @@
     font-size: 16px;
 }
 .product{
-	display: flex;
-	align-items: center;	
+	display: flex;	
     width: 100%;   
-    margin: 0 auto;
     border-bottom: 1px solid #C0C0C0;
-	position: relative;
 }
 .product_img{
-	width: 150rpx;
-	height: 150rpx;	
-	margin-left:10rpx;
+	width: 170rpx;
+	height: 170rpx;	
+	margin:10rpx 10rpx 15rpx 10rpx;
 }
 .product_img image {
-	 width: 150rpx;
-	 height: 150rpx;	 
+	 width: 170rpx;
+	 height: 170rpx;	 
 }
 
 .product_content{
 	width: 100%;
-	padding: 20rpx;
+	margin-top: 6rpx;
 }
-.grid {
-	width: 100%;
+.grid {	
 	font-size: 25rpx; 
-	display: flex;	
-	justify-content: space-between;
-	margin-bottom: 3px;
+	display: flex;
+	
+}
+ .info{
+	width: 50%;
 	color: #acacacff;
+	white-space: nowrap;
 }
 .product_number{
 	display: flex;
@@ -507,15 +652,15 @@
 	align-items: center;
 	border: 1px solid #cdcdcdff;
 	border-radius: 5rpx;
-	width: 150rpx;
-	height: 38rpx;
+	width: 40%;
 	text-align: center;
-	position: absolute;
+	margin-top: 5px;
+	/* position: absolute;
 	right: 20rpx;
-	bottom: 10rpx;
+	bottom: 10rpx; */
 }
 .reduce{
-	padding: 0 15rpx;
+	padding: 0 25rpx;
 	height: 36rpx;
 	line-height: 30rpx;
 	border-right: 1px solid #cdcdcdff;
@@ -523,7 +668,7 @@
 	font-weight: 500;
 }
 .add{
-	padding: 0 15rpx;
+	padding: 0 25rpx;
 	height: 36rpx;
 	line-height: 33rpx;
 	border-left: 1px solid #cdcdcdff;
@@ -639,8 +784,7 @@
  }
 
  .popup_item {
-	 display: flex;	 	
-	 align-items: center;
+	 display: flex;	
 	 margin: 30rpx 30rpx;
  }
  .popup_item_title{	 

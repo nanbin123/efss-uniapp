@@ -7,7 +7,7 @@
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/cusomer_gender.png"></image>
-		<view class="title">客户性别:</view>			
+		<view class="title">客户性别:</view>
 		<view class="gender">
 			<view  @tap="toggle('selector')" :style="{color:gender=='请选择'?'#a0a0a0':'#333'}">{{gender}}</view>
 			<cPicker @confirm="hand" name="ll" mode="selector"  ref="selector" :selectList="selectList"></cPicker>
