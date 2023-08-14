@@ -1,0 +1,14 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4053370 */
+  src:url('iconfont.ttf?t=1683367262271') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px; 
+}
+
+.icon-liebiao:before {
+  content: "\e608";
+}
+

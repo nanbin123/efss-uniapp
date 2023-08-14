@@ -13,10 +13,10 @@
 			<view class="gender">			
 				<radio-group class="radio-group" @change="radioChange">
 				  <radio class="radio1" value = '1' color="#38c1b9">
-					  <text class="radio-text" :style="{'color':isChooseMan?'#fff':'#333'}">男</text><!-- color:#38c1b9; -->
+					  <text class="radio-text" :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text><!-- color:#38c1b9; -->
 				  </radio>
 				  <radio class="radio2" value = '2' color="#38c1b9">
-					  <text class="radio-text" :style="{'color':isChooseWoman?'#fff':'#333'}">女</text>
+					  <text class="radio-text" :style="{'color':customer.sex === '2'?'#fff':'#333'}">女</text>
 				  </radio>
 				</radio-group>
 			</view>
@@ -146,9 +146,7 @@
 				//列表数据，可根据自己的业务获取
 				csListArrl:[{
 					
-				}],
-				isChooseMan:false,
-				isChooseWoman:false
+				}]
 			}
 		},
 		methods: {
@@ -175,8 +173,8 @@
 				this.remarkHidden = true;
 			},
 			addCustomer(){
-				let customerObj=this.customer;				
-				delete customerObj.customerProducts				
+				let customerObj=JSON.parse(JSON.stringify(this.customer));
+				delete customerObj.customerProducts
 				post("customer/addUpdateCustomer",customerObj).then(res =>{
  					if(200 == res.code){
 						uni.hideLoading();
@@ -205,17 +203,10 @@
 			},
 			radioChange(evt){
 				this.customer.sex = evt.detail.value;
-				if(evt.detail.value =='1'){
-					this.isChooseMan = true;
-					this.isChooseWoman = false;
-				}else if(evt.detail.value =='2'){
-					this.isChooseWoman = true;
-					this.isChooseMan = false;
-				}
 			}
 		},
 		onLoad(option) {
-			post("customer/insertAddCustomer").then(res =>{				
+			post("customer/insertAddCustomer").then(res =>{
 				if(200 == res.code){
 					this.customer.id = res.data
 					uni.hideLoading();

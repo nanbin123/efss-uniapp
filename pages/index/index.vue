@@ -53,7 +53,7 @@
 						<view class="grid-text">价格表</view>
 					</view>
 				</view>
-				<view class="u-grid-item"   @click="navTo('/pages/productAnalysis/index')">
+				<view class="u-grid-item"   @click="navTo('/pages/product/product_analysis')">
 					<view class="u-grid-item-box">
 						<view class="home color04">
 							 <image src="../../static/image/index/product_analysis.png"></image>
@@ -69,12 +69,20 @@
 						<view class="grid-text">销售看板</view>
 					</view>
 				</view>				
-				<view class="u-grid-item">
+				<view class="u-grid-item"  @click="navTo('/pages/warehousing/index')">
 					<view class="u-grid-item-box">
 						<view class="home color07">
 							 <image src="../../static/image/index/warehousing.png"></image>
 						</view>
-						<view class="grid-text">销售入库</view>
+						<view class="grid-text">入库单浏览</view>
+					</view>
+				</view>
+				<view class="u-grid-item"  @click="navTo('/pages/warehousing/warehousing_add')">
+					<view class="u-grid-item-box">
+						<view class="home color07">
+							 <image src="../../static/image/index/warehousing.png"></image>
+						</view>
+						<view class="grid-text">添加入库单</view>
 					</view>
 				</view>
 				<view class="u-grid-item" @click="navTo('/pages/salesShipment/index')">
@@ -82,7 +90,15 @@
 						<view class="home color07">
 							 <image src="../../static/image/index/receipt_doc.png"></image>
 						</view>
-						<view class="grid-text">销售出货</view>
+						<view class="grid-text">出库单浏览</view>
+					</view>
+				</view>
+				<view class="u-grid-item" @click="navTo('/pages/salesShipment/index')">
+					<view class="u-grid-item-box">
+						<view class="home color07">
+							 <image src="../../static/image/index/receipt_doc.png"></image>
+						</view>
+						<view class="grid-text">添加出库单</view>
 					</view>
 				</view>		
 			</view>

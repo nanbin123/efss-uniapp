@@ -1,10 +1,6 @@
 <template>
 <view class="wrap">
-	<view class="item cusomer_name">
-		<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
-		<text class="title">订单号:</text>
-		<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
-	</view>
+	<view class="head"></view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
 		<text class="title">客户姓名:</text>
@@ -12,7 +8,7 @@
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/cusomer_gender.png"></image>
-		<view class="title">客户性别:</view>
+		<view class="title">客户性别:</view>			
 		<view class="gender">
 			<radio-group class="radio-group" @change="radioChange">
 			  <radio class="radio1" value = '1' color="#38c1b9"  :checked="orderForm.sex === '1'">
@@ -32,22 +28,22 @@
 	<view class="item cusomer_address">
 		<image class="img" src="../../static/image/order/cusomer_address.png"></image>
 		<text class="title">客户地址:</text>
-		<input v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
+		<input  v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/total_amount.png"></image>
 		<text class="title">订单总金额:</text>
-		<input disabled="disabled" v-model="productRetailPriceTotal">
+		<input disabled="disabled" v-model="productRetailPriceTotal">	
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
 		<text class="title">实收金额:</text>
-		<input v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+		<input  v-model="orderForm.actualmoney" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入收款金额">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/discount.png"></image>
 		<text class="title">折扣:</text>
-		<input disabled="disabled"  v-model="discount">
+		<input disabled="disabled" v-model="discount">
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/delivery_time.png"></image>
@@ -60,11 +56,12 @@
 			<cPicker mode='date' @confirm="deliveryHand" ref="delivery_time"></cPicker>
 		</view>
 	</view>
-	<view class="item choice_porduct" @click="addOrderProduct()">
+	<view class="item choice_porduct"  @click="addOrderProduct()">
 		<image class="img" src="../../static/image/order/choice.png"></image>
 		<text class="title">选择产品</text>
 		<image class="add_product" src="../../static/image/add.png"></image>
 	</view>
+	
 	<view class="product"  v-for="(item,index) in orderForm.orderProductList">
 		<view class="left">
 			<image class="left_img" src="../../static/image/茶几.png" mode=""></image>
@@ -91,14 +88,8 @@
 			</view>	
 		</view> 
 	</view>
-	
-	<view class="btn"  @click="addOrderForm()">
-		<button>确认</button>
-	</view>
-	
 </view>
 </template>
-
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
 import {
@@ -106,13 +97,13 @@ import {
 } from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
 	
-	export default {
+	export default {		
 		components: {
 			cPicker
 		},
+		options: {styleIsolation: 'shared'},
 		data() {
-			return {
-				deliveryTime:'请选择',
+			return {		
 				//列表数据，可根据自己的业务获取
 				csListArrl:[{
 					
@@ -121,31 +112,15 @@ import {get,post} from "../../components/utils/request.js"
 			}
 		},
 		methods: {
-			//送货时间弹窗
-			toggle(val) {
-				this.$refs[val].show();
-			},	
-			deliveryHand(value) {
-				this.orderForm.deliveryTime = value.result							
-			},
-			//性别选择
 			radioChange(evt){
 				this.orderForm.sex = evt.detail.value;
+		
 			},
-			//确认提交 订单
-			addOrderForm(){
-				let orderFormObj=JSON.parse(JSON.stringify(this.orderForm));
-				delete orderFormObj.orderProductList				
-				post("order/addUpdateOrder",orderFormObj).then(res =>{
-					if(200 == res.code){
-						uni.hideLoading();
-						uni.showToast({
-							title: '添加销售订单成功',
-							icon: 'none',
-							duration: 2000
-						})
-					}
-				})
+			toggle(val) {
+				this.$refs[val].show();
+			},			
+			deliveryHand(value) {				
+				this.orderForm.deliveryTime = value.result
 			},
 			addOrderProduct(){
 				let that = this
@@ -154,9 +129,9 @@ import {get,post} from "../../components/utils/request.js"
 				})
 			},
 			getList(){
-				post("order/selectOrderById",{"orderFormId":this.orderForm.id}).then(res =>{
+				post("order/selectOrderById",{"orderFormId":this.orderId}).then(res =>{
 					if(200 == res.code){
-						this.orderForm.orderProductList = res.data.orderProductList
+						this.orderForm = res.data
 						uni.hideLoading(); 
 					}
 				})
@@ -173,8 +148,8 @@ import {get,post} from "../../components/utils/request.js"
 				 this.orderForm.totalAmount = productRetailPriceTotal
 				return productRetailPriceTotal;
 			},
-			discount(){				
-				if(this.orderForm.totalAmount == 0 || typeof this.orderForm.totalAmount == 'undefined'){
+			discount(){
+				if(this.orderForm.totalAmount == 0  || typeof this.orderForm.totalAmount == 'undefined'){
 					return 0
 				}
 				if(this.orderForm.actualmoney == 0 || typeof this.orderForm.actualmoney == 'undefined'){
@@ -184,16 +159,16 @@ import {get,post} from "../../components/utils/request.js"
 				return discount*100
 			}
 		},
-		onLoad() {
-			post("order/insertAddOrderForm").then(res =>{				
+	onLoad(option) {
+			this.orderId = option.id
+			post("order/selectOrderById",{"orderFormId":this.orderId}).then(res =>{				
 				if(200 == res.code){
-					this.orderForm.id = res.data.id;
-					this.orderForm.orderNumber = res.data.orderNumber;
-					uni.hideLoading();
+					this.orderForm = res.data
+					uni.hideLoading(); 
 				}
 			})
-		}
-	}
+	}	
+}
 </script>
 
 <style>
@@ -202,46 +177,50 @@ import {get,post} from "../../components/utils/request.js"
 	width: 100%;
 	height: 100%;
 }
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
+}
 .item{
 	display: flex;	
 	padding: 20rpx 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
-	background-color: #fff;
-	
+	background-color: #fff;	
 }
 .item .img{
-	padding-left: 20rpx;
+	padding-left: 10px;	
 	width: 20px;
-	height: 20px;	
+	height: 16px;	
 }
-.item .title{
-	padding: 0 20rpx;
-	font-size: 35rpx;
+.item .title{	
+	width: 100px;
+	padding: 0 10px;
+	font-size: 12px;
 	color: #333;
 }
 .item input{
-	flex-grow: 1;
-	padding-right: 30rpx;
+	font-size: 12px;
+	width: 100%;
+	padding-right: 15px;
 	text-align: right;
 }
-.cusomer_name{
-	border-top: 5px solid #efeef4ff;
+.item .deliveryTime {
+	width: 100%;
+	padding-right: 15px;
+	text-align: right;
+	font-size: 12px;
+}
+.item .input-placeholder{
+	font-size: 12px;
+	text-align: right;
+	color: #aaa;
 }
 .cusomer_address{
 	border-bottom: 5px solid #efeef4ff;
-}
-.item .input-placeholder{
-	font-size: 35rpx;
-	text-align: right;
-	color: #aaa;
-}
-.item .deliveryTime {
-	flex-grow: 1;
-	padding-right: 30rpx;
-	font-size: 35rpx;
-	text-align: right;
-	color: #aaa;
 }
 .choice_porduct{
 	position: relative;
@@ -253,7 +232,7 @@ import {get,post} from "../../components/utils/request.js"
 	position: absolute;
 	right: 20px;
 }
-/* 产品列表 */
+
 .product{
 	display: flex;
 	align-items: center;
@@ -285,8 +264,6 @@ import {get,post} from "../../components/utils/request.js"
    color: #333;
    white-space: nowrap;  
 }
-
-/* 客户性别 */
 .gender{
 	margin-left: auto;
 	padding-right: 15px;
@@ -343,16 +320,4 @@ import {get,post} from "../../components/utils/request.js"
 }
 
 
-
-.btn{
-	position: relative;
-	top: 100rpx;
-	width: 70%;
-	margin:0 auto;
-}
-.btn button{
-	background-color: #02a5e6ff;
-	border: 0;
-	color: #f4f7ffff;
-}
 </style>

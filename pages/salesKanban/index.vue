@@ -1,98 +1,98 @@
 <template>
 	<view class="wrap">
 		<!-- 头部 -->
-		<view class="screen-bar">
-			<view class="screen-bar-item" @tap.stop="itemClick" >
-				<view class="bar-item-text">
-					{{titleText}}
+		<view style="height: 178px;">
+			<view class="head">			
+				<view class="screen-bar">
+					<view class="screen-bar-item" @tap.stop="itemClick" >
+						<view class="bar-item-text">
+							{{titleText}}
+						</view>
+						<image src="../../static/image/product/arrow.png"></image>
+					</view>
+					<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">
+						<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
+							{{item['text']}}
+						</view>				
+					</view>
 				</view>
-				<image src="../../static/image/product/arrow.png"></image>
-			</view>
-			<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">
-				<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
-					{{item['text']}}
-				</view>				
-			</view>
-		</view>
-		<!-- 头部遮罩层 -->
-		<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
-		<view class='achievement-title'>
-			<view class='title'>
-				<view class="before-square"></view>
-				<text>{{beforeTitle}}</text>
-			</view>
-			<view class="title">
-				<view class="now-square"></view>
-				<text>{{nowTitle}}</text>
-			</view>
-			<view  class="title">
-				<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
-				<text>增&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;幅</text>
-			</view>
-		</view>
-		<view class="achievement-list">
-			<view class="user-name">张三</view>
-			<view class="achievement">
-				<view class='title'>
-					<view class="before"></view>
-					<text>100</text>
-				</view>
-				<view class="title">
-					<view class="now"></view>
-					<text>70</text>
-				</view>
-				<view  class="title">
-					<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
-					<text>-30</text>
+				<!-- 头部遮罩层 -->
+				<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
+				<view class='achievement-title'>
+					<view class='title'>
+						<view class="before-square"></view>
+						<text>{{beforeTitle}}</text>
+					</view>
+					<view class="title">
+						<view class="now-square"></view>
+						<text>{{nowTitle}}</text>
+					</view>
+					<view  class="title">
+						<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
+						<text>增&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;幅</text>
+					</view>
 				</view>
 			</view>
 		</view>
-		<view class="achievement-list">
-			<view class="user-name">李四</view>
-			<view class="achievement">
-				<view class='title'>
-					<view class="before"></view>
-					<text>100</text>
-				</view>
-				<view class="title">
-					<view class="now"></view>
-					<text>70</text>
-				</view>
-				<view  class="title">
-					<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
-					<text>-30</text>
+		<view>
+			<view class="achievement-list"  v-for="(item,index) in salesPerformanceList" :key="index">
+				<view class="user-name">{{item.nickName}}</view>
+				<view class="achievement">
+					<view class='title'>
+						<view class="before"></view>
+						<text>{{item.beforeData}}</text>
+					</view>
+					<view class="title">
+						<view class="now"></view>
+						<text>{{item.nowData}}</text>
+					</view>
+					<view  class="title">
+						<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
+						<text>{{increase(item)}}</text>
+					</view>
 				</view>
 			</view>
+			<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="salesPerformanceList.length > 0"/>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {get,post} from "../../components/utils/request.js"
 	export default {
 		data() {
 			return {
+				pageNum: 1, // 当前页
+				status: 'more',
+				contentText: {
+					contentdown: '上拉加载更多~',				
+					contentrefresh: '正在加载更多~',				
+					contentnomore: '我是有底线的~'
+				},
+				iconType: 'auto',    // 图标样式 
 				show: false,
 				titleText: '请选择时间段',
 				itemArr:  [
 					{
 						text: '按天查询',
-						value: 1
+						value: 'day'
 					}, {
 						text: '按周查询',
-						value: 2
+						value: 'week'
 					}, {
 						text: '按月查询',
-						value: 3
+						value: 'month'
 					}, {
 						text: '按季度查询',
-						value: 4
+						value: 'quarter'
 					}, {
 						text: '按年度查询',
-						value: 5
+						value: 'year'
 					}
 				],
 				beforeTitle:'昨日业绩',
-				nowTitle:'今日业绩'
+				nowTitle:'今日业绩',
+				salesPerformanceList:[]
 			}
 		},
 		methods: {
@@ -101,30 +101,35 @@
 				this.show = !this.show				
 			},
 			//替换标题
-			subItemClick(index) {				
+			subItemClick(index) {
 				this.titleText =  this.itemArr[index]['text']
 				this.show = false;
-				let titleValue =  this.itemArr[index]['value']
-				switch(titleValue){
-				    case 1:
+				this.titleValue =  this.itemArr[index]['value']
+				switch(this.titleValue){
+				    case 'day':
 				        this.beforeTitle = '昨日业绩';
 						this.nowTitle = '今日业绩';
+						this.getList();
 				        break;
-				    case 2:
+				    case 'week':
 				        this.beforeTitle = '上周业绩';
 						this.nowTitle = '本周业绩';
+						this.getList();
 				        break;
-					case 3:
+					case 'month':
 						this.beforeTitle = '上月业绩';
 						this.nowTitle = '本月业绩';
+						this.getList();
 						break;
-					case 4:
+					case 'quarter':
 						this.beforeTitle = '上季度业绩';
 						this.nowTitle = '本季度业绩';
+						this.getList();
 						break;
-					case 5:
+					case 'year':
 						this.beforeTitle = '上年业绩';
 						this.nowTitle = '本年业绩';
+						this.getList();
 						break;
 				    default:
 				        break;
@@ -138,19 +143,63 @@
 			touchControl() {
 				this.maskClose()
 			},
+			getList(){				
+				post("statistics/selectListSalesPerformance",{"pageNum":this.pageNum,"queryScope":this.titleValue}).then(res =>{
+					this.totalCount = res.total
+					 if(this.totalCount >=0){
+						this.salesPerformanceList = res.rows
+						uni.hideLoading();
+					 }
+					 if(this.totalCount == this.salesPerformanceList.length){					 
+						 this.status = "noMore"
+					 }
+				}) 
+			}
+		},
+		computed:{
+			increase(){
+				return function(item){
+					return item.nowData - item.beforeData;
+				};
+			}
+		},
+		onReachBottom() {			
+			if(this.totalCount > this.salesPerformanceList.length){				
+				this.pageNum++;				
+				post("statistics/selectListSalesPerformance",{"pageNum":this.pageNum,"queryScope":this.titleValue}).then(res =>{
+					this.salesPerformanceList = this.salesPerformanceList.concat(res.rows)
+					uni.hideLoading();
+				})
+			}else if(this.totalCount == this.salesPerformanceList.length){ 
+				 this.status = "noMore"				
+			}
+		},
+		onLoad(){
+			post("statistics/selectListSalesPerformance",{"pageNum":this.pageNum,"queryScope":"day"}).then(res =>{
+				this.totalCount = res.total
+				 if(this.totalCount >=0){
+					this.salesPerformanceList = res.rows
+					uni.hideLoading();
+				 }
+				 if(this.totalCount == this.salesPerformanceList.length){					 
+					 this.status = "noMore"
+				 }
+			}) 
 		}
 	}
 </script>
 
 <style>
-	.wrap{
-		width: 100%;
+	.head{
 		border-top: 8px solid #efeef3ff;
+		background-color: #fff;
+		width: 100%;
+		position: fixed;
+		z-index: 99999;
 	}
 	.screen-bar {
-		height: 80rpx;
-		padding: 0 30rpx;
-		background-color: #fff;		
+		height: 80px;
+		padding: 0 30px;				
 		display: flex;
 		position: relative;
 		z-index: 99;
@@ -164,38 +213,38 @@
 		justify-content: space-between;
 	}
 	.bar-item-text {		
-		font-size: 30rpx;
+		font-size: 30px;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		white-space: nowrap;
 	}
 	.screen-bar-item image {
-		width: 24rpx;
-		height: 24rpx;
-		padding-top: 2rpx;
-		padding-left: 30rpx;
+		width: 25px;
+		height: 25px;
+		padding-top: 2px;
+		padding-left: 30px;
 		display: block;
-		margin-left: 12rpx;
+		margin-left: 12px;
 		transition: all .3s;
 		flex-shrink: 0;
 	}
 	.dropdown-box {
 		background-color: #fff;
-		height: 349rpx;
+		height: 349px;
 		bottom: -210rpx;
 		width: 65%;
 		padding-left: 30rpx;
 		position: absolute;
 		left: 0;
-		top: 62rpx;
+		top: 62px;
 		z-index: 99;
 		overflow: hidden;
 		border: 1px solid #DEDEDE;
 	}
 	.dropdown-item {
-		height: 70rpx;
+		height: 70px;
 		width: 100%;		
-		font-size: 28rpx;
+		font-size: 20px;
 		color: #666;
 		display: flex;
 		align-items: center;
@@ -221,54 +270,55 @@
 		visibility: visible;
 		opacity: 0.8;
 	}
-	.achievement-title{
+	.achievement-title{		
 		display: flex;
-		justify-content: space-around;
-		padding: 30rpx ;
+		height: 90px;
+		align-items: center;
+		justify-content: space-around;		
 		border-bottom: 1rpx solid #f0f0f0ff;
 	}
 	.title{
 		display: flex;
-		font-size: 30rpx;
+		font-size: 30px;
 		width: 30%;
 	}
 	.before-square{
-		width: 45rpx;
-		height: 45rpx;
+		width: 45px;
+		height: 45px;
 		background: #17C295;
 		margin-right: 20rpx;
 	}
 	.now-square{
-		width: 45rpx;
-		height: 45rpx;
+		width: 45px;
+		height: 45px;
 		background: #00A7E2;
-		margin-right: 20rpx;
+		margin-right: 20px;
 	}
 	.increase{
-		width: 45rpx;
-		height: 45rpx;
-		margin-right: 20rpx;		
+		width: 45px;
+		height: 45px;
+		margin-right: 20px;		
 	}
 	.achievement-list{		
 		background-color: #f9f9f9ff;
 		border-bottom: 1px solid #f0f0f0ff;		
-		padding: 20rpx 30rpx ;
+		padding: 20px 30px ;
 	}
 	.achievement{
 		display: flex;
 		justify-content: space-around;
 	}	
 	.before{
-		width: 40rpx;
-		height: 40rpx;
+		width: 40px;
+		height: 40px;
 		background: #17C295;
 		margin-right: 20rpx;
 	}
 	.now{
-		width: 40rpx;
-		height: 40rpx;
+		width: 40px;
+		height: 40px;
 		background: #00A7E2;
-		margin-right: 20rpx;
+		margin-right: 20px;
 	}
 	.user-name{
 		font-size: 30rpx;
