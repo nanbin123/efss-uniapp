@@ -2,11 +2,16 @@
 <view class="wrap">
 	<view class="head"></view>
 	<view class="item">
+		<image class="img"  style="width: 19px;height: 20px;"  src="../../static/image/order/order_number.png"></image>
+		<text class="title">订单编号:</text>
+		<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
+	</view>
+	<view class="item">
 		<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
 		<text class="title">客户姓名:</text>
 		<input v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 	</view>
-	<view class="item">
+	<view class="item" style="padding-top: 5px; padding-bottom: 5px;">
 		<image class="img" src="../../static/image/order/cusomer_gender.png"></image>
 		<view class="title">客户性别:</view>			
 		<view class="gender">
@@ -186,7 +191,7 @@ import {get,post} from "../../components/utils/request.js"
 }
 .item{
 	display: flex;	
-	padding: 20rpx 0;
+	padding: 10px 0 5px 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;	

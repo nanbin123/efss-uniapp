@@ -85,7 +85,7 @@
 						<view class="grid-text">添加入库单</view>
 					</view>
 				</view>
-				<view class="u-grid-item" @click="navTo('/pages/salesShipment/index')">
+				<view class="u-grid-item" @click="navTo('/pages/outbound/index')">
 					<view class="u-grid-item-box">
 						<view class="home color07">
 							 <image src="../../static/image/index/receipt_doc.png"></image>
@@ -93,7 +93,7 @@
 						<view class="grid-text">出库单浏览</view>
 					</view>
 				</view>
-				<view class="u-grid-item" @click="navTo('/pages/salesShipment/index')">
+				<view class="u-grid-item" @click="navTo('/pages/outbound/outbound_add')">
 					<view class="u-grid-item-box">
 						<view class="home color07">
 							 <image src="../../static/image/index/receipt_doc.png"></image>
@@ -125,10 +125,18 @@
 						<view class="home color08">
 							  <image src="../../static/image/index/receipt.png"></image>
 						</view>
+						<view class="grid-text">收款单预览</view>
+					</view>
+				</view>
+				<view class="u-grid-item" @click="navTo('/pages/receipt/index')">
+					<view class="u-grid-item-box">
+						<view class="home color08">
+							  <image src="../../static/image/index/receipt.png"></image>
+						</view>
 						<view class="grid-text">销售收款</view>
 					</view>
 				</view>
-				<!-- <view class="u-grid-item">
+<!-- 				<view class="u-grid-item">
 					<view class="u-grid-item-box">
 						<view class="home color09">
 							  <image src="../../static/image/index/payment_order.png"></image>

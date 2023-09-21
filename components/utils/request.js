@@ -16,9 +16,9 @@ function deletes(url, data = {}) {
  * POST请求封装
  */
 
-function post(url, data = {}) {
+function post(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {
 	
-	return request(url, data, 'POST');
+	return request(url, data, 'POST',contentType);
 }
 /**
  * 微信的request
@@ -29,7 +29,7 @@ const BASEURL = 'http://localhost:8080/'
 
 //endif
 
-function request(url, data = {}, method = "GET") {	
+function request(url, data = {}, method = "GET",contentType) {	
 	return new Promise(function(resolve, reject) {		
 		uni.showLoading({
 			title: "加载中"
@@ -43,7 +43,7 @@ function request(url, data = {}, method = "GET") {
 				'Authorization': uni.getStorageSync("token"),
 				'Accept': 'application/json',
 				'X-Requested-With': 'XMLHttpRequest',
-				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+				'Content-Type': contentType
 			},
 			success(res) {
 				if (res.data) {	

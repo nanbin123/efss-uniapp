@@ -94,7 +94,7 @@
 				})
 			},
 			//确认提交 订单
-			addOrderForm(){				
+			addOrderForm(){
 				let warehousingEntryObj=JSON.parse(JSON.stringify(this.warehousingEntry));
 				delete warehousingEntryObj.warehousingEntryProductList				
 				post("warehousing/addUpdateWarehousingEntry",warehousingEntryObj).then(res =>{					
@@ -107,9 +107,9 @@
 						})
 					}
 				})
-			},
+			}
 		},
-		onLoad() {
+		onLoad() {			
 			post("warehousing/insertWarehousingEntry").then(res =>{
 				if(200 == res.code){
 					this.warehousingEntry = res.data

@@ -4,10 +4,10 @@
 		<view style="height: 5px;">
 			<view class="head"></view>
 		</view>
-		<navigator v-for="(item,index) in orderList" :url="'/pages/order/order_deatil?id='+item.id"  :id="item.id">
-			<view class="container">	
+		<view v-for="(item,index) in orderList" :id="item.id"  >
+			<view class="container" @click="chooseOrder(item.id)">
 				<view class="item">
-					<text  class="info">订单号:{{item.orderNumber}}</text>
+					<text  class="info">订单号:{{item.orderNumber}}</text>								
 					<text  class="info">客户姓名:{{item.customerName}}</text>
 				</view>
 				<view class="item">					
@@ -27,7 +27,7 @@
 					<text  class="info">操作人:{{item.updateBy}}</text>
 				</view>
 			</view>			
-		</navigator>
+		</view>
 		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="orderList.length > 0"/>
 	</view>
 </template>
@@ -56,6 +56,18 @@
 				}else{
 					return '女'
 				}
+			},
+			chooseOrder(id){
+				let pages = getCurrentPages();
+				if(pages.length >1){
+					let prevPage = pages[pages.length -2];
+					uni.navigateBack({
+						delta:1,
+						success:(event) =>{
+							prevPage.getList(id);
+						}
+					})
+				}
 			}
 		},
 		onReachBottom() {
@@ -72,9 +84,11 @@
 		onLoad(){
 			post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{
 				this.totalCount = res.total
-				this.orderList = res.rows
-				uni.hideLoading();				
-				if(this.totalCount == this.orderList.length){				
+				 if(this.totalCount >0){
+					this.orderList = res.rows
+					uni.hideLoading();
+				 }
+				 if(this.totalCount == this.orderList.length){					 
 					 this.status = "noMore"
 				 }
 			}) 

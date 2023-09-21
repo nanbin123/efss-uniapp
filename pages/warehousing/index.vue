@@ -50,7 +50,7 @@
 			}
 		},
 		onLoad() {
-			post("warehousing/selectListWarehousingEntry").then(res =>{	
+			post("warehousing/selectListWarehousingEntry").then(res =>{
 				this.totalCount = res.total
 				 if(this.totalCount >0){
 					this.warehousingEntryList = res.rows

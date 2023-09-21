@@ -1,8 +1,8 @@
 <template>
 <view class="wrap">
 	<view class="item cusomer_name">
-		<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
-		<text class="title">订单号:</text>
+		<image class="img"  style="width: 19px;height: 21px;" src="../../static/image/order/order_number.png"></image>
+		<text class="title">订&nbsp单&nbsp号&nbsp:</text>
 		<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 	</view>
 	<view class="item">
@@ -46,7 +46,7 @@
 	</view>
 	<view class="item">
 		<image class="img" src="../../static/image/order/discount.png"></image>
-		<text class="title">折扣:</text>
+		<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
 		<input disabled="disabled"  v-model="discount">
 	</view>
 	<view class="item">
@@ -211,7 +211,7 @@ import {get,post} from "../../components/utils/request.js"
 	
 }
 .item .img{
-	padding-left: 20rpx;
+	padding-left: 10px;
 	width: 20px;
 	height: 20px;	
 }

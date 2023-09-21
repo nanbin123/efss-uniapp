@@ -127,9 +127,15 @@
 			"style": {
 				"navigationBarTitleText": "收款单"
 			}
-		}
-        ,{
-            "path" : "pages/salesShipment/index",
+		},
+		{
+			"path": "pages/receipt/import_order",
+			"style": {
+				"navigationBarTitleText": "导入订单"
+			}
+		},
+        {
+            "path" : "pages/outbound/index",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "销售出货",
@@ -138,7 +144,7 @@
             
         }
         ,{
-            "path" : "pages/salesShipment/shipping_details",
+            "path" : "pages/outbound/outbound_details",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "销售出货明细",
@@ -146,6 +152,24 @@
             }
             
         },
+		{
+		    "path" : "pages/outbound/outbound_add",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "添加出库单",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/outbound/import_order",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "导入订单",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
 		{
 		    "path" : "pages/warehousing/index",
 		    "style" :                                                                                    

@@ -1,6 +1,9 @@
 <template>
 	<view class="wrap">
-		<view class="item order-import">
+		<view style="height: 5px;">
+			<view class="head"></view>
+		</view>
+		<view class="item"   @click="importOrder()">
 			<image class="img" src="../../static/image/receipt/import-order.png"></image>
 			<text class="title">导入订单</text>
 			<image class="right-img" src="../../static/image/receipt/add.png"></image>
@@ -72,6 +75,12 @@
 			}
 		},
 		methods: {
+			importOrder(){
+				let that = this
+				uni.navigateTo({
+					url:'/pages/receipt/import_order'
+				})
+			},
 			handInput(value) {
 				let val = value.detail.value;
 				this.textateaL = val.length;
@@ -143,32 +152,40 @@
 	width: 100%;
 	height: 100%;
 }
-.item{
-	display: flex;	
-	padding: 20rpx 0;
-	border-bottom: 1px solid #f1f1f1ff;
-	font-size: 35rpx;
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
+}
+.item{	
+	display: flex;
 	align-items: center;
-	background-color: #fff;
-	
+	padding: 10px;
+	border-bottom: 1px solid #efeef3ff;
 }
 .item .img{
-	padding-left: 20rpx;
-	width: 22px;
-	height: 22px;	
+	width: 18px;
+	height: 18px;		
 }
 .item .title{
-	padding: 0 20rpx;
-	color: #8f8f94;
+	white-space: nowrap;
+	padding: 0 15px;
+	font-size: 15px;
+	color: #333;
 }
 .item .right-content{
-	color: #333;
+	white-space: nowrap;
+	font-size: 15px;
+	color: #333;	
 	margin-left: auto;
-	margin-right: 30rpx;
+	margin-right: 10px;
+	text-align: right;	
 }
 .item .right-img{
 	margin-left: auto;
-	margin-right: 30rpx;
+	margin-right: 15px;
 	width: 25px;
 	height: 25px;
 }
@@ -177,11 +194,8 @@
 	flex-grow: 1;
 	padding-right: 35rpx;
 	text-align: right;
-	
 }
-.order-import{
-	border-top: 5px solid #efeef4ff;
-}
+
 .item .input-placeholder{
 	font-size: 30rpx;
 	text-align: right;
