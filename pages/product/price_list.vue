@@ -69,7 +69,7 @@
 			}
 		},
 		watch:{
-			searchVal(val){
+			searchVal(val){				
 				post("product/selectListProductPrice",{"pageNum":this.pageNum,"productNameOrType":val}).then(res =>{
 					this.totalCount = res.total
 					this.productList = res.rows

@@ -126,7 +126,7 @@
 				})
 			},
 			getList(orderId){
-				post("outbound/selectOrderById",{"outboundId":orderId}).then(res =>{
+				post("outbound/selectOrderById",{"orderFormId":orderId}).then(res =>{
 					if(200 == res.code){
 						this.outbound = res.data
 						uni.hideLoading(); 

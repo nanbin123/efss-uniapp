@@ -7,8 +7,7 @@
 //endif
 
 function uploadImage() {
-	return new Promise((resolve, reject) => {
-		
+	return new Promise((resolve, reject) => {		
 		uni.chooseImage({
 			count: 1,
 			sizeType: ['original', 'compressed'],

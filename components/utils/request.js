@@ -1,8 +1,8 @@
 /**
  * GET请求封装
  */
-function get(url, data = {}) {	
-	return request(url, data, 'GET');
+function get(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {	
+	return request(url, data, 'GET',contentType);
 }
 
 function put(url, data = {}) {
@@ -15,21 +15,58 @@ function deletes(url, data = {}) {
 /**
  * POST请求封装
  */
-
-function post(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {
-	
+function post(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {	
 	return request(url, data, 'POST',contentType);
 }
 /**
- * 微信的request
+ * 图片上传
  */
-//ifdef H5
-const BASEURL = 'http://localhost:8080/'
-//endif
+function uploadFiles(url,files,formData = {}) {
+	return uploadImg(url, files, formData);
+}
 
-//endif
+const BASEURL = 'http://localhost:8080/';
 
-function request(url, data = {}, method = "GET",contentType) {	
+function uploadImg(url,files,formData){
+	return new Promise(function(resolve, reject) {
+		uni.showLoading({
+			title: "上传中"
+		});
+		uni.uploadFile({
+			url: BASEURL + url,									
+			files:files,
+			header: {
+				'Authorization': uni.getStorageSync("token"),										
+				"Accept": "application/json"
+			},
+			success(res) {
+				if (res.data) {
+					let resData = JSON.parse(res.data)					
+					if (resData.code == 401 || resData.code == 403) {
+						uni.removeStorageSync('token');
+						uni.showToast({
+							title: '登录失效，请重新登录',
+							icon: 'none'
+						});
+						setTimeout(() => {
+							uni.reLaunch({
+								url: '/pages/login/login'
+							});
+						}, 1000);
+					}					
+					if(resData.code == 200){						
+						resolve(resData);
+					}
+					} else {
+						resolve(null);
+						uni.hideLoading();
+					}
+			}
+		})
+	});
+}
+
+function request(url, data = {}, method = "GET",contentType) {
 	return new Promise(function(resolve, reject) {		
 		uni.showLoading({
 			title: "加载中"
@@ -83,4 +120,6 @@ export {
 	post,
 	put,
 	deletes,
+	uploadFiles
+	
 };

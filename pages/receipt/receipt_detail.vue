@@ -1,0 +1,314 @@
+<template>
+	<view class="wrap">
+		<view style="height: 5px;">
+			<view class="head"></view>
+		</view>
+		<view class="item">
+			<image class="img" style="width: 19px;height: 21px;" src="../../static/image/order/order_number.png"></image>
+			<text class="title">订单编号 :</text>
+			<text class="right-content">{{receipt.orderNumber}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
+			<text class="title">客户姓名 :</text>
+			<text class="right-content">{{receipt.customerName}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/order/total_amount.png"></image>
+			<text class="title">订单总金额:</text>
+			<text class="right-content">{{receipt.totalAmount}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/receipt/price_after_discount.png"></image>
+			<text  class="title">折扣:</text>
+			<input class="right-content" style="padding-right: 0" disabled="disabled" v-model="discount">
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
+			<text  class="title">订单实收金额:</text>
+			<text class="right-content">{{receipt.actualmoney}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
+			<text  class="title">已收款:</text>
+			<text class="right-content">{{receipt.received}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/receipt/to_be_received.png"></image>
+			<text  class="title">待收款:</text>
+			<text class="right-content">{{receipt.tobeReceived}}</text>
+		</view>
+		<view class="item">
+			<image class="img" src="../../static/image/receipt/amount_collected.png"></image>
+			<text  class="title">收款金额:</text>
+			<input v-model="receipt.amountCollected"  confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+		</view>
+		<view class="voucher">
+			<text  class="voucher-title">上传收款凭证</text>
+			<view class="voucher-img">
+				<view class="voucher-item" v-for="(item, index) in receipt.voucherList">
+					<image @tap="onPreviewImage(index)"  :src="item.voucher" class="voucher-item-img"></image>
+					<view  @tap="onDeleteThis(index)" class="voucher-remove ">
+						<text>X</text>
+					</view>
+				</view>
+				<image @tap="onChooseImage" class="voucher-add" src="../../static/image/receipt/upload-voucher.png"></image>
+			</view>
+		</view>
+		<view class="remarks">
+			<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" @input="handInput"></textarea>
+			<label for="forFocus" class="textarea-count ">{{textateaL}}/{{maxlength}}</label>
+		</view>
+		<view class="btn" @click="addReceiptForm()">
+			<button>保存</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {get,post} from "../../components/utils/request.js"
+	export default {
+		data() {
+			return {				
+				textateaL: 0,
+				maxlength:200,
+				receipt:{
+					voucherList: []
+				}
+			}
+		},
+		computed:{
+			discount(){//折扣计算
+				if(this.receipt.totalAmount == 0  || typeof this.receipt.totalAmount == 'undefined'){
+					return ''
+				}
+				if(this.receipt.actualmoney == 0 || typeof this.receipt.actualmoney == 'undefined'){
+					return ''
+				}
+				let discount = this.receipt.actualmoney/this.receipt.totalAmount*100;				
+				return discount == 0 ? '':discount*100;
+			}
+		},
+		onLoad(option) {
+			this.receipt.id = option.id
+			post("receipt/selectReceiptById",{"id":this.receipt.id}).then(res =>{				
+				if(200 == res.code){
+					this.receipt = res.data
+					this.textateaL = this.receipt.remark.length;
+					uni.hideLoading(); 
+				}
+			})
+		},
+		methods: {
+			getList(orderId){
+				post("receipt/selectOrderById",{"orderFormId":orderId}).then(res =>{
+					if(200 == res.code){
+						this.receipt = res.data
+						uni.hideLoading();
+					}
+				})
+			},
+			handInput(value) {
+				let val = value.detail.value;
+				this.textateaL = val.length;
+			},
+			onChooseImage(){
+				uni.chooseImage({
+					count: 9,//最多可以选择的图片张
+					sizeType: ['original', 'compressed'],//original 原图，compressed 压缩图
+					sourceType: ['album', 'camera'],//album 从相册选图，camera 使用相机
+					success: (res) => {					
+						if (res.tempFiles.length > 0) {
+							const tempFilePaths = res.tempFiles[0].path
+							const size = res.tempFiles[0].size
+							if (size < 8388608) {
+								uni.showLoading({
+								    title: '上传中'
+								});
+								setTimeout(()=>{								  
+									this.voucherList.push(tempFilePaths)									
+								    uni.hideLoading();
+								}, 500);
+							}else{
+								uni.showToast({
+									title: '超出限制大小',
+									icon: "none"
+								})
+							}
+						}else{
+							uni.showToast({
+								title: '文件不存在',
+								icon: "none"
+							})
+						}
+					}
+				});
+			},
+			//预览图片
+			onPreviewImage(index) {
+				let imageUrl=[];
+				for (var i = 0; i < this.receipt.voucherList.length; i++) {
+					imageUrl.push(this.receipt.voucherList[i].voucher)
+				}
+				uni.previewImage({
+					current: index,
+					urls:imageUrl
+				});
+			},
+			//删除指定图片
+			onDeleteThis(index){
+				uni.showModal({
+					title: '提示',
+					content: '您确定删除吗？',
+					success: (res)=> {
+						if(res.confirm) {
+							this.voucherList.splice(index, 1);
+							wx.showToast({
+							    title: '删除成功',
+							    icon: 'success',
+							    duration: 1000
+							});
+						}
+					}
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+.wrap{
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
+}
+.item{	
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	border-bottom: 1px solid #efeef3ff;
+}
+.item .img{
+	width: 18px;
+	height: 18px;		
+}
+.item .title{
+	white-space: nowrap;
+	padding: 0 15px;
+	font-size: 15px;
+	color: #333;
+}
+.item .right-content{
+	white-space: nowrap;
+	font-size: 15px;
+	color: #333;	
+	margin-left: auto;
+	margin-right: 10px;
+	text-align: right;	
+}
+
+.item input{
+	font-size: 16px;
+	margin-left: auto;
+	padding-right: 15px;
+	text-align: right;
+}
+
+.item .input-placeholder{
+	font-size: 16px;
+	text-align: right;
+	color: #aaa;
+}
+.voucher{	
+	padding: 7px 0 0 15px;	
+}
+.voucher-title{
+	font-size: 18px;
+	font-weight: 600;
+}
+.voucher-img{
+	display: flex;
+	flex-wrap: wrap;
+}
+.voucher-add{
+	width: 80px;
+	height: 80px;
+	margin-top: 20px;
+	margin-left: 20px;
+}
+.voucher-item{	
+	position: relative;
+	margin-top: 15px;
+	margin-right:15px;
+	flex: 0 calc(33.3% - 15px);	
+}
+.voucher-item-img{
+	display: block;
+	width: 100%;
+	height: 100px;
+}
+.voucher-remove{
+	background-color: #D1372C;
+	color: #fff;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	opacity: 0.8;
+	position: absolute;
+	z-index: 2;
+	cursor: pointer;
+	box-sizing: border-box;
+	top: 0;
+	right: 0;
+	border-radius: 0 0 0 100%;
+}
+.voucher-remove text{
+	transform: scale(0.8);
+	position: absolute;
+	right: 3px;
+}
+.textarea-placeholder{
+	font-size: 15px;
+}
+.remarks{
+	overflow: hidden;
+	position: relative;	
+	border-bottom: 1px solid #f1f1f1ff;	
+	padding: 10px;
+}
+.remarks textarea {
+	height: 60px;	
+	width: 100%;	
+	font-size: 15px;
+	color: #333;
+}
+.textarea-count {
+	position: absolute;
+	font-size: 12px;
+	line-height: 16px;
+	bottom: 5px;
+	right: 0px;
+	color: #999;
+}
+.btn{
+	width: 80%;
+	position: relative;
+	top: 30rpx;
+	margin: 0 auto;
+}
+.btn button{
+	background-color: #00a7e2ff;
+	border: 0;
+	color: #daf2fbff;	
+}
+</style>

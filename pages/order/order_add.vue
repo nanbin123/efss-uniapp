@@ -94,8 +94,7 @@
 	
 	<view class="btn"  @click="addOrderForm()">
 		<button>确认</button>
-	</view>
-	
+	</view>	
 </view>
 </template>
 

@@ -123,15 +123,27 @@
 		    
 		},
 		{
-			"path": "pages/receipt/index",
+			"path": "pages/receipt/receipt_add",
 			"style": {
-				"navigationBarTitleText": "收款单"
+				"navigationBarTitleText": "添加收款单"
 			}
 		},
 		{
 			"path": "pages/receipt/import_order",
 			"style": {
 				"navigationBarTitleText": "导入订单"
+			}
+		},
+		{
+			"path": "pages/receipt/receipt_list",
+			"style": {
+				"navigationBarTitleText": "收款单"
+			}
+		},
+		{
+			"path": "pages/receipt/receipt_detail",
+			"style": {
+				"navigationBarTitleText": "收款单明细"
 			}
 		},
         {
@@ -239,7 +251,31 @@
                 "enablePullDownRefresh": false
             }
             
-        },		
+        },
+		{
+			"path" : "pages/user/user_list",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "员工管理",
+				"enablePullDownRefresh": false
+			}			
+		},
+		{
+			"path" : "pages/user/user_add",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "新增员工",
+				"enablePullDownRefresh": false
+			}			
+		},
+		{
+			"path" : "pages/user/user_detail",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "员工明细",
+				"enablePullDownRefresh": false
+			}			
+		},
 		{
 			"path" : "pages/test/test",
 			"style" :                                                                                    

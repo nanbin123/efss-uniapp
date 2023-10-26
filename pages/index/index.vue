@@ -1,19 +1,18 @@
 <template>
-	<view class="wrap">
+<!-- 	<view class="wrap"> -->
 		<view class="swiper-wrap" >
-			
 			<swiper class="swiper" circular autoplay="true" interval="2000" duration="500">
 				<swiper-item>
 					<text class="swiper-notice">公告</text>
 					<text class="swiper-text">欢迎使用本ERP系统，如有定制需求请联系微信:15832922153</text>
-					<image class="swiper-image" src="../../static/image/banner/banner01.png" mode="aspectFill"></image>					
+					<image class="swiper-image" :src="getImgUrl('static/image/banner/banner01.png')"  mode="aspectFill"></image>					
 				</swiper-item>
 			</swiper>
 		</view>		
-		<view class="workbench-title">常用应用</view>
+<!-- 	<view class="workbench-title">常用应用</view>
 		<view>
-			<view class="u-grid">
-				<view class="u-grid-item" @click="navTo('/pages/cusomer/index')">
+ 			<view class="u-grid">
+				<view   v-if="hasPermi(['personnel:list'])" class="u-grid-item" @click="navTo('/pages/cusomer/index')">
 					<view class="u-grid-item-box">
 						<view class="home color01">
 							  <image src="../../static/image/index/query_cusomer.png"></image>
@@ -100,10 +99,10 @@
 						</view>
 						<view class="grid-text">添加出库单</view>
 					</view>
-				</view>		
-			</view>
-			<view class="workbench-title">日常办公</view>
-			<view class="u-grid">
+				</view>	
+			</view> -->
+			<!-- <view class="workbench-title">日常办公</view> -->
+			<!-- <view class="u-grid">
 				<view class="u-grid-item"  @click="navTo('/pages/product/product_query')">
 					<view class="u-grid-item-box">
 						<view class="home color06">
@@ -120,7 +119,7 @@
 						<view class="grid-text">添加产品</view>
 					</view>
 				</view>
-				<view class="u-grid-item" @click="navTo('/pages/receipt/index')">
+				<view class="u-grid-item" @click="navTo('/pages/receipt/receipt_list')">
 					<view class="u-grid-item-box">
 						<view class="home color08">
 							  <image src="../../static/image/index/receipt.png"></image>
@@ -128,14 +127,14 @@
 						<view class="grid-text">收款单预览</view>
 					</view>
 				</view>
-				<view class="u-grid-item" @click="navTo('/pages/receipt/index')">
+				<view class="u-grid-item" @click="navTo('/pages/receipt/receipt_add')">
 					<view class="u-grid-item-box">
 						<view class="home color08">
 							  <image src="../../static/image/index/receipt.png"></image>
 						</view>
 						<view class="grid-text">销售收款</view>
 					</view>
-				</view>
+				</view> -->
 <!-- 				<view class="u-grid-item">
 					<view class="u-grid-item-box">
 						<view class="home color09">
@@ -144,7 +143,7 @@
 						<view class="grid-text">付款单</view>
 					</view>
 				</view> -->
-				<view class="u-grid-item" @click="navTo('/pages/profitLoss/index')">
+<!-- 				<view class="u-grid-item" @click="navTo('/pages/profitLoss/index')">
 					<view class="u-grid-item-box">
 						<view class="home color10">
 							  <image src="../../static/image/index/profit_and_loss.png"></image>
@@ -152,12 +151,22 @@
 						<view class="grid-text">盈亏表</view>
 					</view>
 				</view>
-			</view>
-		</view>		
-	</view>
+				<view class="u-grid-item" @click="navTo('/pages/user/user_list')">
+					<view class="u-grid-item-box">
+						<view class="home color08">
+							  <image src="../../static/image/index/user.png"></image>
+						</view>
+						<view class="grid-text">员工管理</view>
+					</view>
+				</view>
+			</view> -->
+		<!-- </view>	 -->	
+	<!-- </view> -->
+	
 </template>
 
 <script>
+	import {get,post} from "../../components/utils/request.js"
 	export default {
 		data() {
 			return {
@@ -165,14 +174,23 @@
 			}
 		},
 		onLoad() {
-
+			
 		},
 		methods: {
 			navTo(url) {
 				uni.navigateTo({
 					url: url
 				});
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
+		},
+		computed: {
+			
+		},
+		onLoad(){
+			
 		}
 	}
 </script>

@@ -17,7 +17,7 @@
 		},
 		methods: {
 			login(){
-				//http://localhost/dev-api/captchaImage
+				
 				if(!this.username || !this.password){
 					uni.showToast({
 						title:'请输入账号密码',
@@ -32,7 +32,7 @@
 						"username":this.username,
 						"password":this.password
 					},
-					header: {						
+					header: {
 						'Accept': 'application/json',
 						'X-Requested-With': 'XMLHttpRequest',
 						'Content-Type': 'application/json;charset=UTF-8'
