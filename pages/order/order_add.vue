@@ -1,101 +1,104 @@
 <template>
-<view class="wrap">
-	<view class="item cusomer_name">
-		<image class="img"  style="width: 19px;height: 21px;" src="../../static/image/order/order_number.png"></image>
-		<text class="title">订&nbsp单&nbsp号&nbsp:</text>
-		<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
+	<view class="head">
+		<view class="line"></view>
 	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
-		<text class="title">客户姓名:</text>
-		<input v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/cusomer_gender.png"></image>
-		<view class="title">客户性别:</view>
-		<view class="gender">
-			<radio-group class="radio-group" @change="radioChange">
-			  <radio class="radio1" value = '1' color="#38c1b9"  :checked="orderForm.sex === '1'">
-				  <text class="radio-text" :style="{'color':orderForm.sex === '1'?'#fff':'#333'}">男</text>
-			  </radio>
-			  <radio class="radio2" value = '2' color="#38c1b9" :checked="orderForm.sex === '2'">
-				  <text class="radio-text" :style="{'color':orderForm.sex === '2'?'#fff':'#333'}">女</text>
-			  </radio>
-			</radio-group>
+		
+	<scroll-view scroll-y style="height: calc(100vh - 80px);">
+		<view class="item">
+			<image class="img"  style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')"></image>
+			<text class="title">订&nbsp单&nbsp号&nbsp:</text>
+			<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 		</view>
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/cusomer_phone.png"></image>
-		<text class="title">客户电话:</text>
-		<input  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
-	</view>
-	<view class="item cusomer_address">
-		<image class="img" src="../../static/image/order/cusomer_address.png"></image>
-		<text class="title">客户地址:</text>
-		<input v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/total_amount.png"></image>
-		<text class="title">订单总金额:</text>
-		<input disabled="disabled" v-model="productRetailPriceTotal">
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
-		<text class="title">实收金额:</text>
-		<input v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/discount.png"></image>
-		<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
-		<input disabled="disabled"  v-model="discount">
-	</view>
-	<view class="item">
-		<image class="img" src="../../static/image/order/delivery_time.png"></image>
-		<text class="title">送货时间:</text>
-		<view class="deliveryTime">
-			<view  @tap="toggle('delivery_time')">
-				<text  v-if='typeof orderForm.deliveryTime  == "undefined"' style="color: #a0a0a0;">请选择</text>
-				<text  v-else style="color: #333;">{{orderForm.deliveryTime}}</text>
-			</view>
-			<cPicker mode='date' @confirm="deliveryHand" ref="delivery_time"></cPicker>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
+			<text class="title">客户姓名:</text>
+			<input v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/cusomer_gender.png')"></image>
+			<view class="title">客户性别:</view>
+			<view class="gender">
+				<radio-group class="radio-group" @change="radioChange">
+				  <radio class="radio1" value = '1' color="#38c1b9"  :checked="orderForm.sex === '1'">
+					  <text class="radio-text" :style="{'color':orderForm.sex === '1'?'#fff':'#333'}">男</text>
+				  </radio>
+				  <radio class="radio2" value = '2' color="#38c1b9" :checked="orderForm.sex === '2'">
+					  <text class="radio-text" :style="{'color':orderForm.sex === '2'?'#fff':'#333'}">女</text>
+				  </radio>
+				</radio-group>
+			</view>
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
+			<text class="title">客户电话:</text>
+			<input  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
+		</view>
+		<view class="item cusomer_address">
+			<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
+			<text class="title">客户地址:</text>
+			<input v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
+			<text class="title">订单总金额:</text>
+			<input disabled="disabled" v-model="productRetailPriceTotal">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
+			<text class="title">实收金额:</text>
+			<input v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/discount.png')"></image>
+			<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
+			<input disabled="disabled"  v-model="discount">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')" ></image>
+			<text class="title">送货时间:</text>
+			<view class="deliveryTime">
+				<view  @tap="toggle('delivery_time')">
+					<text  v-if='typeof orderForm.deliveryTime  == "undefined"' style="color: #a0a0a0;">请选择</text>
+					<text  v-else style="color: #333;">{{orderForm.deliveryTime}}</text>
+				</view>
+				<cPicker mode='date' @confirm="deliveryHand" ref="delivery_time"></cPicker>
+			</view>
+		</view>
+		<view class="item choice_porduct" @click="addOrderProduct()">
+			<image class="img" :src="getImgUrl('static/image/order/choice.png')"></image>
+			<text class="title">选择产品</text>
+			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
+		</view>
+		<view class="product"  v-for="(item,index) in orderForm.orderProductList">
+			<view class="left">
+				<image class="left_img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>
+			</view> 
+			<view class="right">
+				<view class="grid">
+					<text class="info">品名：{{item.productName}}</text>
+					<text class="info">型号：{{item.type}}</text>
+				</view>
+				<view class="grid">
+					<text class="info" >尺寸：{{item.size}}</text>
+					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+				</view>
+				<view class="grid">
+					<text class="info">类别：{{item.productType}}</text>
+					<text class="info">颜色：{{item.color}}</text>				
+				</view>
+				<view class="grid">
+					<text class="info">材质：{{item.texture}}</text>			
+					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+				</view>
+				<view class="grid">
+					<text class="info">数量：{{item.number}}</text>	
+				</view>	
+			</view> 
+		</view>
+	</scroll-view>
+	<view class="footer">
+		<view class="btn"  @click="addOrderForm()">保存</view>	
 	</view>
-	<view class="item choice_porduct" @click="addOrderProduct()">
-		<image class="img" src="../../static/image/order/choice.png"></image>
-		<text class="title">选择产品</text>
-		<image class="add_product" src="../../static/image/add.png"></image>
-	</view>
-	<view class="product"  v-for="(item,index) in orderForm.orderProductList">
-		<view class="left">
-			<image class="left_img" src="../../static/image/茶几.png" mode=""></image>
-		</view> 
-		<view class="right">
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
-			</view>
-			<view class="grid">
-				<text class="info" >尺寸：{{item.size}}</text>
-				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">类别：{{item.productType}}</text>
-				<text class="info">颜色：{{item.color}}</text>				
-			</view>
-			<view class="grid">
-				<text class="info">材质：{{item.texture}}</text>			
-				<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-			</view>
-			<view class="grid">
-				<text class="info">数量：{{item.number}}</text>	
-			</view>	
-		</view> 
-	</view>
-	
-	<view class="btn"  @click="addOrderForm()">
-		<button>确认</button>
-	</view>	
-</view>
 </template>
 
 <script>
@@ -104,6 +107,7 @@ import {
 	picker
 } from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
+import useOrderStore from '@/store/modules/order.js'
 	
 	export default {
 		components: {
@@ -116,9 +120,15 @@ import {get,post} from "../../components/utils/request.js"
 				csListArrl:[{
 					
 				}],
-				orderForm:{}
+				orderForm:{
+					orderProductList:[]
+				}
 			}
 		},
+		setup() {
+		    const orderStore = useOrderStore();	
+		    return { orderStore }
+		 },
 		methods: {
 			//送货时间弹窗
 			toggle(val) {
@@ -146,19 +156,47 @@ import {get,post} from "../../components/utils/request.js"
 					}
 				})
 			},
-			addOrderProduct(){
-				let that = this
+			addOrderProduct(){			
+				let arrProduct = this.orderForm.orderProductList;
+				useOrderStore().addProduct(arrProduct);
 				uni.navigateTo({
-					url:'/pages/order/order_product?orderId='+that.orderForm.id
+					url:'/pages/order/order_product'
 				})
 			},
-			getList(){
+/* 			getList(){
+				console.log(JSON.stringify(this.orderForm))
 				post("order/selectOrderById",{"orderFormId":this.orderForm.id}).then(res =>{
+					console.log(JSON.stringify(res.data.orderProductList))
 					if(200 == res.code){
 						this.orderForm.orderProductList = res.data.orderProductList
 						uni.hideLoading(); 
 					}
 				})
+			}, */
+			getOrderProduct(){
+				//debugger;
+				let orderProductList = this.orderForm.orderProductList;//新增页面产品信息
+				let orderProducts = this.orderStore.orderProducts;//产品选择页面带过来的数据
+				alert(orderProductList.length)
+				if(orderProductList.length > 0){//页面的产品不是空的
+					for (var i = 0; i < orderProductList.length; i++) {
+						for (var j = 0; i < orderProducts.length; j++) {
+							alert(JSON.stringify(orderProductList[i]))
+							if(orderProductList[i].productId == orderProducts[j].id){
+								alert("==")
+							}else{
+								 this.orderForm.orderProductList.push(orderProductList[i])
+							}
+						}
+					}					
+				}else if(orderProductList.length == 0){//首次进入页面的产品是空的
+					this.orderForm.orderProductList = orderProducts;
+					console.log(JSON.stringify(this.orderForm.orderProductList))
+				}
+				
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		computed:{
@@ -184,26 +222,38 @@ import {get,post} from "../../components/utils/request.js"
 			}
 		},
 		onLoad() {
-			post("order/insertAddOrderForm").then(res =>{				
-				if(200 == res.code){
-					this.orderForm.id = res.data.id;
-					this.orderForm.orderNumber = res.data.orderNumber;
-					uni.hideLoading();
-				}
-			})
+			this.$nextTick(() => {
+				post("order/insertAddOrderForm").then(res =>{				
+					if(200 == res.code){						
+						this.orderForm.id = res.data.id;
+						this.orderForm.orderNumber = res.data.orderNumber;						
+					}
+				})
+			 });
+		},
+		onShow() {
+
+			
 		}
 	}
 </script>
 
 <style>
-.wrap{
-	position: relative;
-	width: 100%;
-	height: 100%;
+.head{
+	/* height: 5px;
+	width: 100%; */
 }
+.line{
+	position: fixed;
+	z-index: 9999;
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef4ff;
+}
+
 .item{
 	display: flex;	
-	padding: 20rpx 0;
+	padding: 10px 0 5px 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
@@ -215,30 +265,28 @@ import {get,post} from "../../components/utils/request.js"
 	height: 20px;	
 }
 .item .title{
-	padding: 0 20rpx;
-	font-size: 35rpx;
+	padding: 0 10px;
+	font-size: 15px;
 	color: #333;
 }
 .item input{
 	flex-grow: 1;
-	padding-right: 30rpx;
+	padding-right: 12px;
 	text-align: right;
 }
-.cusomer_name{
-	border-top: 5px solid #efeef4ff;
-}
+
 .cusomer_address{
 	border-bottom: 5px solid #efeef4ff;
 }
 .item .input-placeholder{
-	font-size: 35rpx;
+	font-size: 15px;
 	text-align: right;
 	color: #aaa;
 }
 .item .deliveryTime {
 	flex-grow: 1;
 	padding-right: 30rpx;
-	font-size: 35rpx;
+	font-size: 15px;
 	text-align: right;
 	color: #aaa;
 }
@@ -301,6 +349,7 @@ import {get,post} from "../../components/utils/request.js"
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
+	border-color: #38c1b9;
 }
 .gender .radio-group .radio1,.radio2{
 	position: relative !important;
@@ -328,7 +377,7 @@ import {get,post} from "../../components/utils/request.js"
 	height: 25px !important;
 	margin-right:0 !important;
 }
-.gender .radio-group .radio1 .wx-radio-input {
+/* .gender .radio-group .radio1 .wx-radio-input {
 	border-right: 0 !important;
 	border-top-left-radius: 8% !important;
 	border-bottom-left-radius:8% !important;
@@ -336,22 +385,31 @@ import {get,post} from "../../components/utils/request.js"
 .gender .radio-group .radio2  .wx-radio-input {	
 	border-top-right-radius: 8% !important;
 	border-bottom-right-radius:8% !important;
-}
+} */
 .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }
 
 
-
-.btn{
-	position: relative;
-	top: 100rpx;
-	width: 70%;
-	margin:0 auto;
+.footer{
+	height: 30px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #00a7e2ff;	
+	color: #daf2fbff;
+	/* position: fixed;
+	bottom: 0; */
+	width: 100%;
 }
-.btn button{
+.btn{	
+/* 	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
 	background-color: #02a5e6ff;
-	border: 0;
 	color: #f4f7ffff;
+	text-align: center; */
 }
 </style>

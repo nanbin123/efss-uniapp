@@ -1,14 +1,15 @@
 <template>
-	<view class="wrap">
+
 		<view class="head">
 			<view class="search">
 				<input class="search_input" v-model="searchVal" confirm-type="search" type="text"
 					placeholder="搜索品名或型号" />
 			</view>
 		</view>
+		
 		<view class="content" v-for="(item,index) in productList" :key="index">
 			<view class="left">
-				<image class="left_img" src="../../static/image/red_add.png"></image>
+				<image class="left_img" :src="getImgUrl('static/image/red_add.png')" ></image>
 				<view class="left_text">点击添加图片</view>
 			</view>
 			<view class="right">
@@ -43,9 +44,11 @@
 		</view>
 		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType"
 			v-if="productList.length > 0" />
+			
+			
 		<view class="bottom">
-			<view class="liebiao">
-				<uni-icons class="icon" custom-prefix="iconfont" type="icon-liebiao" size="35"></uni-icons>
+			<view class="liebiao">				
+				<i class="iconfont">&#xe608;</i>	
 				<view class="support-circle">
 					<text class="support-num">{{totalNumber}}</text>
 				</view>
@@ -56,10 +59,8 @@
 			<view class="confirm" @click="confirm()">
 				选好了
 			</view>
-
-
 		</view>
-	</view>
+
 </template>
 
 <script>
@@ -133,6 +134,9 @@
 						})
 					}
 				})
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onReachBottom() {
@@ -203,14 +207,7 @@
 </script>
 
 <style>
-	@import "@/static/iconfont.css";
-
-	.wrap {
-		width: 100%;
-		height: 100%;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
+	@import "@/static/icon/iconfont.css";
 
 	.head {
 		height: 85px;
@@ -252,6 +249,8 @@
 		border-bottom: 1px solid #cbcbcbff;
 		padding-bottom: 10rpx;
 		margin-bottom: 15rpx;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	.left {
@@ -337,12 +336,13 @@
 	.bottom .liebiao {
 		display: flex;
 		margin-left: 15px;
-		line-height: 52px;
+		line-height: 45px;
 		position: relative;
 	}
 
-	.bottom .liebiao .icon {
-		color: #02a5e6ff !important;
+	.bottom .liebiao .iconfont{
+		color: #02a5e6ff;
+		font-size: 35px;
 	}
 
 	.support-circle {

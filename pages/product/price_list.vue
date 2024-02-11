@@ -8,7 +8,7 @@
 	</view>
 	<view class="content"  v-for="(item,index) in productList" :key="index">
 		<view class="left">
-			<image class="left_img" src="../../static/image/red_add.png"></image>
+			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
 			<view class="left_text">点击添加图片</view>			
 		</view>
 		<view class="right"> 
@@ -55,7 +55,9 @@
 			}
 		},
 		methods: {
-
+			getImgUrl(image){
+			   return this.BASEURL+image;
+			}
 		},
 		onReachBottom() {
 			if(this.totalCount > this.productList.length){

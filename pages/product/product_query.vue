@@ -7,7 +7,7 @@
 	</view>
 		<view class="content"  v-for="(item,index) in productList" :key="index">
 		<view class="left">
-			<image class="left_img" src="../../static/image/red_add.png"></image>
+			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
 			<view class="left_text">点击添加图片</view>			
 		</view>
 		<view class="right"> 
@@ -68,7 +68,9 @@
 			}
 		},
 		methods: {
-			
+			getImgUrl(image){
+			   return this.BASEURL+image;
+			}
 		},
 		watch:{
 			searchVal(val){
@@ -135,7 +137,7 @@
 	color:'#606266';
 	background-color: #ffffff;
 	padding-left: 20px;	
-	font-size: 28rpx;
+	font-size: 18px;
 	margin-left:  20px; 
 	margin-right: 20px;
 }
@@ -144,8 +146,8 @@
 	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
 .left{
 	width: 20%;

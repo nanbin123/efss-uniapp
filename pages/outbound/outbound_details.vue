@@ -1,38 +1,38 @@
 <template>
 <view class="wrap">
 	<view class="item">
-		<image class="img" style="width: 19px;height: 20px;" src="../../static/image/outbound/order_number.png" mode=""></image>
+		<image class="img" style="width: 19px;height: 20px;" :src="getImgUrl('static/image/outbound/order_number.png')"></image>
 		<text class="title">订单编号:</text>	
 		<text class="content">{{outbound.orderNumber}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/cusomer_name.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
 		<text class="title">客户姓名:</text>	
 		<text class="content">{{outbound.customerName}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/customer_phone.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
 		<text class="title">电话:</text>	
 		<text class="content">{{outbound.phone}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/cusomer_address.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
 		<text class="title">地址:</text>	
 		<text class="content">{{outbound.address}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/outbound/sales_name.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/outbound/sales_name.png')"></image>
 		<text class="title">销售人姓名:</text>	
 		<text class="content">{{outbound.orderNickName}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/outbound/sales_telephone.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/outbound/sales_telephone.png')" ></image>
 		<text class="title">销售人电话:</text>	
 		<text class="content">{{outbound.orderPhonenumber}}</text>	
 	</view>	
 	<view class="products">
 		<view class="product-details">
-			<image class="img" src="../../static/image/outbound/product_details.png" mode=""></image>
+			<image class="img" :src="getImgUrl('static/image/outbound/product_details.png')"></image>
 			<text class="title">产品明细</text>
 		</view>
 		<view class="product-list" v-for="(item,index) in outbound.outboundProductList">
@@ -124,6 +124,9 @@
 						uni.hideLoading();
 					}
 				})
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onLoad(option) {

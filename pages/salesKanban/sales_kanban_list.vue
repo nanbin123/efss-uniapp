@@ -8,7 +8,7 @@
 						<view class="bar-item-text">
 							{{titleText}}
 						</view>
-						<image src="../../static/image/product/arrow.png"></image>
+						<image :src="getImgUrl('static/image/product/arrow.png')"></image>
 					</view>
 					<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">
 						<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
@@ -28,7 +28,7 @@
 						<text>{{nowTitle}}</text>
 					</view>
 					<view  class="title">
-						<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
+						<image class="increase" :src="getImgUrl('static/image/salesKanban/sales_increase.png')"></image>	
 						<text>增&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;幅</text>
 					</view>
 				</view>
@@ -47,7 +47,7 @@
 						<text>{{item.nowData}}</text>
 					</view>
 					<view  class="title">
-						<image class="increase" src="../../static/image/salesKanban/sales_increase.png"></image>	
+						<image class="increase" :src="getImgUrl('static/image/salesKanban/sales_increase.png')"></image>	
 						<text>{{increase(item)}}</text>
 					</view>
 				</view>
@@ -154,6 +154,9 @@
 						 this.status = "noMore"
 					 }
 				}) 
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		computed:{
@@ -163,7 +166,7 @@
 				};
 			}
 		},
-		onReachBottom() {			
+		onReachBottom() {
 			if(this.totalCount > this.salesPerformanceList.length){				
 				this.pageNum++;				
 				post("statistics/selectListSalesPerformance",{"pageNum":this.pageNum,"queryScope":this.titleValue}).then(res =>{

@@ -4,14 +4,14 @@
 		<view class="head"></view>
 	</view>	
 	<view class="item">
-		<image style="margin-top: 1px;margin-right: -2px;" class="img" src="../../static/image/warehousing/warehousing-number.png" mode=""></image>
+		<image style="margin-top: 1px;margin-right: -2px;" class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')" ></image>
 		<text class="title">入库单号:</text>			
 		<uni-forms-item>
 			<input v-model="warehousingEntry.warehousingNumber" type="text" disabled="disabled"/>
 		</uni-forms-item>
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/record_date.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')"></image>
 		<text class="title">记录日期:</text>	
 		<text class="content"></text>
 		<uni-forms-item>
@@ -19,27 +19,27 @@
 		</uni-forms-item>
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/supplier.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
 		<text class="title">供应商:</text>
 		<uni-forms-item>
 			<input v-model="warehousingEntry.supplier" type="text" />
 		</uni-forms-item>
 	</view>	
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/warehousing-number.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 		<text class="title">备注 :</text>	
 		<uni-forms-item>
 			<input v-model="warehousingEntry.remark" type="text" />
 		</uni-forms-item>
 	</view>
 	<view class="item choice_porduct" @click="addWarehousingProduct()">
-		<image class="img" src="../../static/image/warehousing/choose_product.png"></image>
+		<image class="img"  :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
 		<text class="title">选择产品</text>
-		<image class="add_product" src="../../static/image/add.png"></image>
+		<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 	</view>
 	<view class="product"  v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
 		<view class="left">
-			<image class="left_img" src="../../static/image/茶几.png" mode=""></image>
+			<image class="left_img" :src="getImgUrl('static/image/茶几.png')"></image>
 		</view> 
 		<view class="right">
 			<view class="grid">
@@ -85,7 +85,7 @@
 					url:'/pages/warehousing/warehousing_product?warehousingEntryId='+that.warehousingEntry.id
 				})
 			},
-			getList(){				
+			getList(){
 				post("warehousing/selectWarehousingEntryById",{"id":this.warehousingEntry.id}).then(res =>{
 					if(200 == res.code){						
 						this.warehousingEntry.warehousingEntryProductList = res.data.warehousingEntryProductList
@@ -107,6 +107,9 @@
 						})
 					}
 				})
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onLoad() {			

@@ -1,12 +1,12 @@
 <template>
 <view class="wrap">
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/cusomer_name.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
 		<text class="title">客户姓名:</text>	
 		<input v-model="customer.customerName" class="content" confirm-type="保存" type="text">
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/cusomer_gender.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')" ></image>
 		<text class="title">客户性别:</text>		
 		<view class="content">
 			<view  @tap="toggle('selector')" class="gender" :style="{color:gender=='请选择'?'#a0a0a0':'#333'}">{{customer.sex}}</view>
@@ -14,17 +14,17 @@
 		</view>
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/customer_phone.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')" ></image>
 		<text class="title">客户电话:</text>
 		<input  v-model="customer.phone" class="content" confirm-type="保存" type="number">
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/cusomer_address.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
 		<text class="title">客户地址:</text>
 		<input v-model="customer.address" class="content" confirm-type="保存" type="text">
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/degree.png"></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')" ></image>
 		<view class="title">意向程度:</view>
 		<view class="content starLen">
 			<image class="star" @tap='changeStar(1)' :src="customer.grade>0?fullStarUrl:nullStarUrl"></image>
@@ -33,25 +33,25 @@
 		</view>
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/quoted_price.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')" ></image>
 		<text class="title">报价:</text>
 		<input v-model="customer.quotation" class="content" confirm-type="保存" type="text">
 		<text class="input-group-addon">元</text>
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/cusomer/discount.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/discount.png')"></image>
 		<text class="title">折扣:</text>		
 		<input v-model="customer.discount" class="content" confirm-type="保存" type="text">
 		<text class="input-group-addon">%</text>
 	</view>
 	<view class="item remarks" @click="remarksAddOrEdit()">
-		<image class="img" src="../../static/image/cusomer/arrive.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')" ></image>
 		<text class="title">备注:</text>		
 		<text class="content"  style="width: 0; overflow: hidden;text-overflow: ellipsis;">{{customer.remark}}</text>
 	</view>
 	<view class="arrive">
 		<view class="arrive_title" @click="arriveAdd()">
-			<image class="img" src="../../static/image/cusomer/arrive.png" mode=""></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')" ></image>
 			<text class="arrive_title_left">到店记录:</text>
 			<text class="arrive_title_right">继续添加</text>	
 		</view>
@@ -67,7 +67,7 @@
 	</view>
 	<view class="arrive" style="border-bottom: 8px solid #efeef3ff;">
 		<view class="arrive_title" @click="trackAdd()">
-			<image class="img" src="../../static/image/cusomer/arrive.png" mode=""></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')"></image>
 			<text class="arrive_title_left">跟踪记录:</text>
 			<text class="arrive_title_right">继续添加</text>	
 		</view>
@@ -81,53 +81,47 @@
 			</view>
 		</view>
 	</view>
-
-	<!-- 1、touchstart事件：当手指触摸屏幕时候触发，即使已经有一个手指放在屏幕上也会触发。
-	2、touchmove事件：当手指在屏幕上滑动的时候连续地触发。在这个事件发生期间，调用preventDefault()事件可以阻止滚动。
-	3、touchend事件：当手指从屏幕上离开的时候触发。
-	4、touchcancel事件：当系统停止跟踪触摸的时候触发 -->
-	<view v-for="(item, index) in customer.customerProducts"	:key="index" :data-index="index" class="product-item" 
-		@touchstart="drawStart" @touchmove="drawMove" @touchend="drawEnd"  :style="'right:'+item.right+'px'">
-			<view class="product">
-				<view class="product_img">
-					<image src="../../static/image/茶几.png" mode=""></image>
-				</view>
-				<view class="product_content">
-					<view class="grid">
-						<view class="info">品名：{{item.productName}}</view>
-						<view class="info">型号：{{item.type}}</view>
-					</view>
-					<view class="grid">
-						<view class="info">类别：{{item.productType}}</view>
-						<view class="info">颜色：{{item.color}}</view>
-						
-					</view>
-					 <view class="grid">
-						 <view class="info">材质：{{item.texture}}</view>
-						 <view class="info">尺寸：{{item.size}}</view>					
-					</view>
-					<view class="grid">
-						<view class="info">产地：{{item.production}}</view>
-						<view class="info" style="color: #e96225ff;">零售价：<text style="color: #e96225ff;">￥{{item.retailPrice}}</text></view>
-					</view>
-					<view class="grid">
-						<view class="info"></view>
-						<view class="product_number">
-							<view class="reduce" @click="reduce(item)">-</view>
-							<view>
-								<input disabled="disabled" type="number" :value="item.number" @input="countVal">
-							</view>
-							<view class="add" @click="add(item)">+</view>
-						</view>
-					</view>
-				</view>	
+	
+	<view class="product" v-for="(item, index) in customer.customerProducts">
+		<view class="product_img">
+			<image :src="getImgUrl('static/image/茶几.png')" mode=""></image>
+		</view>
+		<view class="product_content">
+			<view class="grid">
+				<view class="info">品名：{{item.productName}}</view>
+				<view class="info">型号：{{item.type}}</view>
 			</view>
-			<view class="remove" @click="delData(item)">删除</view>					
+			<view class="grid">
+				<view class="info">类别：{{item.productType}}</view>
+				<view class="info">颜色：{{item.color}}</view>
+				
+			</view>
+			 <view class="grid">
+				 <view class="info">材质：{{item.texture}}</view>
+				 <view class="info">尺寸：{{item.size}}</view>					
+			</view>
+			<view class="grid">
+				<view class="info">产地：{{item.production}}</view>
+				<view class="info" style="color: #e96225ff;">零售价：<text style="color: #e96225ff;">￥{{item.retailPrice}}</text></view>
+			</view>
+			<view class="grid">
+				<view class="info"></view>
+				<view class="product_number">
+					<view class="reduce" @click="reduce(item)">-</view>
+					<view>
+						<input disabled="disabled" type="number" :value="item.number" @input="countVal">
+					</view>
+					<view class="add" @click="add(item)">+</view>
+				</view>
+			</view>
+		</view>	
 	</view>
+			<!-- <view class="remove" @click="delData(item)">删除</view>					
+	</view> -->
 
 	<view class="add_img_total">
 		<view class="add_img" @click="addCustomerProduct()">
-			<image src="../../static/image/red_add.png" mode=""></image>
+			<image :src="getImgUrl('static/image/red_add.png')"></image>
 			<view>点击添加产品</view>
 		</view>
 		<view class="total">
@@ -302,32 +296,6 @@
 				var touch = e.touches[0];
 				this.startX = touch.clientX;
 			},
-			//触摸滑动
-			drawMove(e) {
-				for (var index in this.customer.customerProducts) {
-					this.$set(this.customer.customerProducts[index],'right',0);
-				}
-				var touch = e.touches[0];
-				var item = this.customer.customerProducts[e.currentTarget.dataset.index];
-				var disX = this.startX - touch.clientX;
-				if (disX >= 20) {
-					if (disX > this.delBtnWidth) {
-						disX = this.delBtnWidth;
-					}
-					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',disX);
-				} else {
-					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',0);
-				}
-			},
-			//触摸滑动结束
-			drawEnd(e) {
-				var item = this.customer.customerProducts[e.currentTarget.dataset.index];
-				if (item.right >= this.delBtnWidth / 2) {
-					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',this.delBtnWidth);
-				} else {
-					this.$set(this.customer.customerProducts[e.currentTarget.dataset.index],'right',0);
-				}
-			},
 			//删除方法
 			delData(item){
 				let customerId=item.id;
@@ -488,6 +456,9 @@
 				uni.navigateTo({
 					url:'/pages/cusomer/customer_product?customerId='+this.customerId
 				})
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onLoad(option) {

@@ -6,7 +6,7 @@
 			<view class="bar-item-text">
 				{{titleText}}
 			</view>
-			<image src="../../static/image/product/arrow.png"></image>
+			<image :src="getImgUrl('static/image/product/arrow.png')"></image>
 		</view>
 		<view class="datestartAndEnd">
 			<view class="dateStart">				
@@ -36,7 +36,7 @@
 <!-- 产品列表 -->
 <view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
 	<view class="left">			
-		<image class="left-img" src="../../static/image/red_add.png"></image>
+		<image class="left-img" :src="getImgUrl('static/image/red_add.png')"></image>
 		<view class="left-text">点击添加图片</view>
 	</view>
 	<view class="right">
@@ -147,6 +147,9 @@ import {
 						 this.status = "noMore"
 					 }
 				})
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onReachBottom() {

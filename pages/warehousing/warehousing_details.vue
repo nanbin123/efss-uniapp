@@ -2,27 +2,27 @@
 <view class="wrap">
 	<view class="head"></view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/warehousing-number.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 		<text class="title">入库单号:</text>	
 		<text class="content">{{warehousingEntry.warehousingNumber}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/record_date.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')" mode=""></image>
 		<text class="title">记录日期:</text>	
 		<text class="content">{{warehousingEntry.recordDate}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/handled_by.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/handled_by.png')" mode=""></image>
 		<text class="title">操作人:</text>	
 		<text class="content">{{warehousingEntry.handledBy}}</text>	
 	</view>
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/supplier.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
 		<text class="title">供应商:</text>	
 		<text class="content">{{warehousingEntry.supplier}}</text>	
 	</view>		
 	<view class="item">
-		<image class="img" src="../../static/image/warehousing/warehousing-number.png" mode=""></image>
+		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 		<text class="title">备注 :</text>
 		<text class="content">{{warehousingEntry.remark}}</text>
 	</view>
@@ -30,7 +30,7 @@
 		
 	<view class="products">
 		<view class="product-details">
-			<image class="img" src="../../static/image/warehousing/choose_product.png" mode=""></image>
+			<image class="img" :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
 			<text class="title">产品明细</text>
 		</view>
 		
@@ -81,7 +81,9 @@
 			}
 		},
 		methods: {
-			
+			getImgUrl(image){
+			   return this.BASEURL+image;
+			}
 		},
 		onLoad(option) {
 				this.warehousingEntry.id = option.id				

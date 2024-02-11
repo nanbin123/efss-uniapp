@@ -8,6 +8,7 @@
 </template>
 
 <script>
+	import {get,post} from "../../components/utils/request.js"
 	export default {
 		data() {
 			return {
@@ -16,8 +17,16 @@
 			}
 		},
 		methods: {
-			login(){
+			watchRouter(){
+				 this.permissions =  ["*:*:*"]
+				 get("getInfo").then(res =>{
+					uni.hideLoading();					
+					uni.setStorageSync("permissions", res.permissions)
+				 })
 				
+			},
+			login(){
+				let  that = this;
 				if(!this.username || !this.password){
 					uni.showToast({
 						title:'请输入账号密码',
@@ -40,9 +49,11 @@
 					success(res) {
 						if(200 ==res.data.code){								
 							 uni.setStorageSync("token", res.data.token)
+							 that.watchRouter();
 							 uni.redirectTo({
 								url: '/pages/index/index'
 							 });
+							 
 						}else{
 							uni.showToast({
 								title: res.data.msg,

@@ -68,9 +68,7 @@ function uploadImg(url,files,formData){
 
 function request(url, data = {}, method = "GET",contentType) {
 	return new Promise(function(resolve, reject) {		
-		uni.showLoading({
-			title: "加载中"
-		});
+
 		uni.request({
 			url: BASEURL + url,
 			method: method,

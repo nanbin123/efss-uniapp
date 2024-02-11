@@ -1,35 +1,35 @@
 <template>
 	<view style="position: relative;height: 100%;width: 100%;">
 		<view class="item customer_name">			
-			<image class="img" src="../../static/image/cusomer/cusomer_name.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
 			<view class="title">客户姓名</view>
 			<view class="content">
 				<input  confirm-type="next" type="text"	placeholder-class="input-placeholder"  placeholder="请输入姓名"/>
 			</view>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/cusomer/customer_phone.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')" ></image>
 			<view class="title">客户电话</view>
 			<view class="content">
 				<input  confirm-type="next" type="text"	placeholder-class="input-placeholder"  placeholder="请输入电话"/>
 			</view>
 		</view>
 		<view class="item">					
-			<image class="img" src="../../static/image/cusomer/cusomer_address.png"></image>			
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>			
 			<view class="title">客户地址</view>		
 			<view class="content">
 				<input  confirm-type="next" type="text"	placeholder-class="input-placeholder"  placeholder="请输入地址"/>
 			</view>
 		</view>
 		<view class="item order_number">
-			<image class="img" src="../../static/image/cusomer/order_number.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/order_number.png')"></image>
 			<view class="title">订单号</view>		
 			<view class="content">
 				<input  confirm-type="next" type="text"	placeholder-class="input-placeholder"  placeholder="请输入订单号"/>
 			</view>
 		</view>
 		<view class="item">			
-			<image class="img" src="../../static/image/cusomer/start_time.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/start_time.png')"></image>
 			<view class="title">记录开始时间</view>
 			<view class="content">
 				<view  @tap="toggle('start_date')" class="time" :style="{color:startTime=='请选择'?'#a0a0a0':'#333'}">{{startTime}}</view>
@@ -37,7 +37,7 @@
 			</view>
 		</view>	
 		<view class="item">			
-			<image class="img" src="../../static/image/cusomer/end_time.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/end_time.png')"></image>
 			<view class="title">记录终止时间</view>
 			<view class="content">
 				<view  @tap="toggle('end_date')" class="time" :style="{color:endTime=='请选择'?'#a0a0a0':'#333'}">{{endTime}}</view>
@@ -45,7 +45,7 @@
 			</view>
 		</view>		
 		<view class="item">			
-			<image class="img" src="../../static/image/cusomer/degree.png"></image>
+			<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
 			<view class="title">意向程度</view>
 			<view class="content starLen">				
 				<image class='star'  @touchmove='changeStar(1)' @tap='changeStar(1)' mode="aspectFill" :src="score>0?fullStarUrl:nullStarUrl"/>	
@@ -81,9 +81,6 @@
 				score: 0
 			}
 		},
-		onLoad(){
-			//this.getDate()
-		},
 		methods: {
 			toggle(val) {
 				this.$refs[val].show();
@@ -106,6 +103,9 @@
 				this.startTime=timing
 				this.endTime=timing
 				
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		}
 	}

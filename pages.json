@@ -114,7 +114,7 @@
 		    }		    
 		} ,
 		{
-		    "path" : "pages/salesKanban/index",
+		    "path" : "pages/salesKanban/sales_kanban_list",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "销售看板",
@@ -147,7 +147,7 @@
 			}
 		},
         {
-            "path" : "pages/outbound/index",
+            "path" : "pages/outbound/outbound_list",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "销售出货",
@@ -183,7 +183,7 @@
 		    
 		},
 		{
-		    "path" : "pages/warehousing/index",
+		    "path" : "pages/warehousing/warehousing_list",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "入库单",
@@ -214,6 +214,15 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择产品",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/warehousing/warehousing_query",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "入库单筛选",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -277,13 +286,21 @@
 			}			
 		},
 		{
+			"path" : "pages/user/user_query",
+			"style" :                                                                                    
+			{
+				"navigationBarTitleText": "员工筛选",
+				"enablePullDownRefresh": false
+			}			
+		},
+		{
 			"path" : "pages/test/test",
 			"style" :                                                                                    
 			{
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}			
-		}
+		}       
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -143,8 +143,7 @@
 							if (size < 8388608) {						
 								uploadFiles("receipt/voucher",tempFilePaths).then(res =>{									
 									if(200 == res.code){
-										let that = this;
-										alert(JSON.stringify(res))
+										let that = this;										
 										that.receipt.voucherList = that.receipt.voucherList.concat(res.receiptVouchers);
 										uni.hideLoading();
 									}
