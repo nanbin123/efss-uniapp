@@ -116,8 +116,7 @@
 	width:100%;
 }
  .search_input{	
-	height: 45px;
-	/* background-image:url("../../static/image/search.png"); */
+	height: 45px;	
 	background-repeat: no-repeat;
 	background-position: 98%;	
 	border: 1px solid #f2f2f2;

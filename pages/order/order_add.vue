@@ -2,21 +2,18 @@
 	<view class="head">
 		<view class="line"></view>
 	</view>
-		
+
 	<scroll-view scroll-y style="height: calc(100vh - 80px);">
 		<view class="item">
-			<image class="img"  style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')"></image>
-			<text class="title">订&nbsp单&nbsp号&nbsp:</text>
-			<input v-model="orderForm.orderNumber" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
-		</view>
-		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
-			<text class="title">客户姓名:</text>
-			<input v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
+			<text class="title">客户姓名</text>
+			<text class="iconfont">&#xe639;</text>			
+			<input :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_gender.png')"></image>
-			<view class="title">客户性别:</view>
+			<view class="title">客户性别</view>
+			<text class="iconfont">&#xe639;</text>
 			<view class="gender">
 				<radio-group class="radio-group" @change="radioChange">
 				  <radio class="radio1" value = '1' color="#38c1b9"  :checked="orderForm.sex === '1'">
@@ -30,50 +27,52 @@
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
-			<text class="title">客户电话:</text>
-			<input  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
+			<text class="title">客户电话</text>
+			<text class="iconfont">&#xe639;</text>
+			<input  :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
 		</view>
 		<view class="item cusomer_address">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
-			<text class="title">客户地址:</text>
-			<input v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
-			<text class="title">订单总金额:</text>
-			<input disabled="disabled" v-model="productRetailPriceTotal">
+			<text class="title">客户地址</text>
+			<text class="iconfont">&#xe639;</text>
+			<input :focus='addressFocus'  @blur='addressFocus = false' v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
-			<text class="title">实收金额:</text>
-			<input v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+			<text class="title">实收金额</text>
+			<text class="iconfont">&#xe639;</text>
+			<input :focus='actualmoneyFocus'  @blur='actualmoneyFocus = false' v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/discount.png')"></image>
-			<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
-			<input disabled="disabled"  v-model="discount">
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')" ></image>
-			<text class="title">送货时间:</text>
+			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')"></image>
+			<text class="title">送货时间&nbsp:</text>
 			<view class="deliveryTime">
 				<view  @tap="toggle('delivery_time')">
-					<text  v-if='typeof orderForm.deliveryTime  == "undefined"' style="color: #a0a0a0;">请选择</text>
+					<text  v-if='typeof orderForm.deliveryTime  == "undefined"' style="color: #a0a0a0;">请选择时间</text>
 					<text  v-else style="color: #333;">{{orderForm.deliveryTime}}</text>
 				</view>
 				<cPicker mode='date' @confirm="deliveryHand" ref="delivery_time"></cPicker>
 			</view>
 		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
+			<text class="title">订单总金额&nbsp:</text>
+			<input disabled="disabled" v-model="productRetailPriceTotal">
+		</view>		
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/order/discount.png')"></image>
+			<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
+			<input disabled="disabled"  v-model="discount">
+		</view>
+		
 		<view class="item choice_porduct" @click="addOrderProduct()">
 			<image class="img" :src="getImgUrl('static/image/order/choice.png')"></image>
 			<text class="title">选择产品</text>
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
-		<view class="product"  v-for="(item,index) in orderForm.orderProductList">
-			<view class="left">
-				<image class="left_img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>
-			</view> 
-			<view class="right">
+		<view class="product"  v-for="(item,index) in orderForm.orderProductList">	
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+			<view class="product-content">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>
@@ -83,17 +82,20 @@
 					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
 				</view>
 				<view class="grid">
-					<text class="info">类别：{{item.productType}}</text>
-					<text class="info">颜色：{{item.color}}</text>				
+					<!-- <text class="info">类别：{{item.productType}}</text> -->
+					<text class="info">颜色：{{item.color}}</text>
+					<text class="info">材质：{{item.texture}}</text>		
 				</view>
-				<view class="grid">
-					<text class="info">材质：{{item.texture}}</text>			
+				<view class="grid">						
 					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-				</view>
-				<view class="grid">
 					<text class="info">数量：{{item.number}}</text>	
-				</view>	
-			</view> 
+				</view>
+	
+			</view>
+		
+			<view class="delete" @click="deleteProduct(item.productId)">
+				<i class="iconfont">&#xe612;</i>
+			</view>
 		</view>
 	</scroll-view>
 	<view class="footer">
@@ -109,140 +111,193 @@ import {
 import {get,post} from "../../components/utils/request.js"
 import useOrderStore from '@/store/modules/order.js'
 	
-	export default {
-		components: {
-			cPicker
-		},
-		data() {
-			return {
-				deliveryTime:'请选择',
-				//列表数据，可根据自己的业务获取
-				csListArrl:[{
-					
-				}],
-				orderForm:{
-					orderProductList:[]
-				}
-			}
-		},
-		setup() {
-		    const orderStore = useOrderStore();	
-		    return { orderStore }
-		 },
-		methods: {
-			//送货时间弹窗
-			toggle(val) {
-				this.$refs[val].show();
-			},	
-			deliveryHand(value) {
-				this.orderForm.deliveryTime = value.result							
-			},
-			//性别选择
-			radioChange(evt){
-				this.orderForm.sex = evt.detail.value;
-			},
-			//确认提交 订单
-			addOrderForm(){
-				let orderFormObj=JSON.parse(JSON.stringify(this.orderForm));
-				delete orderFormObj.orderProductList				
-				post("order/addUpdateOrder",orderFormObj).then(res =>{
-					if(200 == res.code){
-						uni.hideLoading();
-						uni.showToast({
-							title: '添加销售订单成功',
-							icon: 'none',
-							duration: 2000
-						})
-					}
-				})
-			},
-			addOrderProduct(){			
-				let arrProduct = this.orderForm.orderProductList;
-				useOrderStore().addProduct(arrProduct);
-				uni.navigateTo({
-					url:'/pages/order/order_product'
-				})
-			},
-/* 			getList(){
-				console.log(JSON.stringify(this.orderForm))
-				post("order/selectOrderById",{"orderFormId":this.orderForm.id}).then(res =>{
-					console.log(JSON.stringify(res.data.orderProductList))
-					if(200 == res.code){
-						this.orderForm.orderProductList = res.data.orderProductList
-						uni.hideLoading(); 
-					}
-				})
-			}, */
-			getOrderProduct(){
-				//debugger;
-				let orderProductList = this.orderForm.orderProductList;//新增页面产品信息
-				let orderProducts = this.orderStore.orderProducts;//产品选择页面带过来的数据
-				alert(orderProductList.length)
-				if(orderProductList.length > 0){//页面的产品不是空的
-					for (var i = 0; i < orderProductList.length; i++) {
-						for (var j = 0; i < orderProducts.length; j++) {
-							alert(JSON.stringify(orderProductList[i]))
-							if(orderProductList[i].productId == orderProducts[j].id){
-								alert("==")
-							}else{
-								 this.orderForm.orderProductList.push(orderProductList[i])
-							}
-						}
-					}					
-				}else if(orderProductList.length == 0){//首次进入页面的产品是空的
-					this.orderForm.orderProductList = orderProducts;
-					console.log(JSON.stringify(this.orderForm.orderProductList))
-				}
+export default {
+	components: {
+		cPicker
+	},
+	data() {
+		return {
+			deliveryTime:'请选择',
+			//列表数据，可根据自己的业务获取
+			csListArrl:[{
 				
+			}],
+			orderForm:{
+				orderProductList:[]
 			},
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			}
-		},
-		computed:{
-			productRetailPriceTotal(){
-				 let productRetailPriceTotal = 0;		  
-				 if(typeof(this.orderForm.orderProductList) !="undefined"){
-					for(let i= 0 ;i< this.orderForm.orderProductList.length; i++) {
-						productRetailPriceTotal += parseFloat(this.orderForm.orderProductList[i].retailPrice) * parseFloat(this.orderForm.orderProductList[i].number);
-					}
-				 }
-				 this.orderForm.totalAmount = productRetailPriceTotal
-				return productRetailPriceTotal;
-			},
-			discount(){				
-				if(this.orderForm.totalAmount == 0 || typeof this.orderForm.totalAmount == 'undefined'){
-					return 0
-				}
-				if(this.orderForm.actualmoney == 0 || typeof this.orderForm.actualmoney == 'undefined'){
-					return 0
-				}
-				 let discount = this.orderForm.actualmoney/this.orderForm.totalAmount;				 
-				return discount*100
-			}
-		},
-		onLoad() {
-			this.$nextTick(() => {
-				post("order/insertAddOrderForm").then(res =>{				
-					if(200 == res.code){						
-						this.orderForm.id = res.data.id;
-						this.orderForm.orderNumber = res.data.orderNumber;						
-					}
-				})
-			 });
-		},
-		onShow() {
-
-			
+			customerNameFocus:true,
+			phoneFocus:false,
+			addressFocus:false,
+			actualmoneyFocus:false
 		}
+	},
+	setup() {
+		const orderStore = useOrderStore();	
+		return { orderStore }
+	 },
+	methods: {
+		//移除指定产品
+		deleteProduct(productId){
+			let orderProductList = this.orderForm.orderProductList;
+			this.orderForm.orderProductList = orderProductList.filter(obj => obj.productId != productId);
+		},
+		//送货时间弹窗
+		toggle(val) {
+			this.$refs[val].show();
+		},	
+		deliveryHand(value) {
+			this.orderForm.deliveryTime = value.result							
+		},
+		//性别选择
+		radioChange(evt){
+			this.orderForm.sex = evt.detail.value;
+		},
+		// 校验电话号码
+		checkPhone() {			
+		  this.phoneFocus = false		 
+		  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
+		  this.phoneError = !reg.test(this.orderForm.phone);		  
+		  if (this.phoneError) {
+			uni.showToast({
+			  title: '请输入有效的电话号码',
+			  icon: 'none'
+			});
+		  }
+		},		
+		//确认提交订单
+		addOrderForm(){
+			if(!this.orderForm.customerName){
+				 this.$nextTick(() => {
+				       this.customerNameFocus = true
+				 })
+				uni.showToast({
+			        title: '客户姓名不能为空',
+			        icon: 'none'
+			    });
+				return
+			}
+			if(!this.orderForm.sex){
+				uni.showToast({
+					title: '请选择客户性别',
+					icon: 'none'
+				});
+				return
+			}			
+			if(!this.orderForm.phone){
+				 this.$nextTick(() => {
+				       this.phoneFocus = true
+				 })				
+				uni.showToast({
+			        title: '客户电话不能为空',
+			        icon: 'none'
+			    });
+				return;
+			}else if (this.phoneError) {
+				uni.showToast({
+				  title: '请输入有效的电话号码',
+				  icon: 'none'
+				});
+				return;
+		  }
+			if(!this.orderForm.address){
+				 this.$nextTick(() => {
+				       this.addressFocus = true
+				 })
+				uni.showToast({
+			        title: '客户地址不能为空',
+			        icon: 'none'
+			    });
+				return;
+			}
+			if(!this.orderForm.actualmoney){
+				 this.$nextTick(() => {
+				       this.actualmoneyFocus = true
+				 })
+				uni.showToast({
+			        title: '实收金额不能为空',
+			        icon: 'none'
+			    });
+				return
+			}
+
+			let orderForm=JSON.parse(JSON.stringify(this.orderForm));
+			let productInfo = orderForm.orderProductList.map(product =>{
+				return {productId:product.productId,number:product.number}
+			})
+			orderForm.orderProductList = productInfo;
+			post("order/insertOrderForm",JSON.stringify(orderForm),'application/json').then(res =>{
+				if(200 == res.code){
+					 this.orderForm.id= res.msg;
+					 uni.showToast({
+						title: '添加销售订单成功',
+						icon: 'none',
+						duration: 2000
+					 })
+				}
+			})
+		},
+		addOrderProduct(){			
+			let arrProduct = this.orderForm.orderProductList;
+			useOrderStore().addProduct(arrProduct);
+			uni.navigateTo({
+				url:'/pages/order/order_product'
+			})
+		},
+		getOrderProduct(){				
+/* 			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
+			let products = this.orderStore.products; // 产品选择页面带过来的数据			
+			for (let i = 0; i < products.length; i++) {
+				let foundMatch = false;
+				for (let j = 0; j < orderProductList.length; j++) {
+					if (orderProductList[j].productId === products[i].productId) {
+						orderProductList[j].number = products[i].number;
+						foundMatch = true;
+						break;
+					}
+				}
+				if (!foundMatch) {											
+					orderProductList.unshift(products[i]);						
+				}
+			} */
+			this.orderForm.orderProductList =  this.orderStore.products;
+		},
+		getImgUrl(image){
+		   return this.BASEURL+image;
+		}
+	},
+	computed:{
+		productRetailPriceTotal(){
+			 let productRetailPriceTotal = 0;		  
+			 if(typeof(this.orderForm.orderProductList) !="undefined"){
+				for(let i= 0 ;i< this.orderForm.orderProductList.length; i++) {
+					productRetailPriceTotal += parseFloat(this.orderForm.orderProductList[i].retailPrice) * parseFloat(this.orderForm.orderProductList[i].number);
+				}
+			 }
+			 this.orderForm.totalAmount = productRetailPriceTotal
+			return productRetailPriceTotal;
+		},
+		discount(){
+			if(this.orderForm.totalAmount == 0 || typeof this.orderForm.totalAmount == 'undefined'){
+				return 0
+			}
+			if(this.orderForm.actualmoney == 0 || typeof this.orderForm.actualmoney == 'undefined'){
+				return 0
+			}
+			 let discount = this.orderForm.actualmoney/this.orderForm.totalAmount;				 
+			return discount*100
+		}
+	},
+	onLoad() {
+
+	},
+	onShow() {
+		
 	}
+}
 </script>
 
 <style>
-.head{
-	/* height: 5px;
-	width: 100%; */
-}
+@import "../../static/icon/iconfont.css";
 .line{
 	position: fixed;
 	z-index: 9999;
@@ -265,14 +320,22 @@ import useOrderStore from '@/store/modules/order.js'
 	height: 20px;	
 }
 .item .title{
-	padding: 0 10px;
+	margin-left: 10px;
 	font-size: 15px;
 	color: #333;
+	white-space: nowrap;
+	text-rendering: optimizeLegibility;
+}
+.item .iconfont{
+	color: red;	
+	font-size: 12px;
+	margin-left: -5px;
 }
 .item input{
 	flex-grow: 1;
 	padding-right: 12px;
-	text-align: right;
+	text-align: right;	
+	text-rendering: optimizeLegibility;
 }
 
 .cusomer_address{
@@ -282,13 +345,18 @@ import useOrderStore from '@/store/modules/order.js'
 	font-size: 15px;
 	text-align: right;
 	color: #aaa;
+	text-rendering: optimizeLegibility;
 }
 .item .deliveryTime {
 	flex-grow: 1;
-	padding-right: 30rpx;
+	padding-right: 10px;
 	font-size: 15px;
 	text-align: right;
-	color: #aaa;
+	/* color: #aaa;	 */
+}
+.item .deliveryTime text{
+	white-space: nowrap;
+	text-rendering: optimizeLegibility;
 }
 .choice_porduct{
 	position: relative;
@@ -302,36 +370,47 @@ import useOrderStore from '@/store/modules/order.js'
 }
 /* 产品列表 */
 .product{
+	position: relative;
 	display: flex;
 	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
-.left{
-	width: 70px;
-	height: 70px;	
+
+.img {
+	width: 80px;
+	height: 80px;
 }
-.left_img {
-	width: 70px;
-	height: 70px;
-}
-.right{
-	width: 80%;
+.product-content{	
+	flex: 1;
 	margin-left: 5px;
 }
-.grid {	
+.grid {
  	display: flex;	
-	line-height: 14px;
+	line-height: 20px;
 }
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 12px;
+   font-size: 14px;
    color: #333;
    white-space: nowrap;  
+   overflow: hidden; /* 超出部分隐藏 */
+   text-overflow: ellipsis; /* 显示省略号 */
+   text-rendering: optimizeLegibility;
 }
+.delete{
+	position: absolute;
+	right: 10px;
+}
+.delete .iconfont{
+	color: #02a5e6ff;	
+	font-size: 20px;
+}
+
+
 
 /* 客户性别 */
 .gender{
@@ -377,15 +456,7 @@ import useOrderStore from '@/store/modules/order.js'
 	height: 25px !important;
 	margin-right:0 !important;
 }
-/* .gender .radio-group .radio1 .wx-radio-input {
-	border-right: 0 !important;
-	border-top-left-radius: 8% !important;
-	border-bottom-left-radius:8% !important;
-}
-.gender .radio-group .radio2  .wx-radio-input {	
-	border-top-right-radius: 8% !important;
-	border-bottom-right-radius:8% !important;
-} */
+
 .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }

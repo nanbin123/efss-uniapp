@@ -88,9 +88,9 @@
 
 		 },		
 		methods: {
-			transformNumber(item){				
+			transformNumber(item){
 				 let products = this.orderStore.products;				 
-				 let filterProduct = products.filter(product => product.productId == item.id)
+				 let filterProduct = products.filter(product => product.productId == item.productId)
 				 if(filterProduct.length == 0){
 					 item.number = 0;
 				 }else {
@@ -102,7 +102,7 @@
 				post("order/selectListOrderProduct", {
 					"pageNum": this.pageNum}).then(res => {
 					let that = this;							
-					if (res.code == 200) {						
+					if (res.code == 200) {
 						this.productList =res.rows;						
 						this.totalCount = res.total;
 						uni.hideLoading();					
@@ -113,9 +113,9 @@
 				})
 			},
 			reduce(item) {
-				if (item.number <= 1) {
+				if (item.number <= 0) {
 					uni.showToast({
-						title: '数值不能小于1',
+						title: '数值不能小于0',
 						icon: "none"
 					})
 					return;
@@ -133,7 +133,7 @@
 				var productChooseArray = this.productList.filter(function(item){
 					return item.number>0;
 				});				
-				this.orderStore.addOrderProducts(productChooseArray);
+				this.orderStore.addProduct(productChooseArray);
 				let pages = getCurrentPages();
 				if(pages.length >1){					
 					uni.navigateBack({
