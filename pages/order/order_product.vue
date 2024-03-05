@@ -75,28 +75,25 @@
 				totalCount:0,				
 				searchVal: "",
 				totalMoney: 0,
-				totalNumber:0,
-				orderFormId:""
-				
+				totalNumber:0
 			}
 		},
 		setup() {
 		    const orderStore = useOrderStore();	
-		    return { orderStore }
+			const orderStoreProducts = this.orderStore.products;	
+		    return { orderStoreProducts }
 		 },
 		 computed:{
 
 		 },		
 		methods: {
 			transformNumber(item){
-				 let products = this.orderStore.products;				 
-				 let filterProduct = products.filter(product => product.productId == item.productId)
-				 if(filterProduct.length == 0){
-					 item.number = 0;
-				 }else {
-					let number = filterProduct.map(product => product.number)		
+				let products = this.orderStoreProducts;				 
+				let filterProduct = products.filter(product => product.productId == item.productId)				
+				let number = filterProduct.map(product => product.number)					
+				if(typeof number[0] != 'undefined') {
 					item.number = number[0];
-				 }				 
+				}
 			},
 			refreshData(){
 				post("order/selectListOrderProduct", {
@@ -135,7 +132,7 @@
 				});				
 				this.orderStore.addProduct(productChooseArray);
 				let pages = getCurrentPages();
-				if(pages.length >1){					
+				if(pages.length >1){
 					uni.navigateBack({
 						delta:1,
 						success:(event) =>{
@@ -143,27 +140,6 @@
 						}
 					})
 				}
-				/*let productArray = new Array();
-				for (var i = 0; i < productChooseArray.length; i++) {
-					let  product= new Object();
-					product.orderFormId = this.orderFormId;
-					product.productId = productChooseArray[i].id;
-					product.number = productChooseArray[i].number;					
-					productArray.push(product);
-				}
- 				post("order/insertOrderProduct", {"productJson":JSON.stringify(productArray)}).then(res => {
-					uni.hideLoading();
-					let pages = getCurrentPages();
-					if(pages.length >1){
-						let prevPage = pages[pages.length -2];
-						uni.navigateBack({
-							delta:1,
-							success:(event) =>{
-								prevPage.getList();
-							}
-						})
-					}
-				}) */
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;

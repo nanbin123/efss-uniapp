@@ -81,8 +81,7 @@
 					<text class="info" >尺寸：{{item.size}}</text>
 					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
 				</view>
-				<view class="grid">
-					<!-- <text class="info">类别：{{item.productType}}</text> -->
+				<view class="grid">					
 					<text class="info">颜色：{{item.color}}</text>
 					<text class="info">材质：{{item.texture}}</text>		
 				</view>
@@ -90,7 +89,6 @@
 					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
 					<text class="info">数量：{{item.number}}</text>	
 				</view>
-	
 			</view>
 		
 			<view class="delete" @click="deleteProduct(item.productId)">
@@ -153,7 +151,7 @@ export default {
 			this.orderForm.sex = evt.detail.value;
 		},
 		// 校验电话号码
-		checkPhone() {			
+		checkPhone() {
 		  this.phoneFocus = false		 
 		  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
 		  this.phoneError = !reg.test(this.orderForm.phone);		  
@@ -219,7 +217,6 @@ export default {
 			    });
 				return
 			}
-
 			let orderForm=JSON.parse(JSON.stringify(this.orderForm));
 			let productInfo = orderForm.orderProductList.map(product =>{
 				return {productId:product.productId,number:product.number}
@@ -243,8 +240,8 @@ export default {
 				url:'/pages/order/order_product'
 			})
 		},
-		getOrderProduct(){				
-/* 			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
+		getOrderProduct(){
+			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
 			let products = this.orderStore.products; // 产品选择页面带过来的数据			
 			for (let i = 0; i < products.length; i++) {
 				let foundMatch = false;
@@ -255,11 +252,10 @@ export default {
 						break;
 					}
 				}
-				if (!foundMatch) {											
+				if (!foundMatch) {
 					orderProductList.unshift(products[i]);						
 				}
-			} */
-			this.orderForm.orderProductList =  this.orderStore.products;
+			}
 		},
 		getImgUrl(image){
 		   return this.BASEURL+image;

@@ -12,7 +12,7 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
 			<text class="title">客户姓名:</text>
-			<input v-model="orderForm.customerName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请输入姓名' ">
+			<input :focus='customerNameFocus'  @blur='customerNameFocus = false' v-model="orderForm.customerName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请输入姓名' ">
 		</view>
 		<view class="item" style="padding-top: 5px; padding-bottom: 5px;">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_gender.png')"></image>
@@ -33,12 +33,12 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
 			<text class="title">客户电话:</text>
-			<input  v-model="orderForm.phone" :disabled="isEditable"  confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户电话' ">
+			<input :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.phone" :disabled="isEditable"  confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户电话' ">
 		</view>
 		<view class="item cusomer_address">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
 			<text class="title">客户地址:</text>
-			<input  v-model="orderForm.address" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请客户输入地址' ">
+			<input  :focus='addressFocus'  @blur='addressFocus = false'  v-model="orderForm.address" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请客户输入地址' ">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
@@ -48,7 +48,7 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')" ></image>
 			<text class="title">实收金额:</text>
-			<input  v-model="orderForm.actualmoney" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请输入收款金额'">
+			<input :focus='actualmoneyFocus'  @blur='actualmoneyFocus = false'  v-model="orderForm.actualmoney" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请输入收款金额'">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/discount.png')"></image>
@@ -70,13 +70,10 @@
 			<image class="img" :src="getImgUrl('static/image/order/choice.png')"></image>
 			<text class="title">选择产品</text>
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
-		</view>
-		
-		<view class="product"  v-for="(item,index) in orderForm.orderProductList">
-			<view class="left">
-				<image class="left_img" :src="getImgUrl('static/image/茶几.png')"  mode=""></image>
-			</view> 
-			<view class="right">
+		</view>		
+		<view class="product" v-for="(item,index) in orderForm.orderProductList" :key="item.id">
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"  mode=""></image>			
+			<view class="product-content">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>
@@ -85,18 +82,19 @@
 					<text class="info" >尺寸：{{item.size}}</text>
 					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
 				</view>
-				<view class="grid">
-					<text class="info">类别：{{item.productType}}</text>
-					<text class="info">颜色：{{item.color}}</text>				
+				<view class="grid">	
+					<text class="info">材质：{{item.texture}}</text>		
+					<text class="info">颜色：{{item.color}}</text>	
+								
 				</view>
 				<view class="grid">
-					<text class="info">材质：{{item.texture}}</text>			
+					<text class="info">数量：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.number}}</text></text>	
 					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-				</view>
-				<view class="grid">
-					<text class="info">数量：{{item.number}}</text>	
-				</view>	
-			</view> 
+				</view>				
+			</view>
+			<view class="remove" @click="deleteProduct(item.productId)" v-show="!isEditable">
+				<i class="iconfont">&#xe612;</i>
+			</view>
 		</view>
 	</scroll-view>
 	
@@ -120,24 +118,102 @@ import useOrderStore from '@/store/modules/order.js'
 		},
 		options: {styleIsolation: 'shared'},
 		data() {
-			return {				
+			return {
 				orderForm:{},
 				condition: false ,// 根据条件设置是否显示 placeholder 内容
-				isEditable: true
-			
+				isEditable: true,				
+				customerNameFocus:true,
+				phoneFocus:false,
+				addressFocus:false,
+				actualmoneyFocus:false
 			}
 		},
+		setup() {
+			const orderStore = useOrderStore();	
+			return { orderStore }
+		 },
 		methods: {
+			//移除指定产品
+			deleteProduct(productId){
+				let orderProductList = this.orderForm.orderProductList;
+				this.orderForm.orderProductList = orderProductList.filter(obj => obj.productId != productId);				
+			},
+			// 校验电话号码
+			checkPhone() {
+			  this.phoneFocus = false
+			  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
+			  this.phoneError = !reg.test(this.orderForm.phone);		  
+			  if (this.phoneError) {
+				uni.showToast({
+				  title: '请输入有效的电话号码',
+				  icon: 'none'
+				});
+			  }
+			},	
 			editOrderForm(){
 				if(this.isEditable == true){
 					this.isEditable = false					
-				}else if(this.isEditable == false){	
-					let order = this.orderForm
-					const orderProductList = order.orderProductList.map(item => ({
-					  id: item.id					  
-					}));
-					order.orderProductList = orderProductList;					
-					post("order/updateOrderFormById",JSON.stringify(this.orderForm),'application/json').then(res =>{
+				}else if(this.isEditable == false){
+					if(!this.orderForm.customerName){
+						 this.$nextTick(() => {
+							   this.customerNameFocus = true
+						 })
+						uni.showToast({
+							title: '客户姓名不能为空',
+							icon: 'none'
+						});
+						return
+					}
+					if(!this.orderForm.sex){
+						uni.showToast({
+							title: '请选择客户性别',
+							icon: 'none'
+						});
+						return
+					}			
+					if(!this.orderForm.phone){
+						 this.$nextTick(() => {
+							   this.phoneFocus = true
+						 })				
+						uni.showToast({
+							title: '客户电话不能为空',
+							icon: 'none'
+						});
+						return;
+					}else if (this.phoneError) {
+						uni.showToast({
+						  title: '请输入有效的电话号码',
+						  icon: 'none'
+						});
+						return;
+					}
+					if(!this.orderForm.address){
+						 this.$nextTick(() => {
+							   this.addressFocus = true
+						 })
+						uni.showToast({
+							title: '客户地址不能为空',
+							icon: 'none'
+						});
+						return;
+					}
+					if(!this.orderForm.actualmoney){
+						 this.$nextTick(() => {
+							   this.actualmoneyFocus = true
+						 })
+						uni.showToast({
+							title: '实收金额不能为空',
+							icon: 'none'
+						});
+						return
+					}
+					
+					let orderForm=JSON.parse(JSON.stringify(this.orderForm));		
+					let orderProductList = orderForm.orderProductList.map(item =>{
+						return {productId: item.productId,number:item.number}
+					});
+					orderForm.orderProductList = orderProductList;
+					post("order/updateOrderFormById",JSON.stringify(orderForm),'application/json').then(res =>{
 						if(200 == res.code){
 							this.isEditable = true
 							uni.showToast({
@@ -150,15 +226,24 @@ import useOrderStore from '@/store/modules/order.js'
 				}
 			},
 			deleteOrderForm(){
+				let that = this
 				if(this.isEditable == true){					 
 					uni.showModal({
 					  title: '提示',
 					  content: '是否删除该员工信息',
 					  success: (res)=> {						 
-					    if (res.confirm) {	
-							this.removeUserByIds()
-					    } else if (res.cancel) {					     
-					      console.log('用户点击取消');
+					    if (res.confirm) {
+							post("order/deleteOrderFormById",{"id":that.orderForm.id}).then(res =>{
+								if(200 == res.code){
+									this.isEditable = true;
+									that.orderForm ={};
+									uni.showToast({
+									  title: '删除销售订单成功',
+									  icon: 'none', 
+									  duration: 2000 
+									});
+								}
+							})
 					    }
 					  }
 					});
@@ -168,7 +253,6 @@ import useOrderStore from '@/store/modules/order.js'
 			},
 			radioChange(evt){
 				this.orderForm.sex = evt.detail.value; 
-		
 			},
 			toggle(val) {
 				if(!this.isEditable){
@@ -178,32 +262,39 @@ import useOrderStore from '@/store/modules/order.js'
 			deliveryHand(value) {
 				this.orderForm.deliveryTime = value.result
 			},
-			addOrderProduct(){				
+			addOrderProduct(){
 				let that = this
 				if(!this.isEditable){
 					let arrProduct = this.orderForm.orderProductList;					
-					useOrderStore().addProduct(arrProduct)		
+					this.orderStore.addProduct(arrProduct)
 					uni.navigateTo({
-						url:'/pages/order/order_product?orderId='+that.orderForm.id
+						url:'/pages/order/order_product'
 					})
 				}
-				
-
 			},
-			getList(){
-				post("order/selectOrderById",{"orderFormId":this.orderId}).then(res =>{
-					if(200 == res.code){
-						this.orderForm = res.data
-						uni.hideLoading(); 
+			getOrderProduct(){
+				let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
+				let products = this.orderStore.products; // 产品选择页面带过来的数据			
+				for (let i = 0; i < products.length; i++) {
+					let foundMatch = false;
+					for (let j = 0; j < orderProductList.length; j++) {
+						if (orderProductList[j].productId === products[i].productId) {
+							orderProductList[j].number = products[i].number;
+							foundMatch = true;
+							break;
+						}
 					}
-				})
+					if (!foundMatch) {
+						orderProductList.unshift(products[i]);						
+					}
+				}
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 		computed:{
-			productRetailPriceTotal(){
+ 			productRetailPriceTotal(){
 				 let productRetailPriceTotal = 0;		  
 				 if(typeof(this.orderForm.orderProductList) !="undefined"){
 					for(let i= 0 ;i< this.orderForm.orderProductList.length; i++) {
@@ -212,7 +303,7 @@ import useOrderStore from '@/store/modules/order.js'
 				 }
 				 this.orderForm.totalAmount = productRetailPriceTotal
 				return productRetailPriceTotal;
-			},
+			} ,
 			discount(){
 				if(this.orderForm.totalAmount == 0  || typeof this.orderForm.totalAmount == 'undefined'){
 					return 0
@@ -224,12 +315,10 @@ import useOrderStore from '@/store/modules/order.js'
 				return discount*100
 			}
 		},
-		onLoad(option) {
-			this.orderId = option.id
-			post("order/selectOrderById",{"orderFormId":this.orderId}).then(res =>{				
+		onLoad(option) {			
+			post("order/selectOrderById",{"orderFormId":option.id}).then(res =>{				
 				if(200 == res.code){
-					this.orderForm = res.data
-					uni.hideLoading(); 
+					this.orderForm = res.data;
 				}
 			})
 		}	
@@ -237,7 +326,7 @@ import useOrderStore from '@/store/modules/order.js'
 </script>
 
 <style>
-
+@import "../../static/icon/iconfont.css";
 .head{
 	 height: 5px;
 	width: 100%;
@@ -302,36 +391,46 @@ import useOrderStore from '@/store/modules/order.js'
 }
 
 .product{
+	position: relative;
 	display: flex;
 	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
-.left{
-	width: 70px;
-	height: 70px;	
+.img{
+	width: 80px;
+	height: 80px;	
 }
-.left_img {
-	width: 70px;
-	height: 70px;
-}
-.right{
-	width: 80%;
+.product-content{
+	flex: 1;
 	margin-left: 5px;
 }
 .grid {	
- 	display: flex;	
-	line-height: 14px;
+ 	display: flex;
+ 	line-height: 20px;
 }
 .info {
-   width: 50%;
-   color: #030303ff;
-   font-size: 12px;
-   color: #333;
-   white-space: nowrap;  
+  width: 50%;
+  color: #030303ff;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;  
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
+.remove{
+	position: absolute;
+	right: 10px;
+}
+.remove .iconfont{
+	color: #02a5e6ff;	
+	font-size: 20px;
+}
+
+
 .gender{
 	margin-left: auto;
 	padding-right: 15px;
