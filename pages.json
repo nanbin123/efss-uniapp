@@ -61,7 +61,7 @@
 		    
 		},
 		{
-		    "path" : "pages/cusomer/cusomer_detail",
+		    "path" : "pages/customer/customer_detail",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "客户详情",
@@ -70,7 +70,7 @@
 		    
 		},	
 		{
-		    "path" : "pages/cusomer/cusomer_list",
+		    "path" : "pages/customer/customer_list",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "客户列表",
@@ -79,7 +79,7 @@
 		    
 		},
 		{
-		    "path" : "pages/cusomer/customer_product",
+		    "path" : "pages/customer/customer_product",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择预购产品",
@@ -88,7 +88,7 @@
 		    
 		},	
 		{
-		    "path" : "pages/cusomer/index",
+		    "path" : "pages/customer/index",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "意向客户",
@@ -97,7 +97,7 @@
 		    
 		},	
 		{
-		    "path" : "pages/cusomer/cusomer_add",
+		    "path" : "pages/customer/customer_add",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "添加客户",

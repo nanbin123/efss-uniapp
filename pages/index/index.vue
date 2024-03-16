@@ -10,10 +10,10 @@
 	</view>		
 	<view class="workbench-title">常用应用</view>		
 	<view class="u-grid">
-		<view v-show="hasPermi(['cusomer:list'])" class="u-grid-item" @click="navTo('/pages/cusomer/index')">
+		<view v-show="hasPermi(['cusomer:list'])" class="u-grid-item" @click="navTo('/pages/customer/customer_list')">
 			<view class="u-grid-item-box">
 				<view class="home color01">
-					  <image :src="getImgUrl('static/image/index/query_cusomer.png')"></image>
+					<image :src="getImgUrl('static/image/index/query_cusomer.png')"></image>
 				</view>
 				<view class="grid-text">意向客户</view>
 			</view>

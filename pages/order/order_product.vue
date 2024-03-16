@@ -79,9 +79,9 @@
 			}
 		},
 		setup() {
-		    const orderStore = useOrderStore();	
-			const orderStoreProducts = this.orderStore.products;	
-		    return { orderStoreProducts }
+			const orderStore = useOrderStore();
+			const orderStoreProducts = orderStore.products;	
+			return { orderStoreProducts,orderStore }
 		 },
 		 computed:{
 
@@ -103,9 +103,6 @@
 						this.productList =res.rows;						
 						this.totalCount = res.total;
 						uni.hideLoading();					
-					}
-					if (this.totalCount == this.productList.length) {
-						this.status = "noMore"
 					}
 				})
 			},
@@ -175,8 +172,8 @@
 		onLoad(option) {
 			 this.refreshData();
 		},
-		onShow(option){
-			let products = this.orderStore.products;
+		onShow(option){			
+			let products = this.orderStoreProducts;			
 			//计算总条数
 			this.totalNumber = products.reduce((accumulator, currentObject) => {
 			   return accumulator + currentObject.number;

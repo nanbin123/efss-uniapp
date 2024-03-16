@@ -1,91 +1,101 @@
 <template>
-<view class="wrap">
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
-		<text class="title">客户姓名:</text>	
-		<input v-model="customer.customerName" class="content" confirm-type="保存" type="text">
+	<view style="height: 5px;">
+		<view class="head"></view>
 	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')" ></image>
-		<text class="title">客户性别:</text>		
-		<view class="content">
-			<view  @tap="toggle('selector')" class="gender" :style="{color:gender=='请选择'?'#a0a0a0':'#333'}">{{customer.sex}}</view>
-			<cPicker @confirm="hand" name="ll" mode="selector"  ref="selector" :selectList="selectList"></cPicker>
+	<scroll-view scroll-y style="height: calc(100vh - 80px);">
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
+			<view class="title">客户姓名</view>	
+			<text class="iconfont">&#xe639;</text>
+			<input  :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
 		</view>
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')" ></image>
-		<text class="title">客户电话:</text>
-		<input  v-model="customer.phone" class="content" confirm-type="保存" type="number">
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
-		<text class="title">客户地址:</text>
-		<input v-model="customer.address" class="content" confirm-type="保存" type="text">
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')" ></image>
-		<view class="title">意向程度:</view>
-		<view class="content starLen">
-			<image class="star" @tap='changeStar(1)' :src="customer.grade>0?fullStarUrl:nullStarUrl"></image>
-			<image class="star" @tap='changeStar(2)' :src="customer.grade>1?fullStarUrl:nullStarUrl"></image>
-			<image class="star" @tap='changeStar(3)' :src="customer.grade>2?fullStarUrl:nullStarUrl"></image>
-		</view>
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')" ></image>
-		<text class="title">报价:</text>
-		<input v-model="customer.quotation" class="content" confirm-type="保存" type="text">
-		<text class="input-group-addon">元</text>
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/discount.png')"></image>
-		<text class="title">折扣:</text>		
-		<input v-model="customer.discount" class="content" confirm-type="保存" type="text">
-		<text class="input-group-addon">%</text>
-	</view>
-	<view class="item remarks" @click="remarksAddOrEdit()">
-		<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')" ></image>
-		<text class="title">备注:</text>		
-		<text class="content"  style="width: 0; overflow: hidden;text-overflow: ellipsis;">{{customer.remark}}</text>
-	</view>
-	<view class="arrive">
-		<view class="arrive_title" @click="arriveAdd()">
-			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')" ></image>
-			<text class="arrive_title_left">到店记录:</text>
-			<text class="arrive_title_right">继续添加</text>	
-		</view>
-		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
-			<view class="arrive_content_line1" >
-				<text>{{item.arrivalTime}}</text>
-				<text>{{item.arrivalLength}}分钟</text>
-			</view>
-			<view class="arrive_content_line2">
-				{{item.arrivalRecord}}
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')"></image>
+			<view class="title">客户性别</view>
+			<text class="iconfont">&#xe639;</text>
+			<view class="gender">			
+				<radio-group class="radio-group" @change="radioChange">
+				  <radio class="radio1" value = '1' color="#38c1b9">
+					  <text class="radio-text" :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
+				  </radio>
+				  <radio class="radio2" value = '2' color="#38c1b9">
+					  <text class="radio-text" :style="{'color':customer.sex === '2'?'#fff':'#333'}">女</text>
+				  </radio>
+				</radio-group>
 			</view>
 		</view>
-	</view>
-	<view class="arrive" style="border-bottom: 8px solid #efeef3ff;">
-		<view class="arrive_title" @click="trackAdd()">
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
+			<view class="title">客户电话</view>			
+			<input  v-model="customer.phone" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
+			<view class="title">客户地址</view>
+			<input  v-model="customer.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
+			<view class="title">意向程度</view>
+			<view class="starLen">
+				<image class="star" @tap='changeStar(1)' :src="customer.grade>0? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
+				<image class="star" @tap='changeStar(2)' :src="customer.grade>1? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
+				<image class="star" @tap='changeStar(3)' :src="customer.grade>2? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
+			</view>
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')"></image>
+			<text class="title">报价</text>
+			<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/remark.png')"></image>
+			<text class="title">备注</text>			
+			<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
+		</view>
+		<view class="item" @click="arriveAdd()">
 			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')"></image>
-			<text class="arrive_title_left">跟踪记录:</text>
-			<text class="arrive_title_right">继续添加</text>	
+			<text class="title">到店记录</text>
+			<text class="iconfont arriveAdd">&#xe6f3;</text>
 		</view>
+		
+		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
+			<view class="arrive_container">
+				<view class="arrive_content_line" >
+					<text class="arrive_content_info">到店时间：{{item.arrivalTime}}</text>
+					<text class="arrive_content_info">停留时间：{{item.arrivalLength}}分钟</text>
+				</view>
+				<view class="arrive_content_line">
+					<text class="arrive_content_info" style="width: 100%;">到店记录：{{item.arrivalRecord}}</text>					
+				</view>
+			</view>
+		</view>
+		
+		<view class="item" @click="trackAdd()">
+			<image class="img" :src="getImgUrl('static/image/cusomer/track.png')"></image>
+			<text class="title">跟踪记录</text>
+			<text class="iconfont arriveAdd">&#xe6f3;</text>
+		</view>
+			
+			
+<!-- 	<view class="arrive"> -->
+
+<!-- 	</view> -->
+	
+	<!-- <view class="arrive" style="border-bottom: 8px solid #efeef3ff;">	 -->	
 		<view  v-for="(item,index) in customer.listCustomerTailAfter" :id="item.id">
 			<view class="arrive_content_line1" >
 				<text>{{item.arrivalTime}}</text>
 				<text>{{item.arrivalLength}}分钟</text>
 			</view>
 			<view class="arrive_content_line2">
-				{{item.arrivalRecord}}
+				<text>{{item.arrivalRecord}}</text>
 			</view>
 		</view>
-	</view>
+	<!-- </view> -->
 	
-	<view class="product" v-for="(item, index) in customer.customerProducts">
-		<view class="product_img">
-			<image :src="getImgUrl('static/image/茶几.png')" mode=""></image>
-		</view>
+	<view class="product" v-for="(item, index) in customer.customerProducts">		
+		<image  class="product_img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>
 		<view class="product_content">
 			<view class="grid">
 				<view class="info">品名：{{item.productName}}</view>
@@ -121,18 +131,18 @@
 
 	<view class="add_img_total">
 		<view class="add_img" @click="addCustomerProduct()">
-			<image :src="getImgUrl('static/image/red_add.png')"></image>
-			<view>点击添加产品</view>
+			<image :src="getImgUrl('static/image/red_add.png')"></image>			
 		</view>
 		<view class="total">
 			合计:{{productRetailPriceTotal}}
 		</view>
 	</view>
-<!-- 		<view class="foot">
+</scroll-view>
+<!-- 	<view class="foot">
 			<view class="track">跟踪</view>
 			<view class="order">下单</view>
 		</view> -->
-</view>
+
 <!--到店时间弹窗-->
 <view>
 	<view :hidden="arrivalHidden" class="popup_content">
@@ -147,9 +157,10 @@
 		<view class="popup_item">
 		   <text class="popup_item_title">停留时间</text>
 		   <view class="popup_item_text">
-			 <input v-model="arrivalFormData.arrivalLength" type="number"  />				 
+			 <input v-model="arrivalFormData.arrivalLength" type="number"/>
 		   </view>
-		   <text class="minute">分钟</text>
+		    <text class="minute">分钟</text>
+		 
 		</view>
 		<view class="arrival_record">
 			<textarea v-model="arrivalFormData.arrivalRecord" maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
@@ -191,24 +202,11 @@
 	<view class="popup_overlay" :hidden="trackHidden" @click="hideDiv()"></view>
 </view>
 
-<!--备注弹窗-->
-<view>
-	<view :hidden="remarkHidden" class="remark_content">
-		<textarea class="remark_text" maxlength="200" placeholder="请输入备注" placeholder-class="textarea-placeholder"></textarea>
-		<view class="arrival_foot">
-			<view class="cancel" @click="cancelRemark()">取消</view>
-			<view class="determine" @click="submitRemark()">确定</view>
-		</view>
-	</view>
-	<view class="popup_overlay" :hidden="remarkHidden" @click="hideRemark()"></view>
-</view>
 </template>
 
 <script>
 	import cPicker from "../../components/c-picker/c-picker.vue"
-	import {
-		picker
-	} from "../../components/mixins/picker.js"
+	import {picker} from "../../components/mixins/picker.js"
 	import {get,post} from "../../components/utils/request.js"
 	export default {
 		components: {
@@ -236,9 +234,7 @@
 				//到店记录弹窗
 				arrivalHidden:true,
 				//跟踪记录
-				trackHidden:true,
-				//备注
-				remarkHidden:true,
+				trackHidden:true,				
 				//客户数据
 				customer:{},
 				addOrEditArrival:'添加到店时间',
@@ -430,19 +426,6 @@
 					}
 				})
 			},
-			//备注
-			remarksAddOrEdit(){
-				this.remarkHidden = false;
-			},
-			cancelRemark(){
-				this.remarkHidden = true;
-			},
-			submitRemark(){
-				this.remarkHidden = true;
-			},
-			hideRemark(){
-				this.remarkHidden = true;
-			},
 			getList(){
 				post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
 					if(200 == res.code){
@@ -466,8 +449,7 @@
 			this.customerId = url.substr(url.indexOf('?') + 1).split("=")[1]; //截取?后面的内容作为字符串
 			post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
 				if(200 == res.code){
-					this.customer = res.data
-					uni.hideLoading();
+					this.customer = res.data;
 				}
 			}) 
 		},
@@ -486,89 +468,139 @@
 </script>
 
 <style>
-
-.wrap{
-	width: 100%;	
-	border-top: 8px solid #efeef3ff;
+@import "../../static/icon/iconfont.css";
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
 }
+
 .item{
-	display: flex;
+	display: flex;	
+	padding: 10px 0 5px 0;
+	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
-	padding: 20rpx 20rpx;
-	border-bottom: 1px solid #efeef3ff;
+	background-color: #fff;
 }
-.img{
-	width: 38rpx;
-	height: 38rpx;	
+.item .img{
+	padding-left: 10px;
+	width: 20px;
+	height: 20px;	
 }
-
-.title{	
+.item .title{
+	font-size: 15px;
+	color: #333;
+	margin-left: 10px;
 	white-space: nowrap;
-	padding: 0 30rpx;
-	font-size: 35rpx;
+	text-rendering: optimizeLegibility;
+}
+.item .iconfont{
+	color: red;	
+	font-size: 12px;
+	margin-left: -5px;
+}
+.item input{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;
+	margin-left: 20px;
+	text-rendering: optimizeLegibility;
+	font-size: 15px;
 	color: #333;
 }
-.content{
-	font-size: 35rpx;
-	color: #333;	
+.item .arriveAdd{
+	color: #00a7e2ff;
 	flex-grow: 1;
-	text-align: right;	
-	white-space:nowrap;
+	padding-right: 12px;
+	text-align: right;
+	font-size: 20px;
 }
-.input-group-addon {
-   font-size: 35rpx;
-   color: #333;  
+.item .input-placeholder{
+	font-size: 15px;
+	text-align: right;
+	color: #aaa;
+	text-rendering: optimizeLegibility;
 }
 
 .starLen{
 	display: flex;
-	justify-content: space-around;
-}
-.input-placeholder{
-	font-size: 35rpx;
-	text-align: right;
-	color: #aaa;
-}
-.arrive{
-	border-bottom: 1px solid #efeef3ff;
+	margin-left: auto;
 }
 .star{
-	width: 50rpx;
-	height: 50rpx;
+	width: 17px;
+	height: 17px;
+	margin: 0 17px;
 }
-.arrive_title{
-	display: flex;
-	align-items: center;
-	padding: 20rpx 20rpx;
-	color: #acacacff;
 
+/* 客户性别 */
+.gender{
+	margin-left: auto;
+	padding-right: 15px;
 }
-.arrive_title_left{
-	padding: 0 30rpx;
-	font-size: 35rpx;	
+ /deep/ .gender .radio-group svg {
+	display: none  !important;
 }
-.arrive_title_right{
-	font-size: 30rpx;	
-	flex-grow: 1;
-	text-align: right;
+/deep/ .gender .uni-radio-input {
+	border-radius: 0 !important;
+	width: 50px !important;
+	height: 25px !important;
+	margin-right:0 !important;
+	border-color: #38c1b9;
 }
-.arrive_content_line1{
-	display: flex;
-	justify-content: space-between;
-	padding: 0 30rpx;
-	font-size: 35rpx;
+.gender .radio-group .radio1,.radio2{
+	position: relative !important;
+}
+/deep/.gender .radio-group .radio1 .uni-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+ /deep/ .gender .radio-group .radio2  .uni-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
+}
+.radio-text{
+	position: absolute;
+	left: 20px;
+	top: 2px;
+	font-size: 12px;	
+	line-height: 25px;	
+}
+/*适用于 微信小程序*/
+.gender .wx-radio-input {
+	border-radius: 0 !important;
+	width: 50px !important;
+	height: 25px !important;
+	margin-right:0 !important;
+}
+
+.gender .wx-radio-input.wx-radio-input-checked::before{
+ font-size:0; /* 对勾大小 */
+}
+
+.arrive_container{	
+	border-bottom: 2px solid #efeef3ff;
+	padding: 10px 10px 0 10px;
+	
+}
+.arrive_content_line{
+	font-size: 30px;
 	color: #333;
+	display: flex;
+	line-height: 14px;
+	padding-bottom: 10px;
 }
-.arrive_content_line2{
-	padding: 20rpx 30rpx;
-	font-size: 30rpx;
-	color: #acacacff;
+.arrive_content_info{
+	width: 50%;
+	color: #030303ff;
+	font-size: 15px; 
+	white-space: nowrap; /* 文字不换行 */
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
 
-.remarks{
-	min-width: 0;
-	border-bottom: 8px solid #efeef3ff;
-}
 .product-item {
     width: 100%;    
     position: relative;
@@ -626,9 +658,6 @@
 	width: 40%;
 	text-align: center;
 	margin-top: 5px;
-	/* position: absolute;
-	right: 20rpx;
-	bottom: 10rpx; */
 }
 .reduce{
 	padding: 0 25rpx;
@@ -653,28 +682,23 @@
 	justify-content: space-between;
 }
 .add_img {
-    border: 1px solid #CCCCCC;    
-    width: 150rpx;
-	height: 150rpx;
-    margin-top: 10rpx;
-    margin-left: 10rpx;
+   border: 1px solid #CCCCCC;    
+   width: 40px;
+   height: 40px;
+   text-align: center;
+   margin-top: 10px;
+   margin-left: 10px;
 }
 .add_img image {
-    width: 80rpx;
-    height: 80rpx;
-	margin-left: 35rpx;
-	margin-top: 15rpx;
+   width: 35px;
+   height: 35px;
+   margin-top: 3px; 
 	
 }
-.add_img view {   
-    color: #e96225ff;
-    font-size: 20rpx;
-    text-align: center;
-}
 .total{
-	padding-right: 30rpx;
-	padding-top: 20rpx;
-	font-size: 35rpx;
+	padding-right: 20px;
+	padding-top: 20px;
+	font-size: 20px;
 	color: #666666ff;
 }
 .foot {
@@ -724,102 +748,87 @@
 	 position: fixed;
 	 top: 50%;
 	 left: 50%;
-	 width: 500rpx;
-	 height: 550rpx;
-	 margin-left: -250rpx;
-	 margin-top: -275rpx;
+	 width: 350px;
+	 height: 300px;
+	 margin-left: -175px;
+	 margin-top: -150px;
 	 border-radius: 20rpx;
 	 background-color: white;
 	 z-index: 1002;
 	 overflow: auto;
  }
- /* 备注弹窗 */
- .remark_content{
- 	 position: fixed;
- 	 top: 50%;
- 	 left: 50%;
- 	 width: 500rpx;
- 	 height: 350rpx;
- 	 margin-left: -250rpx;
- 	 margin-top: -275rpx;
- 	 border-radius: 20rpx;
- 	 background-color: white;
- 	 z-index: 1002;
- 	 overflow: auto;
- }
+
  .popup_title {	 
-	 font-size: 35rpx;
-	 font-weight: 500;
+	 font-size: 18px;	 
 	 text-align: center;
-	 margin: 20rpx 0;	
+	 margin: 15px 0;
  }
 
  .popup_item {
 	 display: flex;	
-	 margin: 30rpx 30rpx;
+	 margin: 10px 15px;
  }
- .popup_item_title{	 
- 	padding-right: 10rpx;
+ .popup_item_title{
 	white-space: nowrap;
-	font-size: 30rpx;
+	font-size: 15px;
 	color: #070707ff;
  }
-.popup_item_text{	
+.popup_item_text{
 	border-bottom: 1px solid #f1f1f1ff;
-	flex-grow: 0.8;
-	text-align: right;	
+	flex-grow: 1;
+	text-align: center;
+	white-space: nowrap;
 }
 .popup_item_text input{
-	font-size: 30rpx;
+	font-size: 15px;
 	color: #070707ff;
-	margin-right: 10rpx;
 }
 .input-placeholder{
-	font-size: 28rpx;
+	font-size: 15px;
 	text-align: right;
 	color: #f1f1f1ff;	
-	margin-right: 10rpx;
+	margin-right: 8px;
 }
 .minute{
-	font-size: 30rpx;
+	font-size: 15px;
 	color: #070707ff;
 	white-space: nowrap;
 }
 .arrival_record{
-	margin: 0 30rpx;
-	padding:20rpx;
+	margin: 0 15px;
+	padding:10px;
 	border:1px solid #f1f1f1ff;
 	border-radius: 5px;
 }
 .remark_text{
-	width: 390rpx;
-	height: 190rpx;	
+	width: 350px;
+	height: 150px;	
 	margin: 0 auto;
-	margin-top: 32rpx;
+	margin-top: 10px;
 	border:1px solid #f1f1f1ff;
 	border-radius: 5px;
 	padding:20rpx;
 	
 }
 .arrival_record textarea{
-	 height: 150rpx;
-	 width: 400rpx;
+	 height: 100px;
+	 width: 300px;
 }
 .textarea-placeholder{
-	font-size: 28rpx;
+	font-size: 15px;
 	text-align: left;
 	color: #aaa;	
 }
 
 .arrival_foot {
-	width: 500rpx;
+	width: 350px;
 	position: absolute;
 	bottom: 0;
 	left: 0;
-    height: 60rpx;
-	line-height: 60rpx;
+    height: 40px;
+	line-height: 40px;
 	color: #070707ff;
-	font-size: 30rpx;
+	font-size: 15px;
 	display: flex;
     border-top: 1px solid #f1f1f1ff;
 }

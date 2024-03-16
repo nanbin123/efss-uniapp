@@ -1,8 +1,8 @@
 <template>
-<view class="wrap">	
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>	
+	
 	<view class="item">
 		<image style="margin-top: 1px;margin-right: -2px;" class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')" ></image>
 		<text class="title">入库单号:</text>			
@@ -67,7 +67,7 @@
 	<view class="btn" @click="addOrderForm()">
 		<button>保存</button>
 	</view>
-</view>
+
 </template>
 <script>
 	import {get,post} from "../../components/utils/request.js"
@@ -124,9 +124,6 @@
 </script>
 
 <style>
-.wrap{
-	width: 100%;	
-}
 .head{
 	height: 5px;
 	width: 100%;

@@ -1,8 +1,8 @@
 <template>
 
-	<view class="head">
-		<view class="line"></view>
-	</view>
+	<view style="height: 5px;">
+		<view class="head"></view>
+	</view>	
 	<scroll-view scroll-y style="height: calc(100vh - 90px);">
 		<view class="item">
 			<image class="img"  style="width: 19px;height: 20px;"  :src="getImgUrl('static/image/order/order_number.png')" ></image>
@@ -106,11 +106,9 @@
 </template>
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
-import {
-	picker
-} from "../../components/mixins/picker.js"
+import {picker} from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
-import useOrderStore from '@/store/modules/order.js' 
+/* import useOrderStore from '@/store/modules/order.js' */
 
 	export default {
 		components: {
@@ -129,8 +127,8 @@ import useOrderStore from '@/store/modules/order.js'
 			}
 		},
 		setup() {
-			const orderStore = useOrderStore();	
-			return { orderStore }
+		/* 	const orderStore = useOrderStore();	
+			return { orderStore } */
 		 },
 		methods: {
 			//移除指定产品
@@ -327,17 +325,15 @@ import useOrderStore from '@/store/modules/order.js'
 
 <style>
 @import "../../static/icon/iconfont.css";
+
 .head{
-	 height: 5px;
-	width: 100%;
-}
-.line{
-	position: fixed;
-	z-index: 9999;
 	height: 5px;
 	width: 100%;
-	background-color:  #efeef4ff;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
 }
+
 
 
 .item{

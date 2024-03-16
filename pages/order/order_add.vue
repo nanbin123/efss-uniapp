@@ -1,7 +1,7 @@
 <template>
-	<view class="head">
-		<view class="line"></view>
-	</view>
+	<view style="height: 5px;">
+		<view class="head"></view>
+	</view>	
 
 	<scroll-view scroll-y style="height: calc(100vh - 80px);">
 		<view class="item">
@@ -103,9 +103,7 @@
 
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
-import {
-	picker
-} from "../../components/mixins/picker.js"
+import {picker} from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
 import useOrderStore from '@/store/modules/order.js'
 	
@@ -240,7 +238,7 @@ export default {
 				url:'/pages/order/order_product'
 			})
 		},
-		getOrderProduct(){
+		getOrderProduct(){			
 			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
 			let products = this.orderStore.products; // 产品选择页面带过来的数据			
 			for (let i = 0; i < products.length; i++) {
@@ -294,12 +292,13 @@ export default {
 
 <style>
 @import "../../static/icon/iconfont.css";
-.line{
-	position: fixed;
-	z-index: 9999;
+
+.head{
 	height: 5px;
 	width: 100%;
-	background-color:  #efeef4ff;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
 }
 
 .item{
@@ -365,8 +364,7 @@ export default {
 	right: 20px;
 }
 /* 产品列表 */
-.product{
-	position: relative;
+.product{	
 	display: flex;
 	align-items: center;
 	background-color: #fff;
@@ -375,7 +373,7 @@ export default {
 	margin-bottom: 5px;
 }
 
-.img {
+.product .img {
 	width: 80px;
 	height: 80px;
 }

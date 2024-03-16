@@ -1,5 +1,4 @@
-<template>	
-
+<template>
 		<view class="head">
 			<view class="search">
 				 <view class="same_search">
@@ -69,8 +68,7 @@
 				if(this.totalCount > this.orderList.length){
 					this.pageNum++;				
 					post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{							
-						 this.orderList = this.orderList.concat(res.rows)
-						 uni.hideLoading();
+						 this.orderList = this.orderList.concat(res.rows)					
 					})
 				}else if(this.totalCount == this.orderList.length){ 
 					 uni.showToast({
