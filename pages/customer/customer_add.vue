@@ -1,7 +1,7 @@
 <template>
 	<view style="height: 5px;">
 		<view class="head"></view>
-	</view>	
+	</view>
 	<scroll-view scroll-y style="height: calc(100vh - 80px);">
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
@@ -147,13 +147,6 @@
 						})
 					}
 				})
-				/*delete customerObj.customerProducts
-				post("customer/addUpdateCustomer",customerObj).then(res =>{
- 					if(200 == res.code){
-						uni.hideLoading();
-						
-					}
-				}) */
 			},
 			getCustomerProduct(){
 				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
@@ -172,7 +165,7 @@
 					}
 				}
 			},
-			addCustomerProduct(){				
+			addCustomerProduct(){
 				let arrProduct = this.customer.customerProducts;
 				this.customerStore.addProduct(arrProduct);
 				uni.navigateTo({
@@ -221,7 +214,7 @@
 
 .item{
 	display: flex;	
-	padding: 10px 0 5px 0;
+	padding: 8px 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;

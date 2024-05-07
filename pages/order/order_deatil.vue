@@ -72,7 +72,7 @@
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 		</view>		
 		<view class="product" v-for="(item,index) in orderForm.orderProductList" :key="item.id">
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"  mode=""></image>			
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 			<view class="product-content">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
@@ -88,8 +88,8 @@
 								
 				</view>
 				<view class="grid">
-					<text class="info">数量：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.number}}</text></text>	
-					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+					<text class="info" style="color: #e96225ff;">数量：<text >￥{{item.number}}</text></text>	
+					<text class="info" style="color: #e96225ff;">零售价：<text >￥{{item.retailPrice}}</text></text>
 				</view>				
 			</view>
 			<view class="remove" @click="deleteProduct(item.productId)" v-show="!isEditable">
@@ -108,7 +108,7 @@
 import cPicker from "../../components/c-picker/c-picker.vue"
 import {picker} from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
-/* import useOrderStore from '@/store/modules/order.js' */
+import useOrderStore from '@/store/modules/order.js'
 
 	export default {
 		components: {
@@ -127,8 +127,8 @@ import {get,post} from "../../components/utils/request.js"
 			}
 		},
 		setup() {
-		/* 	const orderStore = useOrderStore();	
-			return { orderStore } */
+			const orderStore = useOrderStore();	
+			return { orderStore }
 		 },
 		methods: {
 			//移除指定产品
@@ -262,7 +262,7 @@ import {get,post} from "../../components/utils/request.js"
 			},
 			addOrderProduct(){
 				let that = this
-				if(!this.isEditable){
+				if(this.isEditable == false){
 					let arrProduct = this.orderForm.orderProductList;					
 					this.orderStore.addProduct(arrProduct)
 					uni.navigateTo({
@@ -395,7 +395,7 @@ import {get,post} from "../../components/utils/request.js"
 	padding-bottom: 5px;
 	margin-bottom: 5px;
 }
-.img{
+.product .img{
 	width: 80px;
 	height: 80px;	
 }
@@ -442,7 +442,7 @@ import {get,post} from "../../components/utils/request.js"
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
-	border-color: #38c1b9; 
+	border-color: #38c1b9 !important; 
 }
 /deep/ .gender  .uni-radio-input-disabled{
 	background-color: transparent !important;

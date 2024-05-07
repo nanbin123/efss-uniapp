@@ -2,23 +2,25 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>
-	<scroll-view scroll-y style="height: calc(100vh - 80px);">
+	<scroll-view scroll-y style="height: calc(100vh - 88px);">
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
 			<view class="title">客户姓名</view>	
 			<text class="iconfont">&#xe639;</text>
-			<input  :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
+			<input :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户姓名'">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')"></image>
 			<view class="title">客户性别</view>
 			<text class="iconfont">&#xe639;</text>
-			<view class="gender">			
-				<radio-group class="radio-group" @change="radioChange">
-				  <radio class="radio1" value = '1' color="#38c1b9">
-					  <text class="radio-text" :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
+			<view class="gender">
+				<radio-group class="radio-group"  @change="radioChange">
+				  <radio class="radio1" color="#38c1b9"  :disabled="isEditable" :style="{
+					  'background-color':customer.sex === '1'?'#38c1b9':'#fff'}"
+				   value = '1' :checked="customer.sex === '1'">
+					  <text class="radio-text"  :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
 				  </radio>
-				  <radio class="radio2" value = '2' color="#38c1b9">
+				  <radio class="radio2"  :disabled="isEditable" color="#38c1b9" :style="{'background-color':customer.sex === '2'?'#38c1b9':'#fff'}" value = '2' :checked="customer.sex === '2'">
 					  <text class="radio-text" :style="{'color':customer.sex === '2'?'#fff':'#333'}">女</text>
 				  </radio>
 				</radio-group>
@@ -26,13 +28,13 @@
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
-			<view class="title">客户电话</view>			
-			<input  v-model="customer.phone" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
+			<view class="title">客户电话</view>
+			<input :focus='phoneFocus' @blur="checkPhone"  v-model="customer.phone" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
 			<view class="title">客户地址</view>
-			<input  v-model="customer.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
+			<input  v-model="customer.address" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
@@ -46,17 +48,17 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')"></image>
 			<text class="title">报价</text>
-			<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
+			<input v-model="customer.quotation" :disabled="isEditable" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/cusomer/remark.png')"></image>
 			<text class="title">备注</text>			
-			<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
+			<input v-model="customer.remark" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
 		</view>
-		<view class="item" @click="arriveAdd()">
+		<view class="item" @click="arriveAdd()" style="border-bottom: 0;">
 			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')"></image>
 			<text class="title">到店记录</text>
-			<text class="iconfont arriveAdd">&#xe6f3;</text>
+			<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
 		</view>
 		
 		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
@@ -68,80 +70,72 @@
 				<view class="arrive_content_line">
 					<text class="arrive_content_info" style="width: 100%;">到店记录：{{item.arrivalRecord}}</text>					
 				</view>
+				<view class="removeArrive" @click="deleteCustomerArrival(item.id)" v-show="!isEditable">
+					<i class="iconfont">&#xe612;</i>
+				</view>
 			</view>
 		</view>
 		
-		<view class="item" @click="trackAdd()">
+		<view class="item" @click="trackAdd()" style="border-bottom: 0;">
 			<image class="img" :src="getImgUrl('static/image/cusomer/track.png')"></image>
 			<text class="title">跟踪记录</text>
-			<text class="iconfont arriveAdd">&#xe6f3;</text>
+			<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
 		</view>
-			
-			
-<!-- 	<view class="arrive"> -->
-
-<!-- 	</view> -->
-	
-	<!-- <view class="arrive" style="border-bottom: 8px solid #efeef3ff;">	 -->	
+		
 		<view  v-for="(item,index) in customer.listCustomerTailAfter" :id="item.id">
-			<view class="arrive_content_line1" >
-				<text>{{item.arrivalTime}}</text>
-				<text>{{item.arrivalLength}}分钟</text>
+			<view class="arrive_container">
+				<view class="arrive_content_line" >
+					<text  class="arrive_content_info">跟踪时间:{{item.arrivalTime}}</text>
+					<text  class="arrive_content_info">跟踪时长:{{item.arrivalLength}}分钟</text>
+				</view>
+				<view class="arrive_content_line">
+					<text class="arrive_content_info">跟踪记录:{{item.arrivalRecord}}</text>
+				</view>
+				<view class="removeFollowing" @click="deleteCustomerTailAfter(item.id)" v-show="!isEditable">
+					<i class="iconfont">&#xe612;</i>
+				</view>
 			</view>
-			<view class="arrive_content_line2">
-				<text>{{item.arrivalRecord}}</text>
-			</view>
+			
 		</view>
-	<!-- </view> -->
+	
+	<view class="item"  @click="addCustomerProduct()" style="border-bottom: 0;">
+		<image class="img" :src="getImgUrl('static/image/cusomer/customer_product.png')"></image>
+		<text class="title">预购产品</text>
+		<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
+	</view>
 	
 	<view class="product" v-for="(item, index) in customer.customerProducts">		
-		<image  class="product_img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>
-		<view class="product_content">
+		<image  class="product_img" :src="getImgUrl('static/image/茶几.png')"></image>
+		<view class="product-content">
 			<view class="grid">
 				<view class="info">品名：{{item.productName}}</view>
 				<view class="info">型号：{{item.type}}</view>
 			</view>
 			<view class="grid">
-				<view class="info">类别：{{item.productType}}</view>
-				<view class="info">颜色：{{item.color}}</view>
-				
+				 <view class="info">尺寸：{{item.size}}</view>
+				 <view class="info">产地：{{item.production}}</view>				
 			</view>
 			 <view class="grid">
-				 <view class="info">材质：{{item.texture}}</view>
-				 <view class="info">尺寸：{{item.size}}</view>					
+			    <view class="info">材质：{{item.texture}}</view>
+				<view class="info">颜色：{{item.color}}</view>				
 			</view>
 			<view class="grid">
-				<view class="info">产地：{{item.production}}</view>
+				<text class="info" style="color: #e96225ff;">数量：<text >￥{{item.number}}</text></text>	
 				<view class="info" style="color: #e96225ff;">零售价：<text style="color: #e96225ff;">￥{{item.retailPrice}}</text></view>
 			</view>
-			<view class="grid">
-				<view class="info"></view>
-				<view class="product_number">
-					<view class="reduce" @click="reduce(item)">-</view>
-					<view>
-						<input disabled="disabled" type="number" :value="item.number" @input="countVal">
-					</view>
-					<view class="add" @click="add(item)">+</view>
-				</view>
-			</view>
 		</view>	
+		<view class="remove" @click="deleteProduct(item.productId)" v-show="!isEditable">
+			<i class="iconfont">&#xe612;</i>
+		</view>
 	</view>
-			<!-- <view class="remove" @click="delData(item)">删除</view>					
-	</view> -->
 
-	<view class="add_img_total">
-		<view class="add_img" @click="addCustomerProduct()">
-			<image :src="getImgUrl('static/image/red_add.png')"></image>			
-		</view>
-		<view class="total">
-			合计:{{productRetailPriceTotal}}
-		</view>
-	</view>
 </scroll-view>
-<!-- 	<view class="foot">
-			<view class="track">跟踪</view>
-			<view class="order">下单</view>
-		</view> -->
+	<view class="bottom-bar">
+		  <text class="delete" @click="deleteCustomerForm()">{{ isEditable ? '删除' : '取消'  }}</text>		   
+		  <view class="transferOrder" @click="transferOrder()">转订单</view>
+		  <text class="edit"  @click="editCustomerForm()">{{ isEditable ? '编辑' : '保存' }}</text>
+	</view>
+
 
 <!--到店时间弹窗-->
 <view>
@@ -195,7 +189,7 @@
 			<textarea v-model="tailAfterFormData.arrivalRecord" maxlength="200" placeholder="请输入跟踪记录" placeholder-class="textarea-placeholder"></textarea>
 		</view>
 		<view class="arrival_foot">
-			<view class="cancel" @click="cancelTrack()">取消</view>
+			<view class="cancel" @click="cancelTrack()">取消</view>			
 			<view class="determine" @click="submitTrack()">确定</view>
 		</view>
 	</view>
@@ -208,6 +202,7 @@
 	import cPicker from "../../components/c-picker/c-picker.vue"
 	import {picker} from "../../components/mixins/picker.js"
 	import {get,post} from "../../components/utils/request.js"
+	import useCustomerStore from '@/store/modules/customer.js'
 	export default {
 		components: {
 			cPicker
@@ -217,26 +212,14 @@
 				format: true
 			})
 			return {
-				 total:1,
-				 selectList: [{
-				 		ll: "男",
-				 		value: 1
-				 	},
-				 	{
-				 		ll: "女",
-				 		value: 2
-				 	}
-				 ],	
-				fullStarUrl:'../../static/image/cusomer/star.png',
-				nullStarUrl:'../../static/image/cusomer/empty.png',				
-				//左滑默认宽度
-				delBtnWidth: 80,
+				isEditable: true,				
+				fullStarUrl:'static/image/cusomer/star.png',
+				nullStarUrl:'static/image/cusomer/empty.png',			
 				//到店记录弹窗
 				arrivalHidden:true,
 				//跟踪记录
 				trackHidden:true,				
-				//客户数据
-				customer:{},
+				customer:{customerProducts:[],listCustomerArrival:[],listCustomerTailAfter:[]},//客户数据
 				addOrEditArrival:'添加到店时间',
 				arrivalFormData:{
 					id:"",
@@ -252,13 +235,131 @@
 					arrivalTime:currentDate,
 					arrivalLength:"",
 					arrivalRecord:"",
-					arrivalType:"arrival"
+					arrivalType:"tailafter"
 				},
-				customerId:""//存放列表传来的意向客户id
+				customerId:"",//存放列表传来的意向客户id
+				customerNameFocus:true,
+				phoneFocus:false
 			}
 		},
+		setup() {
+			const customerStore = useCustomerStore();	
+			return { customerStore } 
+		 },
 		methods: {
-			 getDate() {				
+			// 校验电话号码
+			checkPhone() {
+			  this.phoneFocus = false
+			  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
+			  this.phoneError = !reg.test(this.customer.phone);		  
+			  if (this.phoneError) {
+				uni.showToast({
+				  title: '请输入有效的电话号码',
+				  icon: 'none'
+				});
+			  }
+			},	
+			//移除指定产品
+			deleteProduct(productId){
+				let customerProducts = this.customer.customerProducts;
+				this.customer.customerProducts = customerProducts.filter(obj => obj.productId != productId);				
+			},
+			//移除指定跟踪记录
+			deleteCustomerTailAfter(id){
+				let customerTailAfters = this.customer.listCustomerTailAfter;
+				this.customer.listCustomerTailAfter = customerTailAfters.filter(obj => obj.id != id);				
+			},
+			//移除指定到店记录
+			deleteCustomerArrival(id){
+				let customerarrivals = this.customer.listCustomerArrival;
+				this.customer.listCustomerArrival = customerarrivals.filter(obj => obj.id != id);				
+			},
+			editCustomerForm(){
+				if(this.isEditable == true){
+					this.isEditable = false					
+				}else if(this.isEditable == false){
+					if(!this.customer.customerName){
+						 this.$nextTick(() => {
+							   this.customerNameFocus = true
+						 })
+						uni.showToast({
+							title: '客户姓名不能为空',
+							icon: 'none'
+						});
+						return
+					}
+					if(!this.customer.sex){
+						uni.showToast({
+							title: '请选择客户性别',
+							icon: 'none'
+						});
+						return
+					}			
+					if(!this.customer.phone){
+						 this.$nextTick(() => {
+							   this.phoneFocus = true
+						 })				
+						uni.showToast({
+							title: '客户电话不能为空',
+							icon: 'none'
+						});
+						return;
+					}else if (this.phoneError) {
+						uni.showToast({
+						  title: '请输入有效的电话号码',
+						  icon: 'none'
+						});
+						return;
+					}
+					
+					let customerForm=JSON.parse(JSON.stringify(this.customer));		
+					let customerProductList = customerForm.customerProducts.map(item =>{
+						return {productId: item.productId,number:item.number}
+					});					
+					customerForm.customerProducts = customerProductList;					
+					post("customer/updateCustomerById",JSON.stringify(this.customer),'application/json').then(res =>{
+						if(200 == res.code){
+							this.isEditable = true
+							uni.showToast({
+							  title: '修改销售订单成功',
+							  icon: 'none', 
+							  duration: 2000 
+							});
+						}
+					})
+				}
+			},
+			//客户性别点击触发事件
+			radioChange(evt){
+				this.customer.sex = evt.detail.value; 
+			},
+			deleteCustomerForm(){
+				let that = this
+				if(this.isEditable == true){					 
+					uni.showModal({
+					  title: '提示',
+					  content: '是否删除客户吗？',
+					  success: (res)=> {
+					    if (res.confirm) {
+							post("customer/deleteCustomerById",{"id":that.customer.id}).then(res =>{
+								if(200 == res.code){
+									this.isEditable = true;
+									that.customer ={};
+									uni.showToast({
+									  title: '删除销售订单成功',
+									  icon: 'none', 
+									  duration: 2000 
+									});
+								}
+							})
+					    }
+					  }
+					});
+				}else if(this.isEditable == false){
+					this.isEditable = true
+				}
+			},
+			getDate() {
 				const date = new Date();
 				let year = date.getFullYear();
 				let month = date.getMonth() + 1;
@@ -267,15 +368,12 @@
 				day = day > 9 ? day : '0' + day;
 				return `${year}-${month}-${day}`;
 			},
-			//客户性别选择
+			//时间选择
 			toggle(val) {				
 				this.$refs[val].show();
 			},
 			tailAfterToggle(val) {				
 				this.$refs[val].show();
-			},
-			hand(value) {
-				this.gender = value.result							
 			},
 			arrivalTimeHand(value) {
 				this.arrivalFormData.arrivalTime = value.result							
@@ -285,121 +383,49 @@
 			},
 			//意向程度
 			changeStar(val){
-				this.customer.grade=val;
-			},
-			//开始触摸滑动
-			drawStart(e) {
-				var touch = e.touches[0];
-				this.startX = touch.clientX;
-			},
-			//删除方法
-			delData(item){
-				let customerId=item.id;
-				let that = this;
-				uni.showModal({
-					title: '提示',
-					content: "确认移除意向产品？",
-					success: function (res) {
-					if (res.confirm) {
-						post("customer/updateCustomerProductDelflag",{"id":customerId}).then(res =>{
-							if(200 == res.code){
-								that.customer.customerProducts = that.customer.customerProducts.filter((item) => {
-								          return !customerId.includes(item.id)
-								})								
-								uni.showToast({
-									title:'操作成功',
-									icon:"none"
-								})
-							}else{
-								uni.showToast({
-									title:'操作失败',
-									icon:"none"
-								})
-								uni.hideLoading();
-							}
-						})
-					} else if (res.cancel) {
-						console.log('用户点击取消');
-					}
-					}
-				});
-			},
-			reduce(item){
-				if(item.number<=1){
-					uni.showToast({						
-						title:'数值不能小于1',
-						icon:"none"
-					})
-					return;
+				if(this.isEditable == false){
+					this.customer.grade=val;
 				}
-				post("customer/updateCustomerProductNumberReduce",{"id":item.id}).then(res =>{
-					if(200 == res.code){
-						item.number = item.number - 1;
-						uni.hideLoading();
-					}else{
-						uni.showToast({
-							title:'操作失败',
-							icon:"none"
-						})						
-						uni.hideLoading();
-					}
-				})
-			},
-			add(item){				
-				post("customer/updateCustomerProductNumberAdd",{"id":item.id}).then(res =>{
-					if(200 == res.code){
-						item.number = item.number + 1;
-						uni.hideLoading();
-					}else{
-						uni.showToast({
-							title:'操作失败',
-							icon:"none"
-						})			
-						uni.hideLoading();
-					}
-				}) 
-			},
-			countVal(e){
-				if(this.total == 0){
-					this.total =1				
-				}			
 			},
 			//到店记录跟踪记录弹窗遮罩	
 			hideDiv(){
 				this.arrivalHidden = true;
 			},
+			guid() {
+			    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			        var r = Math.random() * 16 | 0,
+			            v = c == 'x' ? r : (r & 0x3 | 0x8);
+			        return v.toString(16);
+			    });
+			},
 			//提交到店记录
 			submitArrival(){
-				this.arrivalFormData.customerId = this.customer.id
-				post("customer/insertCustomerArrival",this.arrivalFormData).then(res =>{
-					if(200 == res.code){
-						for(let key in this.arrivalFormData){
-							this.arrivalFormData[key] = ''
-						}						
-						this.arrivalFormData['arrivalTime'] = this.getDate({
-							format: true
-						})
-						uni.hideLoading();
-						uni.showToast({
-							title: '添加到店记录成功',
-							icon: 'none',
-							duration: 2000
-						})
-						this.arrivalHidden = true;
-						this.getList()
-					}
-				})
+				let arrivalFormData=JSON.parse(JSON.stringify(this.arrivalFormData));	
+				arrivalFormData.customerId = this.customer.id;
+				arrivalFormData.id = this.guid();
+				this.customer.listCustomerArrival.unshift(arrivalFormData);
+				this.arrivalHidden = true;
 			},
 			//添加到店记录
 			arriveAdd(){
-				this.arrivalHidden = false;
+				if(this.isEditable == false){
+					this.arrivalHidden = false;	
+				}
 			},
 			cancelArrival(){
 				this.arrivalHidden = true;
 			},	
 			//添加跟踪记录
 			trackAdd(){
-				this.trackHidden = false;
+				if(this.isEditable == false){
+					this.trackHidden = false;					
+					let that = this;
+					Object.keys(this.tailAfterFormData).forEach(function(key){						
+						if(key!="arrivalTime" && key!="arrivalType"){
+							that.tailAfterFormData[key]=""
+						} 
+					})
+				}				
 			},
 			cancelTrack(){
 				this.trackHidden = true;
@@ -407,7 +433,10 @@
 			//提交跟踪记录 
 			submitTrack(){
 				this.tailAfterFormData.customerId = this.customer.id
-				post("customer/insertCustomerTailAfter",this.tailAfterFormData).then(res =>{
+				this.tailAfterFormData.id = this.guid();
+				this.customer.listCustomerTailAfter.unshift(this.tailAfterFormData);
+				this.trackHidden = true;
+/* 				post("customer/insertCustomerTailAfter",this.tailAfterFormData).then(res =>{
 					if(200 == res.code){
 						for(let key in this.tailAfterFormData){
 							this.tailAfterFormData[key] = ''
@@ -424,46 +453,68 @@
 						this.trackHidden = true;
 						this.getList()
 					}
-				})
+				}) */
 			},
-			getList(){
-				post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
-					if(200 == res.code){
-						this.customer = res.data
-						uni.hideLoading();
+			getCustomerProduct(){
+				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
+				let products = this.customerStore.products; // 产品选择页面带过来的数据			
+				for (let i = 0; i < products.length; i++) {
+					let foundMatch = false;
+					for (let j = 0; j < customerProducts.length; j++) {
+						if (customerProducts[j].productId === products[i].productId) {
+							customerProducts[j].number = products[i].number;
+							foundMatch = true;
+							break;
+						}
 					}
-				}) 
+					if (!foundMatch) {
+						customerProducts.unshift(products[i]);
+					}
+				}
 			},
 			addCustomerProduct(){
-				let that = this
-				uni.navigateTo({
-					url:'/pages/cusomer/customer_product?customerId='+this.customerId
-				})
+				if(this.isEditable == false){
+					let arrProduct = this.customer.customerProducts;
+					this.customerStore.addProduct(arrProduct);
+					uni.navigateTo({
+						url:'/pages/customer/customer_product'
+					})
+				}
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
+		},
+
+		watch: {
+			//到店记录弹窗
+			//arrivalHidden:true,
+			//跟踪记录
+			//trackHidden:true,	
+		  arrivalHidden(newVal, oldVal) {
+		    console.log('Count changed from ' + oldVal + ' to ' + newVal);		   
+		    if (this.trackHidden == true) {
+				let that = this;
+				Object.keys(this.arrivalFormData).forEach(function(key){						
+					if(key!="arrivalTime" && key!="arrivalType"){
+						that.arrivalFormData[key]=""
+					} 
+				})
+		    }
+		  }
 		},
 		onLoad(option) {
 			let url = location.href;
 			this.customerId = url.substr(url.indexOf('?') + 1).split("=")[1]; //截取?后面的内容作为字符串
 			post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
 				if(200 == res.code){
-					this.customer = res.data;
+					this.customer = res.data;				
 				}
 			}) 
 		},
 		computed:{
-			productRetailPriceTotal(){
-				 let productRetailPriceTotal = 0;		  
-				 if(typeof(this.customer.customerProducts) !="undefined"){
-					for(let i= 0 ;i< this.customer.customerProducts.length; i++) {
-						productRetailPriceTotal += this.customer.customerProducts[i].retailPrice;
-					}
-				 }
-				return productRetailPriceTotal;
-			}
-		}
+		
+		},
 	}
 </script>
 
@@ -479,7 +530,7 @@
 
 .item{
 	display: flex;	
-	padding: 10px 0 5px 0;
+	padding: 8px 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
@@ -539,27 +590,24 @@
 	margin-left: auto;
 	padding-right: 15px;
 }
+
  /deep/ .gender .radio-group svg {
 	display: none  !important;
 }
+
 /deep/ .gender .uni-radio-input {
 	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
-	border-color: #38c1b9;
+	border-color: #38c1b9 !important; 
+}
+/deep/ .gender  .uni-radio-input-disabled{
+	background-color: transparent !important;
+	
 }
 .gender .radio-group .radio1,.radio2{
 	position: relative !important;
-}
-/deep/.gender .radio-group .radio1 .uni-radio-input {	
-	border-right: 0 !important;
-	border-top-left-radius: 8% !important;
-	border-bottom-left-radius:8% !important;
-}
- /deep/ .gender .radio-group .radio2  .uni-radio-input {	
-	border-top-right-radius: 8% !important;
-	border-bottom-right-radius:8% !important;
 }
 .radio-text{
 	position: absolute;
@@ -569,18 +617,18 @@
 	line-height: 25px;	
 }
 /*适用于 微信小程序*/
-.gender .wx-radio-input {
-	border-radius: 0 !important;
+.gender .wx-radio-input {	
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
 }
-
 .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }
 
-.arrive_container{	
+
+.arrive_container{
+	position: relative;
 	border-bottom: 2px solid #efeef3ff;
 	padding: 10px 10px 0 10px;
 	
@@ -601,105 +649,63 @@
 	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
 
-.product-item {
-    width: 100%;    
-    position: relative;
-    margin: 0 auto;
-}
-.remove {
-    margin-left:-5%;
-    width: 80px;
-    height: 100%;
-    background-color: #dd544eff;
-    color: #FFFFFF;
-    position: absolute;
-    top: 0;
-    right: -80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-}
+
 .product{
-	display: flex;	
-    width: 100%;   
-    border-bottom: 1px solid #C0C0C0;
+	position: relative;
+	display: flex;
+	align-items: center;
+	background-color: #fff;
+	border-bottom: 1px solid #cbcbcbff;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
 .product_img{
-	width: 170rpx;
-	height: 170rpx;	
-	margin:10rpx 10rpx 15rpx 10rpx;
+	width: 80px;
+	height: 80px; 
 }
-.product_img image {
-	 width: 170rpx;
-	 height: 170rpx;	 
-}
-
-.product_content{
-	width: 100%;
-	margin-top: 6rpx;
+.product-content{
+	flex: 1;
+	margin-left: 5px;
 }
 .grid {	
-	font-size: 25rpx; 
-	display: flex;
-	
+ 	display: flex;
+ 	line-height: 20px;
 }
- .info{
-	width: 50%;
-	color: #acacacff;
-	white-space: nowrap;
+.info {
+  width: 50%;
+  color: #030303ff;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;  
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
-.product_number{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border: 1px solid #cdcdcdff;
-	border-radius: 5rpx;
-	width: 40%;
-	text-align: center;
-	margin-top: 5px;
+.remove{
+	position: absolute;
+	right: 10px;
 }
-.reduce{
-	padding: 0 25rpx;
-	height: 36rpx;
-	line-height: 30rpx;
-	border-right: 1px solid #cdcdcdff;
-	color: #010101ff;
-	font-weight: 500;
-}
-.add{
-	padding: 0 25rpx;
-	height: 36rpx;
-	line-height: 33rpx;
-	border-left: 1px solid #cdcdcdff;
-	color: #010101ff;
-}
-.product_number input{
-	font-size: 26rpx;	
-}
-.add_img_total{
-	display: flex;
-	justify-content: space-between;
-}
-.add_img {
-   border: 1px solid #CCCCCC;    
-   width: 40px;
-   height: 40px;
-   text-align: center;
-   margin-top: 10px;
-   margin-left: 10px;
-}
-.add_img image {
-   width: 35px;
-   height: 35px;
-   margin-top: 3px; 
-	
-}
-.total{
-	padding-right: 20px;
-	padding-top: 20px;
+.remove .iconfont{
+	color: #02a5e6ff;	
 	font-size: 20px;
-	color: #666666ff;
+}
+.removeFollowing{
+	position: absolute;
+	right: 12px;
+	top: 8px;
+}
+.removeFollowing .iconfont{
+	color: #02a5e6ff;	
+	font-size: 20px;
+}
+.removeArrive{
+	position: absolute;
+	right: 12px;
+	top: 8px;
+}
+.removeArrive .iconfont{
+	color: #02a5e6ff;	
+	font-size: 20px;
 }
 .foot {
 	position: absolute;
@@ -840,5 +846,43 @@
 .determine{	
 	text-align: center;
 	width: 50%;
+}
+
+
+
+.bottom-bar {  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 39px;
+  background-color: #fff;
+  border-top: 1px solid #cbcbcbff;
+  display: flex;
+  align-items: center; 
+   z-index: 999; /* 确保位于最顶层 */
+}
+
+.delete {
+  flex: 1;
+  height: 100%;
+  line-height: 39px;
+  color: #00a7e2ff;
+  margin-left: 10px;
+}
+.transferOrder{
+	flex: 1;
+	height: 100%;
+	line-height: 39px;
+	text-align:center;
+	color: #00a7e2ff;
+}
+.edit {
+	flex: 1;
+	height: 100%;
+	line-height: 39px;
+	text-align:right;
+	color: #00a7e2ff;
+	margin-right: 10px;
 }
 </style>
