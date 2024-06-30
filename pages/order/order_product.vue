@@ -9,11 +9,8 @@
 		</view>
 				
 		<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 155px);" @scrolltolower="onReachBottom">
-			<view class="container" v-for="(item,index) in productList" :key="index">
-				<view class="left">
-					<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
-					<view class="left_text">点击添加图片</view>
-				</view>
+			<view class="product" v-for="(item,index) in productList" :key="index">
+				<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 				<view class="right">
 					<view class="grid">
 						<text class="info">品名：{{item.productName}}</text>
@@ -31,17 +28,14 @@
 						<text class="info">材质：{{item.texture}}</text>
 						<text class="info">零售价：<text
 								style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-					</view>
-					<view class="grid">
-						<view class="info"></view>
-						<view class="product_number">
-							<view class="reduce" @click="reduce(item)">-</view>
-							<view :bind="transformNumber(item)">
-								<input disabled="disabled" type="number" v-model="item.number">
-							</view>
-							<view class="add" @click="add(item)">+</view>
+					</view>										
+					<view class="product_number">
+						<view class="reduce" @click="reduce(item)">-</view>
+						<view :bind="transformNumber(item)">
+							<input disabled="disabled" type="number" v-model="item.number">
 						</view>
-					</view>
+						<view class="add" @click="add(item)">+</view>
+					</view>					
 				</view>
 			</view>
 		</scroll-view>		
@@ -100,9 +94,8 @@
 					"pageNum": this.pageNum}).then(res => {
 					let that = this;							
 					if (res.code == 200) {
-						this.productList =res.rows;						
+						this.productList =res.rows;
 						this.totalCount = res.total;
-						uni.hideLoading();					
 					}
 				})
 			},
@@ -133,7 +126,7 @@
 					uni.navigateBack({
 						delta:1,
 						success:(event) =>{
-							pages[pages.length -2].getOrderProduct();
+							pages[pages.length -2].$vm.getOrderProduct();
 						}
 					})
 				}
@@ -187,7 +180,7 @@
 </script>
 
 <style>
-@import "../../static/icon/iconfont.css";
+/* @import "../../style/icon/iconfont.css"; */
 page{
   height: 100%
 }
@@ -210,7 +203,6 @@ page{
 }
  .search_input{	
 	height: 45px;
-	/* background-image:url("../../static/image/search.png"); */
 	background-repeat: no-repeat;
 	background-position: 98%;	
 	border: 1px solid #f2f2f2;
@@ -223,85 +215,77 @@ page{
 	margin:  0 20px; 
 }
 
-.container {
+.product {
+	position: relative;
 	display: flex;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 7px;
+	padding-bottom: 10rpx;
+	margin-bottom: 15rpx;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
-
-.left {
-	width: 20%;
-	height: 88px;
-	background-color: #f2f2f2ff;
-	text-align: center;
-}
-
-.left_text {
-	font-size: 10px;
-	padding: 2px;
-	text-align: center;
-	margin-top: 5px;
-	color: #a3a3a1ff;
-}
-
-.left_img {
-	width: 20px;
-	height: 20px;
-	margin-top: 15px;
+.img{
+	width: 80px;
+	height: 80px;	
 }
 
 .right {
-	width: 80%;
+	flex: 1;
 	margin-left: 5px;
 }
 
 .grid {
 	display: flex;
-	line-height: 14px;
+	line-height: 20px;
 }
 
-.info {
-	width: 50%;
+.grid .info {
 	color: #030303ff;
-	font-size: 13px;
-	white-space: nowrap;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	font-size: 14px;
+	color: #333;
+	white-space: nowrap;  
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 显示省略号 */
+	text-rendering: optimizeLegibility;
+}
+.grid :first-child{
+	width: 40%;
 }
 
 .product_number {
-	display: flex;
-	justify-content: space-between;
+	position: absolute;
+	bottom: 50%;
+	right: 10px;
+	width: 80px;
+	display: flex;		
 	align-items: center;
-	border: 1px solid #cdcdcdff;
-	border-radius: 4px;
-	width: 40%;
-	height: 22px;
 	text-align: center;
-	
 }
 
-.reduce {
-	padding: 0 10px;
-	height: 22px;
-	line-height: 22px;
-	border-right: 1px solid #cdcdcdff;
-	color: #010101ff;
-	font-weight: 500;
+.reduce {		
+	min-height: 25px;
+	min-width: 25px;
+	text-align: center;
+	line-height: 20px;
+	background-color: rgb(26, 161, 207);
+	color: #fff;	
+	border-radius: 50%;
 }
 
 .add {
-	padding: 0 10px;
-	height: 22px;
+	min-height: 25px;
+	min-width: 25px;
+	text-align: center;
 	line-height: 22px;
-	border-left: 1px solid #cdcdcdff;
-	color: #010101ff;
+	background-color: rgb(26, 161, 207);
+	color: #fff;	
+	border-radius: 50%;
 }
-
-.product_number input {
-	font-size: 13px;
+.product_number .number {
+	font-size: 15px;
+	width: 20px;
+	text-align: center;
 }
 
 

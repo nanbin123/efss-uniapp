@@ -1,93 +1,90 @@
 <template>
-	<view style="height: 5px;">
-		<view class="head"></view>
+<view class="head"></view>
+
+<scroll-view scroll-y style="height: calc(100vh - 35px);">
+	<view class="item">
+		<image class="img" style="width: 19px;" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
+		<view class="title">客户姓名</view>	
+		<text class="iconfont">&#xe639;</text>
+		<input  :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
 	</view>
-	<scroll-view scroll-y style="height: calc(100vh - 80px);">
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
-			<view class="title">客户姓名</view>	
-			<text class="iconfont">&#xe639;</text>
-			<input  :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')"></image>
+		<view class="title">客户性别</view>
+		<text class="iconfont">&#xe639;</text>
+		<view class="gender">			
+			<radio-group class="radio-group" @change="radioChange">
+			  <radio class="radio1" value = '1' color="#38c1b9">
+				  <text class="radio-text" :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
+			  </radio>
+			  <radio class="radio2" value = '2' color="#38c1b9">
+				  <text class="radio-text" :style="{'color':customer.sex === '2'?'#fff':'#333'}">女</text>
+			  </radio>
+			</radio-group>
 		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')"></image>
-			<view class="title">客户性别</view>
-			<text class="iconfont">&#xe639;</text>
-			<view class="gender">			
-				<radio-group class="radio-group" @change="radioChange">
-				  <radio class="radio1" value = '1' color="#38c1b9">
-					  <text class="radio-text" :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
-				  </radio>
-				  <radio class="radio2" value = '2' color="#38c1b9">
-					  <text class="radio-text" :style="{'color':customer.sex === '2'?'#fff':'#333'}">女</text>
-				  </radio>
-				</radio-group>
-			</view>
+	</view>
+	<view class="item">
+		<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
+		<view style="margin-left: 0;" class="title">客户电话</view>			
+		<input  v-model="customer.phone" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
+	</view>
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
+		<view class="title">客户地址</view>
+		<input  v-model="customer.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
+	</view>
+	<view class="item">
+		<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
+		<view class="title">意向程度</view>
+		<view class="starLen">
+			<image class="star" @tap='changeStar(1)' :src="customer.grade>0? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
+			<image class="star" @tap='changeStar(2)' :src="customer.grade>1? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
+			<image class="star" @tap='changeStar(3)' :src="customer.grade>2? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
 		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
-			<view class="title">客户电话</view>			
-			<input  v-model="customer.phone" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
-			<view class="title">客户地址</view>
-			<input  v-model="customer.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
-		</view>
-			<view class="item">
-				<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
-				<view class="title">意向程度</view>
-				<view class="starLen">
-					<image class="star" @tap='changeStar(1)' :src="customer.grade>0? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
-					<image class="star" @tap='changeStar(2)' :src="customer.grade>1? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
-					<image class="star" @tap='changeStar(3)' :src="customer.grade>2? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
-				</view>
+	</view>
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')" mode=""></image>
+		<text class="title">报价:</text>
+		<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
+	</view>
+	<view class="item" @click="remarksAddOrEdit()">
+		<image class="img" style="margin-top: 1px;" :src="getImgUrl('static/image/cusomer/arrive.png')" mode=""></image>
+		<text class="title">备注:</text>			
+		<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
+	</view>			
+	<view class="product-count">
+		<view  class="product-total-number">货品数量:({{productNumberTotal}})</view>
+		<view  class="product-retail-price">总计金额:¥{{productRetailPriceTotal}}</view>
+	</view>
+	<view class="product"  v-for="(item,index) in customer.customerProducts" :key="index">
+		<image class="img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>				
+		<view class="product-content">
+			<view class="grid">
+				<text class="info">品名：{{item.productName}}</text>
+				<text class="info">型号：{{item.type}}</text>
 			</view>
-			<view class="item">
-				<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')" mode=""></image>
-				<text class="title">报价:</text>
-				<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
+			<view class="grid">
+				<text class="info" >尺寸：{{item.size}}</text>
+				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
 			</view>
-			<view class="item" @click="remarksAddOrEdit()">
-				<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')" mode=""></image>
-				<text class="title">备注:</text>			
-				<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
-			</view>			
-			<view class="product-count">
-				<view  class="product-total-number">货品数量:({{productNumberTotal}})</view>
-				<view  class="product-retail-price">总计金额:¥{{productRetailPriceTotal}}</view>
+			<view class="grid">							
+				<text class="info">颜色：{{item.color}}</text>
+				<text class="info">材质：{{item.texture}}</text>	
 			</view>
-			<view class="product"  v-for="(item,index) in customer.customerProducts" :key="index">
-				<image class="img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>				
-				<view class="product-content">
-					<view class="grid">
-						<text class="info">品名：{{item.productName}}</text>
-						<text class="info">型号：{{item.type}}</text>
-					</view>
-					<view class="grid">
-						<text class="info" >尺寸：{{item.size}}</text>
-						<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-					</view>
-					<view class="grid">							
-						<text class="info">颜色：{{item.color}}</text>
-						<text class="info">材质：{{item.texture}}</text>	
-					</view>
-					<view class="grid">									
-						<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-						<text class="info">数量：{{item.number}}</text>	
-					</view>
-				</view> 
-			</view>			
-			<view class="add_img" @click="addCustomerProduct()">
-				<image :src="getImgUrl('static/image/red_add.png')" mode=""></image>				
+			<view class="grid">									
+				<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+				<text class="info">数量：{{item.number}}</text>	
 			</view>
-		</scroll-view>
+		</view> 
+	</view>			
+	<view class="add_img" @click="addCustomerProduct()">
+		<image :src="getImgUrl('static/image/red_add.png')" mode=""></image>				
+	</view>
+</scroll-view>
 		
-		<view class="footer">
-			<view class="btn"  @click="addCustomer()">保存</view>	
-		</view>
-	
-	
+<view class="footer">
+	<view class="btn"  @click="addCustomer()">保存</view>	
+</view>
 	
 </template>
 
@@ -104,7 +101,7 @@
 			}
 		},
 		setup() {
-			const customerStore = useCustomerStore();	
+			const customerStore = useCustomerStore();				
 			return { customerStore } 
 		 },
 		methods: {
@@ -148,9 +145,10 @@
 					}
 				})
 			},
-			getCustomerProduct(){
-				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
-				let products = this.customerStore.products; // 产品选择页面带过来的数据			
+			getCustomerProduct(){				
+				console.log("-------888------")
+				let customerProducts = this.customer.customerProducts; // 新增页面产品信息	
+				let products = this.customerStore.products;// 产品选择页面带过来的数据	
 				for (let i = 0; i < products.length; i++) {
 					let foundMatch = false;
 					for (let j = 0; j < customerProducts.length; j++) {
@@ -166,7 +164,9 @@
 				}
 			},
 			addCustomerProduct(){
+				console.log(JSON.stringify("1111"))				
 				let arrProduct = this.customer.customerProducts;
+				//useCustomerStore().addProduct(arrProduct);
 				this.customerStore.addProduct(arrProduct);
 				uni.navigateTo({
 					url:'/pages/customer/customer_product'
@@ -203,13 +203,11 @@
 </script>
 
 <style>
-	@import "../../static/icon/iconfont.css";
+
 .head{
 	height: 5px;
 	width: 100%;
 	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
 }
 
 .item{
@@ -218,15 +216,14 @@
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
-	
 }
 .item .img{
-	padding-left: 10px;
+	margin-left: 2px;
 	width: 20px;
 	height: 20px;	
 }
 .item .title{
-	margin-left: 10px;
+	margin-left: 1px;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
@@ -263,9 +260,9 @@
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
-	border-color: #38c1b9;
+	border-color: #38c1b9 !important;
 }
-.gender .radio-group .radio1,.radio2{
+/deep/ .gender .radio-group .radio1,.radio2{
 	position: relative !important;
 }
 /deep/.gender .radio-group .radio1 .uni-radio-input {	
@@ -290,6 +287,16 @@
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
+	border-color: #38c1b9 !important;
+}
+.gender .radio-group .radio1 .wx-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+.gender .radio-group .radio2  .wx-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
 }
 
 .gender .wx-radio-input.wx-radio-input-checked::before{
@@ -303,7 +310,7 @@
 .star{
 	width: 17px;
 	height: 17px;
-	margin: 0 17px;
+	padding: 0 17px;
 }
 
 
@@ -375,7 +382,7 @@
 	font-size: 15px;
 	text-align: center;
 	line-height: 30px;
-	background-color: #00a7e2ff;	
+	background-color: #38c1b9;	
 	color: #daf2fbff;
 	width: 100%;
 }

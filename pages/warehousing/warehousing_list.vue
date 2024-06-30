@@ -85,7 +85,7 @@
 </script>
 
 <style>
-	@import "../../static/icon/iconfont.css";
+/* 	@import "../../style/icon/iconfont.css"; */
 
 .head{
 	height: 90px;/* 88 +2 留出2px 的空间 */

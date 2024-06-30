@@ -1,47 +1,47 @@
 <template>
-		<view class="head">
-			<view class="search">
-				 <view class="same_search">
-					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索订单号或客户姓名"/>
-				</view>
-				<navigator  class="more_search" url="">
-					<i class="iconfont">&#xe69b;</i>
-				</navigator>
-			</view>
+<view class="head">
+	<view class="search">
+		 <view class="same_search">
+			<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
 		</view>
+		<navigator class="more_search" url="/pages/order/order_query">
+			<i class="iconfont">&#xe69b;</i>
+		</navigator>
+	</view>
+</view>
 		
-		<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 135px);" @scrolltolower="onReachBottom">
-			<navigator v-for="(item,index) in orderList" :url="'/pages/order/order_deatil?id='+item.id"  :id="item.id">
-				<view class="container">	
-					<view class="item">
-						<text  class="info">订单号:{{item.orderNumber}}</text>
-						<text  class="info">客户姓名:{{item.customerName}}</text>
-					</view>
-					<view class="item">					
-						<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
-						<text  class="info">客户电话:{{item.phone}}</text>
-					</view>
-					<view class="item ">					
-						<text  class="info">客户地址:{{item.address}}</text>
-						<text  class="info">送货时间:{{item.deliveryTime}}</text>
-					</view>
-					<view class="item ">
-						<text  class="info">货品:{{item.productNames}}</text>
-						<text  class="info">实收金额:{{item.actualmoney}}</text>
-					</view>
-					<view class="item ">
-						<text  class="info">下单时间：{{item.createTime}}</text>
-						<text  class="info">操作人:{{item.updateBy}}</text>
-					</view>
-				</view>			
-			</navigator>
-		</scroll-view>
+<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 90px);" @scrolltolower="onReachBottom">
+	<navigator v-for="(item,index) in orderList" :url="'/pages/order/order_deatil?id='+item.id"  :id="item.id">
+		<view class="container">
+			<view class="item">
+				<text  class="info">订单号:{{item.orderNumber}}</text>
+				<text  class="info">客户姓名:{{item.customerName}}</text>
+			</view>
+			<view class="item">					
+				<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
+				<text  class="info">客户电话:{{item.phone}}</text>
+			</view>
+			<view class="item ">					
+				<text  class="info">客户地址:{{item.address}}</text>
+				<text  class="info">送货时间:{{item.deliveryTime}}</text>
+			</view>
+			<view class="item ">
+				<text  class="info">货品:{{item.productNames}}</text>
+				<text  class="info">实收金额:{{item.actualmoney}}</text>
+			</view>
+			<view class="item ">
+				<text  class="info">下单时间：{{item.createTime}}</text>
+				<text  class="info">操作人:{{item.updateBy}}</text>
+			</view>
+		</view>			
+	</navigator>
+</scroll-view>
 
-		<view class="footer">
-			<navigator url="/pages/order/order_add">
-				新增订单
-			</navigator>
-		</view>
+<view class="footer">
+	<navigator url="/pages/order/order_add">
+		新增订单
+	</navigator>
+</view>
 
 </template>
 
@@ -95,47 +95,46 @@
 </script>
 
 <style>
-@import "../../static/icon/iconfont.css";
+
 .head{
 	height: 60px;
 }
 
 .head .search{
+	width: 100%;
 	border-top: 5px solid #efeef3ff; 
 	position: fixed; 
-	width: 100%;
 	height: 45px;
 	padding: 5px 0;	
 	z-index: 999;
 	background-color: #ffffff;	
 	display: flex;
 }
-.head .same_search{	
-	width:100%;
+.head .search .same_search{	
+	flex: 1;
 }
- .search_input{	
-	height: 45px;	
+ .head .search .same_search .search_input{	
+	height: 41px;	
 	background-repeat: no-repeat;
 	background-position: 98%;	
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
+	text-align: left;
 	padding-left: 20px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 20px; 
+	margin-left: 10px; 
 }
-.more_search{
-	height: 40px;
-	width: 40px;
-	margin-top: 3px; 
-	border-radius: 5px;
+ .head .search .more_search{
+	height: 39px;
+	width: 39px;
+	margin-top: 2px; 
+	border-radius: 3px;
 	text-align: center;
-	line-height: 40px;
-	background-color: #00b6aaff;
-	margin-left: 8px; 
-	margin-right: 10px;
+	line-height: 39px;
+	background-color: #00a7e2ff;
+	margin-left: 5px; 
+	margin-right: 7px;
 	
 }
 .iconfont{
@@ -144,8 +143,7 @@
 }
 
 
-.container{
-	position: relative;
+.container{	
 	border-bottom: 2px solid #efeef3ff;
 	padding: 10px 10px 0 10px;
 }
@@ -154,13 +152,13 @@
 }
 .item{
 	display: flex;
-	line-height: 14px;
+	line-height: 13px;
 	padding-bottom: 10px;
 }
 .info {
     width: 50%;
     color: #030303ff;
-    font-size: 12px; 
+    font-size: 13px; 
 	white-space: nowrap; /* 文字不换行 */
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 以省略号形式显示 */
@@ -172,7 +170,7 @@
 	text-align: center;
 	line-height: 30px;
 	background-color: #00a7e2ff;	
-	color: #daf2fbff;
+	color: #ffffff;
 	position: fixed;
 	bottom: 0;
 	width: 100%;

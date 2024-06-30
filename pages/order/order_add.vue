@@ -1,7 +1,7 @@
 <template>
 	<view style="height: 5px;">
 		<view class="head"></view>
-	</view>	
+	</view>
 
 	<scroll-view scroll-y style="height: calc(100vh - 80px);">
 		<view class="item">
@@ -106,7 +106,9 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 import {picker} from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
 import useOrderStore from '@/store/modules/order.js'
-	
+import useTransferOrderStore from '@/store/modules/transfer_order.js'
+import { getCurrentScope } from "vue"
+
 export default {
 	components: {
 		cPicker
@@ -128,8 +130,9 @@ export default {
 		}
 	},
 	setup() {
-		const orderStore = useOrderStore();	
-		return { orderStore }
+		const orderStore = useOrderStore();
+		const transferOrderStore = useTransferOrderStore();
+		return { orderStore,transferOrderStore }
 	 },
 	methods: {
 		//移除指定产品
@@ -215,6 +218,13 @@ export default {
 			    });
 				return
 			}
+			if(this.orderForm.orderProductList.length ==0){
+				uni.showToast({
+				    title: '产品不能为空，请选择产品',
+				    icon: 'none'
+				});
+				return
+			}
 			let orderForm=JSON.parse(JSON.stringify(this.orderForm));
 			let productInfo = orderForm.orderProductList.map(product =>{
 				return {productId:product.productId,number:product.number}
@@ -238,7 +248,7 @@ export default {
 				url:'/pages/order/order_product'
 			})
 		},
-		getOrderProduct(){			
+		getOrderProduct(){
 			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
 			let products = this.orderStore.products; // 产品选择页面带过来的数据			
 			for (let i = 0; i < products.length; i++) {
@@ -285,13 +295,27 @@ export default {
 
 	},
 	onShow() {
-		
+		let pages = getCurrentPages();
+		if(pages.length >1){			
+			 let previousPage = pages[pages.length -2]
+			 //转订单操作
+			 if("pages/customer/customer_detail" ==previousPage.$page.route){
+				 let customer = this.transferOrderStore.customer;
+				 this.orderForm.customerName = customer.customerName;
+				 this.orderForm.sex = customer.sex;
+				 this.orderForm.phone = customer.phone;
+			     this.orderForm.address = customer.address;
+				 this.orderForm.customerId = customer.id;
+				 this.orderForm.orderProductList = customer.customerProducts;
+			 }
+			 
+		} 
 	}
 }
 </script>
 
 <style>
-@import "../../static/icon/iconfont.css";
+/* @import "../../style/icon/iconfont.css"; */
 
 .head{
 	height: 5px;

@@ -3,11 +3,15 @@ import { defineStore } from 'pinia'
 const useCustomerStore = defineStore( 'customerStore', {
     state: () => ({
       data:{
-		   products: []
+		   products: [],
+		   moreSearchCustomer:{}
 	  }
     }),
     actions: {
-		addProduct(products){			this.products = products		}
+		addProduct(products){			this.products = products		},
+		addMoreSearchCustomer(moreSearchCustomer){
+			this.moreSearchCustomer = moreSearchCustomer;
+		}
     }
   })
 

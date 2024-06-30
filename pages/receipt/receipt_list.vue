@@ -1,8 +1,20 @@
 <template>	
-	<view class="wrap">
-		<view style="height: 5px;">
+
+<!-- 		<view style="height: 5px;">
 			<view class="head"></view>
+		</view> -->
+		
+	<view class="head">
+		<view class="search">
+			 <view class="same_search">
+				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索订单号或客户姓名"/>
+			</view>
+			<navigator  class="more_search" url="">
+				<i class="iconfont">&#xe69b;</i>
+			</navigator>
 		</view>
+	</view>
+	<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 135px);" @scrolltolower="onReachBottom">	
 		<navigator v-for="(item,index) in receiptList" :url="'/pages/receipt/receipt_detail?id='+item.id"  :id="item.id">
 			<view class="container">	
 				<view class="item">
@@ -21,10 +33,15 @@
 					<text  class="info">待&nbsp;收&nbsp;款：{{item.tobeReceived}}</text>
 					<text  class="info">收款金额:{{item.amountCollected}}</text>
 				</view>
-			</view>			
+			</view>
 		</navigator>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="receiptList.length > 0"/>
+	</scroll-view>
+	<view class="footer">
+		<navigator url="/pages/receipt/receipt_add">
+			新增收款单
+		</navigator>
 	</view>
+
 </template>
 
 <script>
@@ -54,19 +71,23 @@
 				}
 				let discount = item.actualmoney/item.totalAmount*100;				
 				return discount == 0 ? '':discount*100;
+			},
+			onReachBottom() {
+				if(this.totalCount > this.receiptList.length){
+					this.pageNum++;				
+					post("receipt/selectReceipt",{"pageNum":this.pageNum}).then(res =>{					
+						 this.receiptList = this.receiptList.concat(res.rows)
+						 uni.hideLoading();
+					})
+				}else if(this.totalCount == this.receiptList.length){ 
+					 this.status = "noMore"				
+				}
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
-		onReachBottom() {
-			if(this.totalCount > this.receiptList.length){
-				this.pageNum++;				
-				post("receipt/selectReceipt",{"pageNum":this.pageNum}).then(res =>{					
-					 this.receiptList = this.receiptList.concat(res.rows)
-					 uni.hideLoading();
-				})
-			}else if(this.totalCount == this.receiptList.length){ 
-				 this.status = "noMore"				
-			}
-		},
+
 		onLoad(){
 			post("receipt/selectReceipt",{"pageNum":this.pageNum}).then(res =>{
 				this.totalCount = res.total
@@ -83,19 +104,54 @@
 </script>
 
 <style>
-
-
-.wrap{
-	width: 100%;
-	height: 100%;
-}
+/* @import "../../style/icon/iconfont.css"; */
 .head{
-	height: 5px;
-	width: 100%;
-	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
+	height: 60px;
 }
+.head .search{
+	border-top: 5px solid #efeef3ff; 
+	position: fixed; 
+	width: 100%;
+	height: 45px;
+	padding: 5px 0;	
+	z-index: 999;
+	background-color: #ffffff;	
+	display: flex;
+}
+.head .same_search{	
+	width:100%;
+}
+ .search_input{	
+	height: 45px;	
+	background-repeat: no-repeat;
+	background-position: 98%;	
+	border: 1px solid #f2f2f2;
+	border-radius: 10px;
+	text-align: left;	
+	color:'#606266';	
+	padding-left: 20px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 20px; 
+}
+.more_search{
+	height: 40px;
+	width: 40px;
+	margin-top: 3px; 
+	border-radius: 5px;
+	text-align: center;
+	line-height: 40px;
+	background-color: #00b6aaff;
+	margin-left: 8px; 
+	margin-right: 10px;
+	
+}
+.iconfont{
+	color: #ffffff;	
+	font-size: 18px;
+}
+
+
 .container{
 	position: relative;
 	border-bottom: 2px solid #efeef3ff;
@@ -114,5 +170,17 @@
    color: #030303ff;
    font-size: 12px;
    white-space: nowrap;  
+}
+
+.footer{
+	height: 30px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #00a7e2ff;	
+	color: #daf2fbff;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
 }
 </style>

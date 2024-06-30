@@ -92,7 +92,7 @@
 </script>
 
 <style>
-	@import "../../static/icon/iconfont.css";
+/* 	@import "../../style/icon/iconfont.css"; */
 
 
 .head{

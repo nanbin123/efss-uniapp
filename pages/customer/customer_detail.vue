@@ -1,10 +1,8 @@
-<template>
-	<view style="height: 5px;">
-		<view class="head"></view>
-	</view>
-	<scroll-view scroll-y style="height: calc(100vh - 88px);">
+<template>	
+	<view class="head"></view>	
+	<scroll-view scroll-y style="height: calc(100vh - 41px);">
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
+			<image class="img" style="width: 19px;" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
 			<view class="title">客户姓名</view>	
 			<text class="iconfont">&#xe639;</text>
 			<input :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户姓名'">
@@ -15,9 +13,7 @@
 			<text class="iconfont">&#xe639;</text>
 			<view class="gender">
 				<radio-group class="radio-group"  @change="radioChange">
-				  <radio class="radio1" color="#38c1b9"  :disabled="isEditable" :style="{
-					  'background-color':customer.sex === '1'?'#38c1b9':'#fff'}"
-				   value = '1' :checked="customer.sex === '1'">
+				  <radio class="radio1" color="#38c1b9"  :disabled="isEditable" :style="{'background-color':customer.sex === '1'?'#38c1b9':'#fff'}" value = '1' :checked="customer.sex === '1'">
 					  <text class="radio-text"  :style="{'color':customer.sex === '1'?'#fff':'#333'}">男</text>
 				  </radio>
 				  <radio class="radio2"  :disabled="isEditable" color="#38c1b9" :style="{'background-color':customer.sex === '2'?'#38c1b9':'#fff'}" value = '2' :checked="customer.sex === '2'">
@@ -27,7 +23,7 @@
 			</view>
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
+			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
 			<view class="title">客户电话</view>
 			<input :focus='phoneFocus' @blur="checkPhone"  v-model="customer.phone" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
 		</view>
@@ -37,7 +33,7 @@
 			<input  v-model="customer.address" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
+			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
 			<view class="title">意向程度</view>
 			<view class="starLen">
 				<image class="star" @tap='changeStar(1)' :src="customer.grade>0? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
@@ -51,26 +47,26 @@
 			<input v-model="customer.quotation" :disabled="isEditable" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/remark.png')"></image>
+			<image class="img" style="margin-top: 1px;" :src="getImgUrl('static/image/cusomer/remark.png')"></image>
 			<text class="title">备注</text>			
 			<input v-model="customer.remark" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
 		</view>
 		<view class="item" @click="arriveAdd()" style="border-bottom: 0;">
-			<image class="img" :src="getImgUrl('static/image/cusomer/arrive.png')"></image>
+			<image class="img" style="margin-top: 2px;" :src="getImgUrl('static/image/cusomer/arrive.png')"></image>
 			<text class="title">到店记录</text>
-			<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
+			<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
 		
 		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
 			<view class="arrive_container">
-				<view class="arrive_content_line" >
+				<view class="arrive_content_line" @click="editCustomerArrival(item)">
 					<text class="arrive_content_info">到店时间：{{item.arrivalTime}}</text>
 					<text class="arrive_content_info">停留时间：{{item.arrivalLength}}分钟</text>
 				</view>
 				<view class="arrive_content_line">
 					<text class="arrive_content_info" style="width: 100%;">到店记录：{{item.arrivalRecord}}</text>					
 				</view>
-				<view class="removeArrive" @click="deleteCustomerArrival(item.id)" v-show="!isEditable">
+				<view class="removeArrive" @click.stop="deleteCustomerArrival(item.id)" v-show="!isEditable">
 					<i class="iconfont">&#xe612;</i>
 				</view>
 			</view>
@@ -78,20 +74,20 @@
 		
 		<view class="item" @click="trackAdd()" style="border-bottom: 0;">
 			<image class="img" :src="getImgUrl('static/image/cusomer/track.png')"></image>
-			<text class="title">跟踪记录</text>
-			<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
+			<text class="title">跟踪记录</text>		
+			<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
 		
 		<view  v-for="(item,index) in customer.listCustomerTailAfter" :id="item.id">
-			<view class="arrive_container">
+			<view class="arrive_container" @click="editCustomerTailAfter(item)">
 				<view class="arrive_content_line" >
 					<text  class="arrive_content_info">跟踪时间:{{item.arrivalTime}}</text>
 					<text  class="arrive_content_info">跟踪时长:{{item.arrivalLength}}分钟</text>
 				</view>
 				<view class="arrive_content_line">
-					<text class="arrive_content_info">跟踪记录:{{item.arrivalRecord}}</text>
+					<text class="arrive_content_info" style="width: 100%;">跟踪记录:{{item.arrivalRecord}}</text>
 				</view>
-				<view class="removeFollowing" @click="deleteCustomerTailAfter(item.id)" v-show="!isEditable">
+				<view class="removeFollowing" @click.stop="deleteCustomerTailAfter(item.id)" v-show="!isEditable">
 					<i class="iconfont">&#xe612;</i>
 				</view>
 			</view>
@@ -100,8 +96,8 @@
 	
 	<view class="item"  @click="addCustomerProduct()" style="border-bottom: 0;">
 		<image class="img" :src="getImgUrl('static/image/cusomer/customer_product.png')"></image>
-		<text class="title">预购产品</text>
-		<text  v-show="!isEditable" class="iconfont arriveAdd">&#xe6f3;</text>
+		<text class="title">预购产品</text>		
+		<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
 	</view>
 	
 	<view class="product" v-for="(item, index) in customer.customerProducts">		
@@ -132,7 +128,7 @@
 </scroll-view>
 	<view class="bottom-bar">
 		  <text class="delete" @click="deleteCustomerForm()">{{ isEditable ? '删除' : '取消'  }}</text>		   
-		  <view class="transferOrder" @click="transferOrder()">转订单</view>
+		  <view class="transferOrder" @click="transferOrder()" v-if="isEditable == true">转订单</view>
 		  <text class="edit"  @click="editCustomerForm()">{{ isEditable ? '编辑' : '保存' }}</text>
 	</view>
 
@@ -170,7 +166,7 @@
 <!--跟踪记录弹窗-->
 <view>
 	<view :hidden="trackHidden" class="popup_content">
-		<view class="popup_title">添加跟踪时间</view>
+		<view class="popup_title">{{addOrEditArrival}}</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">跟踪时间</text>
 		   <view class="popup_item_text">			
@@ -203,6 +199,7 @@
 	import {picker} from "../../components/mixins/picker.js"
 	import {get,post} from "../../components/utils/request.js"
 	import useCustomerStore from '@/store/modules/customer.js'
+	import useTransferOrderStore from '@/store/modules/transfer_order.js'
 	export default {
 		components: {
 			cPicker
@@ -220,7 +217,7 @@
 				//跟踪记录
 				trackHidden:true,				
 				customer:{customerProducts:[],listCustomerArrival:[],listCustomerTailAfter:[]},//客户数据
-				addOrEditArrival:'添加到店时间',
+				addOrEditArrival:'',
 				arrivalFormData:{
 					id:"",
 					customerId:"",
@@ -244,7 +241,8 @@
 		},
 		setup() {
 			const customerStore = useCustomerStore();	
-			return { customerStore } 
+			const transferOrderStore = useTransferOrderStore();
+			return { customerStore,transferOrderStore } 
 		 },
 		methods: {
 			// 校验电话号码
@@ -312,16 +310,16 @@
 						return;
 					}
 					
-					let customerForm=JSON.parse(JSON.stringify(this.customer));		
+					let customerForm=JSON.parse(JSON.stringify(this.customer));
 					let customerProductList = customerForm.customerProducts.map(item =>{
 						return {productId: item.productId,number:item.number}
-					});					
+					});	
 					customerForm.customerProducts = customerProductList;					
 					post("customer/updateCustomerById",JSON.stringify(this.customer),'application/json').then(res =>{
 						if(200 == res.code){
 							this.isEditable = true
 							uni.showToast({
-							  title: '修改销售订单成功',
+							  title: '修改客户成功',
 							  icon: 'none', 
 							  duration: 2000 
 							});
@@ -346,7 +344,7 @@
 									this.isEditable = true;
 									that.customer ={};
 									uni.showToast({
-									  title: '删除销售订单成功',
+									  title: '删除客户成功',
 									  icon: 'none', 
 									  duration: 2000 
 									});
@@ -400,60 +398,107 @@
 			},
 			//提交到店记录
 			submitArrival(){
-				let arrivalFormData=JSON.parse(JSON.stringify(this.arrivalFormData));	
+				let arrivalFormData=JSON.parse(JSON.stringify(this.arrivalFormData));
 				arrivalFormData.customerId = this.customer.id;
-				arrivalFormData.id = this.guid();
-				this.customer.listCustomerArrival.unshift(arrivalFormData);
 				this.arrivalHidden = true;
+				let listCustomerArrival = this.customer.listCustomerArrival;
+				//添加
+				if("添加到店记录"==this.addOrEditArrival){
+					arrivalFormData.id = this.guid();
+					listCustomerArrival.unshift(arrivalFormData);					
+				}else if("修改到店记录"==this.addOrEditArrival){					
+					this.customer.listCustomerArrival = listCustomerArrival.map(item => (item.id == arrivalFormData.id ? arrivalFormData : item));
+				}
+				//清空对象
+				let that = this;
+				Object.keys(this.arrivalFormData).forEach(function(key){
+					if(key!="arrivalTime" && key!="arrivalType"){
+						that.arrivalFormData[key]=""
+					}
+				})
+				this.arrivalFormData.arrivalTime = this.getDate();
+				
 			},
 			//添加到店记录
 			arriveAdd(){
 				if(this.isEditable == false){
-					this.arrivalHidden = false;	
+					this.addOrEditArrival ="添加到店记录"
+					this.arrivalHidden = false;
 				}
 			},
 			cancelArrival(){
 				this.arrivalHidden = true;
-			},	
+				//清空对象
+				let that = this;
+				Object.keys(this.arrivalFormData).forEach(function(key){
+					if(key!="arrivalTime" && key!="arrivalType"){
+						that.arrivalFormData[key]=""
+					}
+				})
+				this.arrivalFormData.arrivalTime = this.getDate();
+			},
+			//修改到店记录
+			editCustomerArrival(item){
+				 this.addOrEditArrival ="修改到店记录"
+				 if(this.isEditable == false){
+					this.arrivalHidden = false;	
+					this.arrivalFormData.id = item.id;
+					this.arrivalFormData.customerId = item.customerId;
+					this.arrivalFormData.arrivalTime = item.arrivalTime;
+					this.arrivalFormData.arrivalLength = item.arrivalLength;
+					this.arrivalFormData.arrivalRecord = item.arrivalRecord;
+				}
+			},
 			//添加跟踪记录
 			trackAdd(){
 				if(this.isEditable == false){
-					this.trackHidden = false;					
-					let that = this;
-					Object.keys(this.tailAfterFormData).forEach(function(key){						
-						if(key!="arrivalTime" && key!="arrivalType"){
-							that.tailAfterFormData[key]=""
-						} 
-					})
+					this.trackHidden = false;
+					this.addOrEditArrival ="添加跟踪记录"
 				}				
 			},
 			cancelTrack(){
 				this.trackHidden = true;
+				//清空表单
+				let that = this;
+				Object.keys(this.tailAfterFormData).forEach(function(key){
+					if(key!="arrivalTime" && key!="arrivalType"){
+						that.tailAfterFormData[key]=""
+					}
+				})
+				this.tailAfterFormData.arrivalTime = this.getDate();
 			},
 			//提交跟踪记录 
 			submitTrack(){
-				this.tailAfterFormData.customerId = this.customer.id
-				this.tailAfterFormData.id = this.guid();
-				this.customer.listCustomerTailAfter.unshift(this.tailAfterFormData);
+				let tailAfterFormData=JSON.parse(JSON.stringify(this.tailAfterFormData));
+				tailAfterFormData.customerId = this.customer.id							
 				this.trackHidden = true;
-/* 				post("customer/insertCustomerTailAfter",this.tailAfterFormData).then(res =>{
-					if(200 == res.code){
-						for(let key in this.tailAfterFormData){
-							this.tailAfterFormData[key] = ''
-						}						
-						this.tailAfterFormData['arrivalTime'] = this.getDate({
-							format: true
-						})
-						uni.hideLoading();
-						uni.showToast({
-							title: '添加到店记录成功',
-							icon: 'none',
-							duration: 2000
-						})
-						this.trackHidden = true;
-						this.getList()
+				//添加
+				let  listCustomerTailAfter = this.customer.listCustomerTailAfter;
+				if("添加跟踪记录"==this.addOrEditArrival){
+					tailAfterFormData.id = this.guid();
+					listCustomerTailAfter.unshift(tailAfterFormData);						
+				}else if("修改跟踪记录"==this.addOrEditArrival){					
+					this.customer.listCustomerTailAfter = listCustomerTailAfter.map(item => (item.id == tailAfterFormData.id ? tailAfterFormData : item));
+				}
+				//清空表单
+				let that = this;
+				Object.keys(this.tailAfterFormData).forEach(function(key){
+					if(key!="arrivalTime" && key!="arrivalType"){
+						that.tailAfterFormData[key]=""
 					}
-				}) */
+				})
+				this.tailAfterFormData.arrivalTime = this.getDate();
+			},
+			editCustomerTailAfter(item){
+				this.addOrEditArrival ="修改跟踪记录"
+				 if(this.isEditable == false){
+					this.trackHidden = false;	
+					this.tailAfterFormData.id = item.id;
+					this.tailAfterFormData.customerId = item.customerId;
+					this.tailAfterFormData.arrivalTime = item.arrivalTime;
+					this.tailAfterFormData.arrivalLength = item.arrivalLength;
+					this.tailAfterFormData.arrivalRecord = item.arrivalRecord;
+				}
 			},
 			getCustomerProduct(){
 				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
@@ -481,31 +526,36 @@
 					})
 				}
 			},
+			/**
+			 * 转订单
+			 */
+			transferOrder(){
+				let customerForm = new Object();
+				customerForm.customerName = this.customer.customerName;
+				customerForm.sex = this.customer.sex;
+				customerForm.phone = this.customer.phone;
+				customerForm.address = this.customer.address;
+				customerForm.id = this.customer.id;
+				customerForm.customerProducts = this.customer.customerProducts;
+				this.transferOrderStore.addCustomer(customerForm);
+				if(this.isEditable == true){
+					uni.navigateTo({
+						url:'/pages/order/order_add'
+					})
+				}
+			},
+			
+			
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 
 		watch: {
-			//到店记录弹窗
-			//arrivalHidden:true,
-			//跟踪记录
-			//trackHidden:true,	
-		  arrivalHidden(newVal, oldVal) {
-		    console.log('Count changed from ' + oldVal + ' to ' + newVal);		   
-		    if (this.trackHidden == true) {
-				let that = this;
-				Object.keys(this.arrivalFormData).forEach(function(key){						
-					if(key!="arrivalTime" && key!="arrivalType"){
-						that.arrivalFormData[key]=""
-					} 
-				})
-		    }
-		  }
+
 		},
 		onLoad(option) {
-			let url = location.href;
-			this.customerId = url.substr(url.indexOf('?') + 1).split("=")[1]; //截取?后面的内容作为字符串
+			this.customerId = option.id;
 			post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
 				if(200 == res.code){
 					this.customer = res.data;				
@@ -519,13 +569,10 @@
 </script>
 
 <style>
-@import "../../static/icon/iconfont.css";
 .head{
 	height: 5px;
 	width: 100%;
-	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
+	background-color:  #efeef3ff;	
 }
 
 .item{
@@ -536,19 +583,19 @@
 	background-color: #fff;
 }
 .item .img{
-	padding-left: 10px;
+	margin-left: 2px;
 	width: 20px;
 	height: 20px;	
 }
 .item .title{
+	margin-left: 1px;
 	font-size: 15px;
 	color: #333;
-	margin-left: 10px;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
 }
 .item .iconfont{
-	color: red;	
+	color:red;
 	font-size: 12px;
 	margin-left: -5px;
 }
@@ -561,12 +608,11 @@
 	font-size: 15px;
 	color: #333;
 }
-.item .arriveAdd{
-	color: #00a7e2ff;
-	flex-grow: 1;
-	padding-right: 12px;
-	text-align: right;
-	font-size: 20px;
+.arriveAdd{
+	width: 25px;
+	height: 25px;
+	position: absolute;
+	right: 10px;
 }
 .item .input-placeholder{
 	font-size: 15px;
@@ -590,24 +636,38 @@
 	margin-left: auto;
 	padding-right: 15px;
 }
-
  /deep/ .gender .radio-group svg {
 	display: none  !important;
 }
-
 /deep/ .gender .uni-radio-input {
 	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
-	border-color: #38c1b9 !important; 
+	border-color: #38c1b9 !important;
 }
-/deep/ .gender  .uni-radio-input-disabled{
-	background-color: transparent !important;
-	
-}
-.gender .radio-group .radio1,.radio2{
+/deep/ .gender .radio-group .radio1,.radio2{
 	position: relative !important;
+}
+/deep/.gender .radio-group .radio1 {
+	border-top-left-radius: 8%;
+	border-bottom-left-radius:8%;
+}
+ /deep/ .gender .radio-group .radio2{
+	 border-top-right-radius: 8%;
+	 border-bottom-right-radius:8% ;
+ }
+/deep/.gender .radio-group .radio1 .uni-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+ /deep/ .gender .radio-group .radio2 .uni-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
+}
+/deep/ .gender .uni-radio-input-disabled{
+	background-color: transparent !important;
 }
 .radio-text{
 	position: absolute;
@@ -618,18 +678,31 @@
 }
 /*适用于 微信小程序*/
 .gender .wx-radio-input {	
+	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
+	border-color: #38c1b9 !important;
+}
+.gender .radio-group .radio1 .wx-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+.gender .radio-group .radio2 .wx-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
+}
+.gender .wx-radio-input-disabled{
+	background-color: transparent !important;
 }
 .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }
 
-
 .arrive_container{
 	position: relative;
-	border-bottom: 2px solid #efeef3ff;
+	border-bottom: 1px solid #efeef3ff;
 	padding: 10px 10px 0 10px;
 	
 }
@@ -638,12 +711,13 @@
 	color: #333;
 	display: flex;
 	line-height: 14px;
-	padding-bottom: 10px;
+	
 }
 .arrive_content_info{
 	width: 50%;
 	color: #030303ff;
 	font-size: 15px; 
+	padding-bottom: 10px;
 	white-space: nowrap; /* 文字不换行 */
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 以省略号形式显示 */
@@ -686,7 +760,7 @@
 	right: 10px;
 }
 .remove .iconfont{
-	color: #02a5e6ff;	
+	color: #38c1b9;
 	font-size: 20px;
 }
 .removeFollowing{
@@ -695,7 +769,7 @@
 	top: 8px;
 }
 .removeFollowing .iconfont{
-	color: #02a5e6ff;	
+	color: #38c1b9;	
 	font-size: 20px;
 }
 .removeArrive{
@@ -704,7 +778,7 @@
 	top: 8px;
 }
 .removeArrive .iconfont{
-	color: #02a5e6ff;	
+	color: #38c1b9;	
 	font-size: 20px;
 }
 .foot {
@@ -713,7 +787,7 @@
 	left: 0;
 	width: 100%;
     height: 100rpx;
-	color: #00A7E2;	
+	color: #38c1b9;	
     border-top: 1px solid #CCCCCC;
 	border-bottom: 1px solid #CCCCCC;
     font-size: 20rpx;
@@ -752,12 +826,11 @@
  }
  .popup_content {
 	 position: fixed;
-	 top: 50%;
+	 top: 30px;
 	 left: 50%;
-	 width: 350px;
-	 height: 300px;
-	 margin-left: -175px;
-	 margin-top: -150px;
+	 width: 260px;
+	 height: 235px;
+	 margin-left: -130px;
 	 border-radius: 20rpx;
 	 background-color: white;
 	 z-index: 1002;
@@ -802,23 +875,13 @@
 }
 .arrival_record{
 	margin: 0 15px;
-	padding:10px;
+	padding:7px;
 	border:1px solid #f1f1f1ff;
 	border-radius: 5px;
-}
-.remark_text{
-	width: 350px;
-	height: 150px;	
-	margin: 0 auto;
-	margin-top: 10px;
-	border:1px solid #f1f1f1ff;
-	border-radius: 5px;
-	padding:20rpx;
-	
 }
 .arrival_record textarea{
-	 height: 100px;
-	 width: 300px;
+	 height: 50px;
+	 width: 100%;
 }
 .textarea-placeholder{
 	font-size: 15px;
@@ -827,7 +890,7 @@
 }
 
 .arrival_foot {
-	width: 350px;
+	width: 260px;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -867,7 +930,7 @@
   flex: 1;
   height: 100%;
   line-height: 39px;
-  color: #00a7e2ff;
+  color: #38c1b9;
   margin-left: 10px;
 }
 .transferOrder{
@@ -875,14 +938,14 @@
 	height: 100%;
 	line-height: 39px;
 	text-align:center;
-	color: #00a7e2ff;
+	color: #38c1b9;
 }
 .edit {
 	flex: 1;
 	height: 100%;
 	line-height: 39px;
 	text-align:right;
-	color: #00a7e2ff;
+	color: #38c1b9;
 	margin-right: 10px;
 }
 </style>

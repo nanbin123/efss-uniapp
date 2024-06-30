@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages       
+	"pages": [
 		{
             "path" : "pages/login/login",
             "style" :                                                                                    
@@ -38,6 +38,15 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "订单列表",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/order/order_query",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "销售订单筛选",
 		        "enablePullDownRefresh": false
 		    }
 		    
@@ -88,10 +97,10 @@
 		    
 		},	
 		{
-		    "path" : "pages/customer/index",
+		    "path" : "pages/customer/customer_query",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "意向客户",
+		        "navigationBarTitleText": "意向客户筛选",
 		        "enablePullDownRefresh": false
 		    }
 		    

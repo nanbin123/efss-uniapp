@@ -1,11 +1,22 @@
 <template>
-<view class="wrap">	
 
-	<view class="head">
+
+<!-- 	<view class="head">
 		 <view class="search">
 			<input class="search_input"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
 		</view>
+	</view> -->
+	<view class="head">
+		<view class="search">
+			 <view class="same_search">
+				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+			</view>
+			<navigator  class="more_search" url="">
+				<i class="iconfont">&#xe69b;</i>
+			</navigator>
+		</view>
 	</view>
+	
 	<view class="content"  v-for="(item,index) in productList" :key="index">
 		<view class="left">
 			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
@@ -32,7 +43,7 @@
 	</view>
 			<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="productList.length > 0"/>
 			
-		</view>
+
 </template>
 
 <script>
@@ -99,44 +110,51 @@
 </script>
 
 <style>
-
-.wrap {
-	width: 100%;
-	height: 100%;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
 .head{
-	height: 85px;	
+	height: 60px;
 }
 .head .search{
 	border-top: 5px solid #efeef3ff; 
-	position: fixed;
+	position: fixed; 
 	width: 100%;
-	height:60px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	height: 45px;
+	padding: 5px 0;	
 	z-index: 999;
-	background-color: #ffffff;
+	background-color: #ffffff;	
+	display: flex;
 }
-.search_input{
-	padding-right:60px;
-	background-image:url("../../static/image/search.png");
+.head .same_search{	
+	width:100%;
+}
+ .search_input{	
+	height: 45px;	
 	background-repeat: no-repeat;
-	background-position: 98%;
-	height: 60px;
+	background-position: 98%;	
 	border: 1px solid #f2f2f2;
-	border-radius: 100rpx;
-	background-color: red;
-	text-align: left;
-	font: sist 14px;
-	color:'#606266';
-	background-color: #ffffff;
-	padding-left: 20px;	
-	font-size: 28rpx;
-	margin-left:  20px; 
-	margin-right: 20px;
+	border-radius: 10px;
+	text-align: left;	
+	color:'#606266';	
+	padding-left: 20px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 20px; 
 }
+.more_search{
+	height: 40px;
+	width: 40px;
+	margin-top: 3px; 
+	border-radius: 5px;
+	text-align: center;
+	line-height: 40px;
+	background-color: #00b6aaff;
+	margin-left: 8px; 
+	margin-right: 10px;
+	
+}
+
+
+
+
 
 .content{
 	display: flex;

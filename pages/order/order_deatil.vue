@@ -324,8 +324,6 @@ import useOrderStore from '@/store/modules/order.js'
 </script>
 
 <style>
-@import "../../static/icon/iconfont.css";
-
 .head{
 	height: 5px;
 	width: 100%;
@@ -333,8 +331,6 @@ import useOrderStore from '@/store/modules/order.js'
 	position: fixed;
 	z-index: 999;
 }
-
-
 
 .item{
 	display: flex;	

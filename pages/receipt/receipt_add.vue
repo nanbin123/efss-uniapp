@@ -1,50 +1,49 @@
 <template>
-	<view class="wrap">
 		<view style="height: 5px;">
 			<view class="head"></view>
 		</view>
 		<view class="item"   @click="importOrder()">
-			<image class="img" src="../../static/image/receipt/import-order.png"></image>
+			<image class="img" :src="getImgUrl('static/image/receipt/import-order.png')" ></image>
 			<text class="title">导入订单</text>
-			<image class="right-img" src="../../static/image/receipt/add.png"></image>
+			<image class="right-img" :src="getImgUrl('static/image/receipt/add.png')"></image>
 		</view>
 		<view class="item">
-			<image class="img" style="width: 19px;height: 21px;" src="../../static/image/order/order_number.png"></image>
+			<image class="img" style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')" ></image>
 			<text class="title">订单编号 :</text>
 			<text class="right-content">{{receipt.orderNumber}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/order/cusomer_name_add.png"></image>
+			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
 			<text class="title">客户姓名 :</text>
 			<text class="right-content">{{receipt.customerName}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/order/total_amount.png"></image>
+			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')" ></image>
 			<text class="title">订单总金额:</text>
 			<text class="right-content">{{receipt.totalAmount}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/receipt/price_after_discount.png"></image>
+			<image class="img" :src="getImgUrl('static/image/receipt/price_after_discount.png')"></image>
 			<text  class="title">折扣:</text>
 			<input class="right-content" style="padding-right: 0" disabled="disabled" v-model="discount">
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
+			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
 			<text  class="title">订单实收金额:</text>
 			<text class="right-content">{{receipt.actualmoney}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/order/order_actual_amount.png"></image>
+			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
 			<text  class="title">已收款:</text>
 			<text class="right-content">{{receipt.received}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/receipt/to_be_received.png"></image>
+			<image class="img" :src="getImgUrl('static/image/receipt/to_be_received.png')"></image>
 			<text  class="title">待收款:</text>
 			<text class="right-content">{{receipt.tobeReceived}}</text>
 		</view>
 		<view class="item">
-			<image class="img" src="../../static/image/receipt/amount_collected.png"></image>
+			<image class="img" :src="getImgUrl('static/image/receipt/amount_collected.png')"></image>
 			<text  class="title">收款金额:</text>
 			<input v-model="receipt.amountCollected"  confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
 		</view>
@@ -57,7 +56,7 @@
 						<text>X</text>
 					</view>
 				</view>
-				<image @tap="onChooseImage" class="voucher-add" src="../../static/image/receipt/upload-voucher.png"></image>
+				<image @tap="onChooseImage" class="voucher-add" :src="getImgUrl('static/image/receipt/upload-voucher.png')"></image>
 			</view>
 		</view>
 		<view class="remarks">
@@ -67,7 +66,7 @@
 		<view class="btn" @click="addReceiptForm()">
 			<button>保存</button>
 		</view>
-	</view>
+
 </template>
 
 <script>
@@ -190,18 +189,15 @@
 						}
 					}
 				});
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		}
 	}
 </script>
 
 <style>
-
-.wrap{
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
 .head{
 	height: 5px;
 	width: 100%;

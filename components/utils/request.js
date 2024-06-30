@@ -1,6 +1,5 @@
-/**
- * GET请求封装
- */
+const BASEURL = "http://192.168.137.8:8080/";
+
 function get(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {	
 	return request(url, data, 'GET',contentType);
 }
@@ -21,11 +20,9 @@ function post(url, data = {},contentType='application/x-www-form-urlencoded;char
 /**
  * 图片上传
  */
-function uploadFiles(url,files,formData = {}) {
+function uploadFiles(url,files,formData = {}) {	
 	return uploadImg(url, files, formData);
 }
-
-const BASEURL = 'http://localhost:8080/';
 
 function uploadImg(url,files,formData){
 	return new Promise(function(resolve, reject) {

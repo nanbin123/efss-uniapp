@@ -35,7 +35,7 @@
 					return;
 				}
 				uni.request({
-					url: "http://localhost:8080/login",
+					url: this.BASEURL+"login",
 					method: "POST",
 					data: {
 						"username":this.username,

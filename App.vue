@@ -36,6 +36,7 @@
 </script>
 
 <style>
+@import "static/icon/iconfont.css";
 
 page{
 	width: 100%;
@@ -45,6 +46,11 @@ page{
     height: 44px !important; /* 设置默认导航栏的高度为44px */
 	color: red;
   }
-
+/* .scroll-view::-webkit-scrollbar {
+  overflow: hidden; /* 隐藏滚动条 */
+ /* width: 0;
+  height: 0;
+  color: transparent; 
+} */
 
 </style>

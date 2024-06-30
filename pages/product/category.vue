@@ -1,26 +1,29 @@
 <template>
-	<view class="wrap">
-		<view>
-			<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
-				<view class="type">{{item.category}}</view>
-				<view class="img-btn" v-show="showEditAndDelete">					
-					<image class="img-edit" @click="imgEdit(item.category,item.id)"  src="../../static/image/product/edit.png"></image>
-					<image class="img-delete" @click="imgDelete(item.id)" src="../../static/image/product/delete.png"></image>
-				</view>
-			</view>
-			<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="productCategoryList.length > 0"/>
-		</view>
-		<view class="bottom-button">
-			<view @click="add()" class="add">添加</view>
-			<view  @click="edit()" class="edit">{{editText}}</view>
-		</view>
+	<view style="height: 5px;">
+		<view class="head"></view>
 	</view>
+	
+<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 85px);" @scrolltolower="onReachBottom">
+		<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
+			<view class="type">{{item.category}}</view>
+			<view class="img-btn" v-show="!showEditAndDelete">
+				<image class="img-edit" @click.stop="imgEdit(item.category,item.id)" :src="getImgUrl('../../static/image/product/edit.png')"></image>
+				<image class="img-delete" @click.stop="imgDelete(item.id)" :src="getImgUrl('../../static/image/product/delete.png')"></image>
+			</view>
+		</view>
+	</scroll-view>
+	
+	<view class="bottom-button">
+		<view @click="add()" class="add">添加</view>
+		<view  @click="edit()" class="edit">{{editText}}</view>
+	</view>
+
 	
 <!--编辑新增弹窗-->
 <view>
 	<view v-show="addCategoryHidden" class="popup_content">
 		<uni-forms  ref="forma" :modelValue="formData" :rules="rules">
-			<view class="popup_title">{{addOrEditCateGory}}</view>
+			<view class="popup_title">{{addOrEditCateGory}}{{formData.id}}</view>
 			<view class="add-category">
 				<uni-forms-item name="id" v-show="false">
 					<input v-model="formData.id"/>
@@ -31,7 +34,7 @@
 			</view>
 		</uni-forms>
 		<view class="add-category-foot">
-			<view class="cancel" @click="cancelArrival()">取消</view>
+			<button class="cancel" @click="cancelArrival()">取消</button>
 			<button  class="determine" @click="submit()">确定</button>
 		</view>
 	</view>
@@ -48,13 +51,7 @@
 				editText:"编辑",
 				addCategoryHidden:false,
 				productCategoryList:[],				
-				pageNum: 1, // 当前页
-				status: 'more',	
-				contentText: {
-					contentdown: '上拉加载更多~',				
-					contentrefresh: '正在加载更多~',				
-					contentnomore: '我是有底线的~'
-				},
+				pageNum: 1, // 当前页	
 				addOrEditCateGory:"",
 				formData:{
 					id:"",
@@ -88,7 +85,7 @@
 				this.formData.category = category;
 				this.formData.id = id;
 				this.addOrEditCateGory = "修改产品类别";
-				this.addCategoryHidden = true;
+				this.addCategoryHidden = true;				
 			},
 			getList(){
 				post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{
@@ -108,9 +105,9 @@
 							post("product/delProductCategory",{"id":id}).then(res =>{
 								if(200 == res.code){
 									uni.hideLoading();
-									uni.redirectTo({//跳转当前页面执行刷新
-										url: '/pages/product/category'
-									});
+									//移除元素
+									let index = that.productCategoryList.findIndex((obj)=> obj.id == id)
+									 that.productCategoryList.splice(index,1)
 								}
 							})
 						}
@@ -118,9 +115,7 @@
 				})
 			},
 			cancelArrival(){
-				uni.redirectTo({//跳转当前页面执行刷新
-					url: '/pages/product/category'
-				});
+				this.addCategoryHidden = false;	
 			},	
 			hideDiv(){
 				uni.redirectTo({//跳转当前页面执行刷新
@@ -129,7 +124,7 @@
 			},
 			submit(){
 				this.$refs['forma'].validate().then(res=>{
-					if("" == res.id){
+					if("添加产品类别" == this.addOrEditCateGory){
 						post("product/insertProductCategory",{"category":res.category}).then(res =>{
 							if(200 == res.code){
 								this.formData.category = "";
@@ -140,10 +135,10 @@
 									duration: 2000
 								})
 								this.addCategoryHidden = false;								
-								this.getList()
+								this.getList();
 							}
 						})
-					}else {
+					}else if ("修改产品类别" == this.addOrEditCateGory){
 						post("product/updateProductCategory",{"id":res.id,"category":res.category}).then(res =>{
 							if(200 == res.code){
 								this.formData.category = "";
@@ -163,18 +158,28 @@
 				})
 
 			},
-			chooseCategory(id,category){
-				// 1. 获取当前页面栈实例（此时最后一个元素为当前页）
+			chooseCategory(id,category){				
 				let pages= getCurrentPages();
-				// 2. 上一页面实例
-				// 注意是length长度，所以要想得到上一页面的实例需要 -2
-				// 若要返回上上页面的实例就 -3，以此类推
 				let prevPage = pages[pages.length-2]
 				prevPage.$vm.product.category  = category;
 				prevPage.$vm.product.productCategoryId = id;
 				uni.navigateBack({
 					delta: 1
 				});
+			},
+			onReachBottom() {
+				if(this.totalCount > this.productCategoryList.length){
+					this.pageNum++;				
+					post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{					
+						 this.productCategoryList = this.productCategoryList.concat(res.rows)
+						 uni.hideLoading();
+					})
+				}else if(this.totalCount == this.productCategoryList.length){								 
+					 this.status = "noMore"				
+				}
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
 		onLoad(){
@@ -188,34 +193,25 @@
 					 this.status = "noMore"
 				 }
 			})
-		},
-		onReachBottom() {
-			if(this.totalCount > this.productCategoryList.length){
-				this.pageNum++;				
-				post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{					
-					 this.productCategoryList = this.productCategoryList.concat(res.rows)
-					 uni.hideLoading();
-				})
-			}else if(this.totalCount == this.productCategoryList.length){								 
-				 this.status = "noMore"				
-			}
-		},
+		}
 	}
 </script>
 
 <style>
-
-.wrap{
-	position: absolute;
-	width: 100%;	
-	background:  #efeef4ff;
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
 }
 .content{
 	position: relative;
+	border-bottom: 1px solid #efeef3ff;
 }
 .type{
-	height: 50px;
-	line-height: 50px;
+	height: 25px;
+	line-height: 25px;
 	background: #fff;
 	margin: 10px;
 	border-radius: 8px;
@@ -224,36 +220,40 @@
 }
 .img-edit{
 	position: absolute;
-	top: 13px;
+	top: 3px;
 	right: 15%;
-	height: 25px;
-	width: 25px;
+	height: 20px;
+	width: 20px;
 }
 .img-delete{
 	position: absolute;
-	top: 13px;
+	top: 3px;
 	right: 7%;
-	height: 25px;
-	width: 25px;
+	height: 20px;
+	width: 20px;
 }
+
+
 .bottom-button{
 	position: fixed;
 	bottom: 0;
-	height: 40px;
+	height: 39px;
 	width: 100%;
-	line-height: 40px;
+	line-height: 39px;
 	background-color: #fff;
+	 border-top: 1px solid #cbcbcbff;
 	display: flex;
 	justify-content: space-between;
 	color: #02a5e6ff;
+	 z-index: 999; /* 确保位于最顶层 */
 }
 .add{
 	width: 50%;
-	margin-left: 10px;
+	margin-left: 15px;
 }
 .edit{
 	width: 50%;
-	margin-right: 10px;
+	margin-right: 15px;
 	text-align: right;
 }
 /* 弹窗 */
@@ -271,10 +271,10 @@
 	 overflow: auto;
  }
  .popup_title {
- 	 font-size: 25px;
+ 	 font-size: 20px;
  	 font-weight: 500;
  	 text-align: center;
- 	 margin: 20px 0;	
+ 	 margin: 10px 0;	
  }
 .add-category{
 	margin: 0 10px;
@@ -282,19 +282,18 @@
 	border:1px solid #f1f1f1ff;
 	border-radius: 5px;
 }
-
 .add-category textarea{
 	 height: 90px;
 	 width: 170px;
 }
 .textarea-placeholder{
-	font-size: 20px;
+	font-size: 15px;
 	text-align: left;
 	color: #aaa;	
 }
 
 .add-category-foot {
-	width: 300px;
+	width: 300px; 
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -305,14 +304,20 @@
 	display: flex;
     border-top: 1px solid #f1f1f1ff;
 }
-.cancel{
+.add-category-foot .cancel{
 	text-align: center;
 	border-right: 1px solid #f1f1f1ff;
 	width: 50%;
+	background-color:#fff;
 }
-.determine{	
+.add-category-foot .determine{	
 	text-align: center;
 	width: 50%;
+	background-color:#fff;
+}
+
+.add-category-foot uni-button:after {
+  content: none; /* 移除内容 */
 }
 /**
  * 弹出框遮罩层

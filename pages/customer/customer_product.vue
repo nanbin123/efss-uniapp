@@ -3,7 +3,7 @@
 	<view class="head">
 		<view class="search">
 			 <view class="same_search">
-				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
+				<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
 			</view>				
 		</view>
 	</view>
@@ -112,17 +112,17 @@
 					}
 				})
 			},
-			confirm(){			
+			confirm(){
 				var productChooseArray = this.productList.filter(function(item){
 					return item.number>0;
-				});				
+				});
 				this.customerStore.addProduct(productChooseArray);
 				let pages = getCurrentPages();
 				if(pages.length >1){
 					uni.navigateBack({
 						delta:1,
 						success:(event) =>{
-							pages[pages.length -2].getCustomerProduct();
+							pages[pages.length -2].$vm.getCustomerProduct();
 						}
 					})
 				}
@@ -177,7 +177,6 @@
 </script>
 
 <style>
-	@import "@/static/icon/iconfont.css";
 
 	.head{
 		height: 65px;	
@@ -231,8 +230,7 @@
 		display: flex;
 		line-height: 20px;
 	}
-	.grid .info {
-		/*  */
+	.grid .info {	
 		color: #030303ff;
 		font-size: 14px;
 		color: #333;

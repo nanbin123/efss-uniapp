@@ -1,41 +1,51 @@
 <template>
-<view class="wrap">
+
 	<view class="head">
-		 <view class="search">
-			<input class="search_input"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
+		<view class="search">
+			 <view class="same_search">
+				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
+			</view>
+			<navigator  class="more_search" url="">
+				<i class="iconfont">&#xe69b;</i>
+			</navigator>
 		</view>
 	</view>
-		<view class="content"  v-for="(item,index) in productList" :key="index">
-		<view class="left">
-			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
-			<view class="left_text">点击添加图片</view>			
+	<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 135px);" @scrolltolower="onReachBottom">
+		<view class="container"  v-for="(item,index) in productList" :key="index">
+			<view class="left">
+				<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
+				<view class="left_text">点击添加图片</view>			
+			</view>
+			<view class="right"> 
+				<view class="grid">
+					<text class="info">品名：{{item.productName}}</text>
+					<text class="info">型号：{{item.type}}</text>
+				</view>
+				<view class="grid">
+					<text class="info">尺寸：{{item.size}}</text>
+					<text class="info">产地：{{item.production}}</text>
+				</view>
+				<view class="grid">
+					<text class="info" >类别：{{item.productType}}</text>
+					<text class="info" >颜色：{{item.color}}</text>				
+				</view>
+				<view class="grid">
+					<text class="info">材质：{{item.texture}}</text>
+					<text class="info" >库存：<text style="font-size: 12px;">{{item.stock}}</text></text>
+				</view>	
+				<view class="grid">
+					<text class="info" >零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+					<text class="info" >采购价：<text style="color: #1aa1cfff; font-size: 12px;">￥{{item.purchasePrice}}</text></text>				
+				</view>	
+			</view>		
 		</view>
-		<view class="right"> 
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">尺寸：{{item.size}}</text>
-				<text class="info">产地：{{item.production}}</text>
-			</view>
-			<view class="grid">
-				<text class="info" >类别：{{item.productType}}</text>
-				<text class="info" >颜色：{{item.color}}</text>				
-			</view>
-			<view class="grid">
-				<text class="info">材质：{{item.texture}}</text>
-				<text class="info" >库存：<text style="font-size: 12px;">{{item.stock}}</text></text>
-			</view>	
-			<view class="grid">
-				<text class="info" >零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-				<text class="info" >采购价：<text style="color: #1aa1cfff; font-size: 12px;">￥{{item.purchasePrice}}</text></text>				
-			</view>	
-		</view>		
-		</view>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="productList.length > 0"/>
-		
+	</scroll-view>
+	<view class="footer">
+		<navigator url="/pages/product/product_add">
+			添加产品
+		</navigator>
 	</view>
+
 </template>
 <script>
 	import {get,post} from "../../components/utils/request.js"
@@ -44,32 +54,25 @@
 			return {
 				productList:[],				
 			    pageNum: 1, // 当前页
-				pageSize: 10, // 每页条数				
-				reload: false,				
-				status: 'more',	
-				contentText: {				
-						contentdown: '上拉加载更多~',				
-						contentrefresh: '正在加载更多~',				
-						contentnomore: '我是有底线的~'
-				 },				
-				 iconType: 'auto',    // 图标样式 
-				 searchVal:""
+				pageSize: 10, // 每页条数
+				searchVal:""
 			}
 		},
-		onReachBottom() {
-	 		if(this.totalCount > this.productList.length){
-				this.pageNum++;				
-				post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{					
-					 this.productList = this.productList.concat(res.rows)
-					 uni.hideLoading();
-				})
-			}else if(this.totalCount == this.productList.length){								 
-				 this.status = "noMore"				
-			}
-		},
+
 		methods: {
 			getImgUrl(image){
 			   return this.BASEURL+image;
+			},
+			onReachBottom() {
+				if(this.totalCount > this.productList.length){
+					this.pageNum++;				
+					post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{					
+						 this.productList = this.productList.concat(res.rows)
+						 uni.hideLoading();
+					})
+				}else if(this.totalCount == this.productList.length){								 
+					 this.status = "noMore"				
+				}
 			}
 		},
 		watch:{
@@ -101,47 +104,52 @@
 </script>
 
 <style>
-	page{
-		height: 100vh;
-	}
-.wrap {
-	width: 100%;
-	height: 100%;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
 .head{
-	height: 85px;	
+	height: 60px;
 }
 .head .search{
 	border-top: 5px solid #efeef3ff; 
-	position: fixed;
+	position: fixed; 
 	width: 100%;
-	height:60px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	height: 45px;
+	padding: 5px 0;	
 	z-index: 999;
-	background-color: #ffffff;
+	background-color: #ffffff;	
+	display: flex;
 }
-.search_input{
-	padding-right:60px;
-	background-image:url("../../static/image/search.png");
+.head .same_search{	
+	width:100%;
+}
+ .search_input{	
+	height: 45px;	
 	background-repeat: no-repeat;
-	background-position: 98%;
-	height: 60px;
+	background-position: 98%;	
 	border: 1px solid #f2f2f2;
-	border-radius: 100rpx;
-	background-color: red;
-	text-align: left;
-	font: sist 14px;
-	color:'#606266';
-	background-color: #ffffff;
-	padding-left: 20px;	
-	font-size: 18px;
-	margin-left:  20px; 
-	margin-right: 20px;
+	border-radius: 10px;
+	text-align: left;	
+	color:'#606266';	
+	padding-left: 20px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 20px; 
 }
-.content{
+.more_search{
+	height: 40px;
+	width: 40px;
+	margin-top: 3px; 
+	border-radius: 5px;
+	text-align: center;
+	line-height: 40px;
+	background-color: #00b6aaff;
+	margin-left: 8px; 
+	margin-right: 10px;
+	
+}
+.iconfont{
+	color: #ffffff;	
+	font-size: 18px;
+}
+.container{
 	display: flex;
 	align-items: center;
 	background-color: #fff;
@@ -181,6 +189,16 @@
    font-size: 12px;
    white-space: nowrap;  
 }
-
+.footer{
+	height: 30px;
+	font-size: 16px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #00a7e2ff;	
+	color: #daf2fbff;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
 
 </style>
