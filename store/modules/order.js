@@ -1,13 +1,17 @@
 import { defineStore } from 'pinia'
 
 const useOrderStore = defineStore( 'orderStore', {
-    state: () => ({
-      data:{
-		   products: []
-	  }
-    }),
+    state: () => {
+		return{
+			products: [],
+			moreSearchOrder:{}
+		}
+    },
     actions: {
-		addProduct(products){			this.products = products		}
+		addProduct(products){			this.products = products		},
+		addMoreSearchOrder(moreSearchOrder){
+			this.moreSearchOrder = moreSearchOrder;
+		}
     }
   })
 

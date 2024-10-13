@@ -98,9 +98,7 @@
 
 <script>
 	import cPicker from "../../components/c-picker/c-picker.vue"
-	import {
-		picker
-	} from "../../components/mixins/picker.js"
+
 	
 	export default {
 		components: {

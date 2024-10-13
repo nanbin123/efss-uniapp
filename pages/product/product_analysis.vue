@@ -65,9 +65,7 @@
 <script>
 import {get,post} from "../../components/utils/request.js"	
 import cPicker from "../../components/c-picker/c-picker.vue"
-import {
-	picker
-} from "../../components/mixins/picker.js"
+
 
 	export default {
 		components: {

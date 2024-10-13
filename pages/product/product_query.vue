@@ -1,204 +1,208 @@
 <template>
+	<view class="head"></view>
 
-	<view class="head">
-		<view class="search">
-			 <view class="same_search">
-				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
-			</view>
-			<navigator  class="more_search" url="">
-				<i class="iconfont">&#xe69b;</i>
-			</navigator>
-		</view>
+	<view class="item">
+		<text class="title">品名</text>
+		<input v-model="productForm.productName" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入品名">
 	</view>
-	<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 135px);" @scrolltolower="onReachBottom">
-		<view class="container"  v-for="(item,index) in productList" :key="index">
-			<view class="left">
-				<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
-				<view class="left_text">点击添加图片</view>			
-			</view>
-			<view class="right"> 
-				<view class="grid">
-					<text class="info">品名：{{item.productName}}</text>
-					<text class="info">型号：{{item.type}}</text>
-				</view>
-				<view class="grid">
-					<text class="info">尺寸：{{item.size}}</text>
-					<text class="info">产地：{{item.production}}</text>
-				</view>
-				<view class="grid">
-					<text class="info" >类别：{{item.productType}}</text>
-					<text class="info" >颜色：{{item.color}}</text>				
-				</view>
-				<view class="grid">
-					<text class="info">材质：{{item.texture}}</text>
-					<text class="info" >库存：<text style="font-size: 12px;">{{item.stock}}</text></text>
-				</view>	
-				<view class="grid">
-					<text class="info" >零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-					<text class="info" >采购价：<text style="color: #1aa1cfff; font-size: 12px;">￥{{item.purchasePrice}}</text></text>				
-				</view>	
-			</view>		
-		</view>
-	</scroll-view>
-	<view class="footer">
-		<navigator url="/pages/product/product_add">
-			添加产品
-		</navigator>
+	<view class="item">
+		<text class="title">型号</text>
+		<input v-model="productForm.type" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入型号">
+	</view>
+	<view class="item">
+		<text class="title">尺寸</text>
+		<input v-model="productForm.size" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入尺寸">
+	</view>
+	<view class="item">
+		<text class="title">产地</text>
+		<input v-model="productForm.production" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入产地">
+	</view>
+	<view class="item">
+		<text class="title">颜色</text>
+		<input v-model="productForm.color" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入颜色">
+	</view>
+	<view class="item product_texture">
+		<text class="title">材质</text>
+		<input v-model="productForm.texture" confirm-type="next" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入材质">
 	</view>
 
+	<view class="item">
+		<text class="title">库存</text>
+		<input v-model="productForm.stock" confirm-type="next" type="number" placeholder-class="input-placeholder"
+			placeholder="请输入库存">
+	</view>
+	<view class="item">
+		<text class="title">采购价</text>
+		<input v-model="productForm.purchasePrice" type="text" placeholder-class="input-placeholder"
+			placeholder="请输入采购价">
+	</view>
+	<view class="item">
+		<text class="title">零售价</text>
+		<input  v-model="productForm.retailPrice"  type="text" placeholder-class="input-placeholder" placeholder="请输入零售价">
+	</view>
+
+
+
+	<view class="bottom-bar">
+		<view class="clear-btn" @click="clearFilters">清空所有筛选条件</view>
+		<view class="search-btn" @click="search">查询</view>
+	</view>
 </template>
 <script>
-	import {get,post} from "../../components/utils/request.js"
+	import {
+		get,
+		post
+	} from "../../components/utils/request.js"
+	import useProductStore from '@/store/modules/product.js'
+
 	export default {
 		data() {
 			return {
-				productList:[],				
-			    pageNum: 1, // 当前页
-				pageSize: 10, // 每页条数
-				searchVal:""
-			}
-		},
-
-		methods: {
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			},
-			onReachBottom() {
-				if(this.totalCount > this.productList.length){
-					this.pageNum++;				
-					post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{					
-						 this.productList = this.productList.concat(res.rows)
-						 uni.hideLoading();
-					})
-				}else if(this.totalCount == this.productList.length){								 
-					 this.status = "noMore"				
+				productForm: {
+					productName: "",
+					type: "",
+					size: "",
+					production: "",
+					productType: "",
+					color: "",
+					texture: "",
+					stock: "",
+					retailPrice: "",
+					purchasePrice: "",
+					productNameOrType: ""
 				}
 			}
 		},
-		watch:{
-			searchVal(val){
-				post("product/selectListProduct",{"pageNum":this.pageNum,"productNameOrType":val}).then(res =>{
-					this.totalCount = res.total
-					this.productList = res.rows
-					uni.hideLoading();				
-					 if(this.totalCount == this.productList.length){					 
-						 this.status = "noMore"
-						
-					 }
-				})
+		setup() {
+			const productStore = useProductStore();
+			return {
+				productStore
 			}
 		},
-		onLoad(){
-			post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{				
-				this.totalCount = res.total				
-				 if(this.totalCount >0){
-					this.productList = res.rows
-					uni.hideLoading();
-				 }
-				 if(this.totalCount == this.productList.length){					 
-					 this.status = "noMore"
-				 }
-			})
+		methods: {
+			search() {
+				let product = JSON.parse(JSON.stringify(this.productForm));	
+				product.productNameOrType="";
+				this.productStore.addMoreSearchProduct(product);
+				let pages = getCurrentPages();				
+				if (pages.length > 1) {
+					uni.navigateBack({
+						delta: 1/* ,
+						 success: (event) => {
+							pages[pages.length - 2].$vm.clearProductNameOrType();
+						} */
+					})
+				}
+			},
+			clearFilters() {
+				let _this = this;
+				Object.keys(this.productForm).forEach(function(key){					
+					_this.productForm[key]="";
+				})
+				this.productStore.addMoreSearchProduct(this.productForm);
+			},
+			getImgUrl(image) {
+				return this.BASEURL + image;
+			},
+			isEmpty(str) {
+				return typeof str === 'undefined' || '' === str;
+			}
 		},
+		onShow() {
+			let productForm = JSON.parse(JSON.stringify(this.productStore.moreSearchProduct));			
+			this.productForm = productForm;
+		}
 	}
 </script>
 
 <style>
-.head{
-	height: 60px;
-}
-.head .search{
-	border-top: 5px solid #efeef3ff; 
-	position: fixed; 
-	width: 100%;
-	height: 45px;
-	padding: 5px 0;	
-	z-index: 999;
-	background-color: #ffffff;	
-	display: flex;
-}
-.head .same_search{	
-	width:100%;
-}
- .search_input{	
-	height: 45px;	
-	background-repeat: no-repeat;
-	background-position: 98%;	
-	border: 1px solid #f2f2f2;
-	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
-	padding-left: 20px;
-	padding-right: 60px;
-	font-size: 15px;
-	margin-left: 20px; 
-}
-.more_search{
-	height: 40px;
-	width: 40px;
-	margin-top: 3px; 
-	border-radius: 5px;
-	text-align: center;
-	line-height: 40px;
-	background-color: #00b6aaff;
-	margin-left: 8px; 
-	margin-right: 10px;
-	
-}
-.iconfont{
-	color: #ffffff;	
-	font-size: 18px;
-}
-.container{
-	display: flex;
-	align-items: center;
-	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
-}
-.left{
-	width: 20%;
-	height: 72px;
-	background-color: #f2f2f2ff;	
-    text-align: center;
-}
-.left_text{
-	font-size: 10px;	
-	padding: 2px;
-	text-align: center;
-	margin-top: 5px;
-	color: #a3a3a1ff;
-}
-.left_img {
-    width: 20px;
-    height: 20px;	
-	margin-top: 15px;	
-}
-.right{
-	width: 80%;
-	margin-left: 5px;
-}
-.grid {	
- 	display: flex;	
-	line-height: 14px;
-}
-.info {
-   width: 50%;
-   color: #030303ff;
-   font-size: 12px;
-   white-space: nowrap;  
-}
-.footer{
-	height: 30px;
-	font-size: 16px;
-	text-align: center;
-	line-height: 30px;
-	background-color: #00a7e2ff;	
-	color: #daf2fbff;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-}
+	.head {
+		height: 5px;
+		width: 100%;
+		background-color: #efeef3ff;
+	}
 
+	.item {
+		display: flex;
+		padding: 10px 0 5px 0;
+		border-bottom: 1px solid #f1f1f1ff;
+		align-items: center;
+		background-color: #fff;
+	}
+
+	.item .title {
+		margin-left: 10px;
+		font-size: 15px;
+		color: #333;
+		white-space: nowrap;
+		text-rendering: optimizeLegibility;
+	}
+
+	.item input {
+		flex-grow: 1;
+		padding-right: 12px;
+		text-align: right;
+		text-rendering: optimizeLegibility;
+	}
+
+	.time {
+		margin-left: auto;
+		text-align: right;
+		padding-right: 12px;
+	}
+
+	.item .input-placeholder {
+		font-size: 15px;
+		text-align: right;
+		color: #aaa;
+		text-rendering: optimizeLegibility;
+	}
+
+	.starLen {
+		display: flex;
+		margin-left: auto;
+	}
+
+	.star {
+		width: 17px;
+		height: 17px;
+		padding: 0 17px;
+	}
+
+	.bottom-bar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.clear-btn,
+	.search-btn {
+		text-align: center;
+		padding: 7px;
+		border-radius: 5px;
+		font-size: 15px;
+		margin: 10px;
+	}
+
+	.clear-btn {
+		background-color: #fff;
+		border: 1px solid #00a7e2ff;
+		color: #00a7e2ff;
+		width: 35%;
+	}
+
+	.search-btn {
+		background-color: #00a7e2ff;
+		color: #fff;
+		width: 30%;
+	}
 </style>

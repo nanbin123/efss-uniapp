@@ -85,7 +85,7 @@
 	</view>
 	<view class="workbench-title">日常办公</view>
 	<view class="u-grid">
-		<view v-show="hasPermi(['product:list'])"  class="u-grid-item"  @click="navTo('/pages/product/product_query')">
+		<view v-show="hasPermi(['product:list'])"  class="u-grid-item"  @click="navTo('/pages/product/product_list')">
  			<view class="u-grid-item-box">
  				<view class="home color06">
  					 <image :src="getImgUrl('static/image/index/product_query.png')"></image>

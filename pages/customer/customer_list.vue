@@ -1,15 +1,18 @@
 <template>
-	<view class="head">
-		<view class="search">
-			 <view class="same_search">
-				<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
-			</view>
-			<view  class="more_search" @click="moreSearch()">
-				<view class="iconfont">&#xe69b;</view>
-			</view>
-		</view>
-	</view>
-	<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 90px);" @scrolltolower="onReachBottom">
+	<z-paging ref="paging" v-model="customerList" @query="queryList">
+		<template #top>
+			<view class="head">
+				<view class="search">
+					 <view class="same_search">
+						<input v-model="searchCustomer.customerNameOrPhone" class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  type="text" placeholder="搜索客户姓名或手机号"/>
+					</view>
+					<view  class="more_search" @click="moreSearch()">
+						<view class="iconfont">&#xe69b;</view>
+					</view>
+				</view>
+			</view>	
+		</template>
+			
 		<navigator v-for="(item,index) in customerList" :url="'/pages/customer/customer_detail?id='+item.id"  :id="item.id">
 			<view class="container">
 				<view v-if="item.isOrder == 'ordered'" class="item">	
@@ -39,91 +42,86 @@
 				</view>
 				<text  v-if="item.isOrder == 'no_order'" class="isOrder unorder">未下单</text>
 				<text  v-if="item.isOrder == 'ordered'"  class="isOrder order">已下单</text>
-			</view>	
-
-		</navigator>	
-	</scroll-view>
-	
-	<view class="footer">
-		<navigator url="/pages/customer/customer_add">
-			添加客户
+			</view>
 		</navigator>
-	</view>
+		<template #bottom>
+			<view class="customer_footer">
+					<navigator url="/pages/customer/customer_add">
+						添加客户
+					</navigator>
+				</view>
+		</template>
+	</z-paging>
 </template>
+
+
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
 	import useCustomerStore from '@/store/modules/customer.js'
+	
 	export default {
 		data() {
 			return {
 				customerList:[],
 				fullStarUrl:'static/image/cusomer/star.png',
 				nullStarUrl:'static/image/cusomer/empty.png',
-				searchVal:"",
-				pageNum:1,
-				searchCustomer:{}
+				searchCustomer:{customerNameOrPhone:""}
 			}
 		},
 		setup() {
 			const customerStore = useCustomerStore();
 			return { customerStore} 
 		 },
+
 		methods: {
-			onReachBottom() {
-				if(this.totalCount > this.customerList.length){
-					this.searchCustomer.pageNum = this.pageNum++;;
-					post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{					
-						 this.customerList = this.customerList.concat(res.rows)						
-					})
-				}else if(this.totalCount == this.customerList.length){ 
-					 uni.showToast({
-					    title: '没有更多意向客户了',
-					    duration: 3000,
-					    icon: 'none'
-					 });						
-				}
+			refreshCustomerList(){
+				console.log("searchCustomer",JSON.stringify(this.searchCustomer));
+				post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
 			},
-			moreSearch(){
+ 			queryList(pageNo, pageSize) {
+				this.searchCustomer.pageNum = pageNo;				
+				this.refreshCustomerList(this.searchCustomer);
+			}, 
+ 			moreSearch(){
 				uni.navigateTo({
 					url:'/pages/customer/customer_query'
 				})
 			},
 			getCustomerList(){//高级查询
-				let customer = this.customerStore.data.moreSearchCustomer;
-				this.searchCustomer = customer;
-				this.searchCustomer.pageNum = this.pageNum;				
-				post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{
-					this.totalCount = res.total;					 
-					this.customerList = res.rows;
-				})
+				let customer = JSON.stringify(this.customerStore.data.moreSearchCustomer);
+				this.searchCustomer.customerNameOrPhone=""
+				this.searchCustomer = JSON.parse(customer);	
+				this.$refs.paging.reload();
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 		watch:{
-			searchVal(val){
-				this.searchCustomer.pageNum = this.pageNum;	
-				this.searchCustomer.customerNameOrPhone = val;
-				post("customer/selectIntendedCustomers",this.searchCustome).then(res =>{
-					this.totalCount = res.total;					 
-					this.customerList = res.rows;
-				})
+			'searchCustomer.customerNameOrPhone':function(val) {				
+				if (val != null){
+					let _this = this;
+					Object.keys(this.searchCustomer).forEach(function(key){					
+						_this.searchCustomer[key]=""
+					})
+					this.searchCustomer.customerNameOrPhone = val;					
+					this.$refs.paging.reload()
+				}
 			}
 		},
 		onLoad(){
-			post("customer/selectIntendedCustomers",{"pageNum":this.pageNum}).then(res =>{
-				this.totalCount = res.total;
-				this.customerList = res.rows;
-			})
+
 		}
 	}
 
 
 </script>
 
-<style>
+<style scoped>
+
 .head{
 	height: 60px;
 }
@@ -147,10 +145,10 @@
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
 	text-align: left;
-	padding-left: 20px;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 10px; 
+	margin-left: 5px; 
 }
  .head .search .more_search{
 	height: 39px;
@@ -170,7 +168,7 @@
 .container{
 	position: relative;
 	border-bottom: 2px solid #efeef3ff;
-	padding: 10px 10px 0 10px;
+	padding: 10px 5px 0 5px;
 }
 .item{
 	display: flex;
@@ -213,15 +211,14 @@
 	height: 13px;
 	margin: 0 7px;
 }
-.footer{
-	height: 30px;
+.customer_footer{	
 	font-size: 16px;
 	text-align: center;
+	height: 30px;
 	line-height: 30px;
 	background-color: #38c1b9;
 	color: #ffffff;	
-	position: fixed;
-	bottom: 0;
-	width: 100%;
+	/* position: relative; */
 }
+
 </style>

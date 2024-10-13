@@ -196,7 +196,6 @@
 
 <script>
 	import cPicker from "../../components/c-picker/c-picker.vue"
-	import {picker} from "../../components/mixins/picker.js"
 	import {get,post} from "../../components/utils/request.js"
 	import useCustomerStore from '@/store/modules/customer.js'
 	import useTransferOrderStore from '@/store/modules/transfer_order.js'
@@ -928,14 +927,14 @@
 
 .delete {
   flex: 1;
-  height: 100%;
+  height: 39px;
   line-height: 39px;
   color: #38c1b9;
   margin-left: 10px;
 }
 .transferOrder{
 	flex: 1;
-	height: 100%;
+	height: 39px;
 	line-height: 39px;
 	text-align:center;
 	color: #38c1b9;

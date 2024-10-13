@@ -1,7 +1,7 @@
-const BASEURL = "http://192.168.137.8:8080/";
+const BASEURL = "http://192.168.221.8:8080/";
 
-function get(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {	
-	return request(url, data, 'GET',contentType);
+function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
+	return request(url, data, 'GET', contentType);
 }
 
 function put(url, data = {}) {
@@ -14,31 +14,31 @@ function deletes(url, data = {}) {
 /**
  * POST请求封装
  */
-function post(url, data = {},contentType='application/x-www-form-urlencoded;charset=UTF-8') {	
-	return request(url, data, 'POST',contentType);
+function post(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
+	return request(url, data, 'POST', contentType);
 }
 /**
  * 图片上传
  */
-function uploadFiles(url,files,formData = {}) {	
+function uploadFiles(url, files, formData = {}) {
 	return uploadImg(url, files, formData);
 }
 
-function uploadImg(url,files,formData){
+function uploadImg(url, files, formData) {
 	return new Promise(function(resolve, reject) {
 		uni.showLoading({
 			title: "上传中"
 		});
 		uni.uploadFile({
-			url: BASEURL + url,									
-			files:files,
+			url: BASEURL + url,
+			files: files,
 			header: {
-				'Authorization': uni.getStorageSync("token"),										
+				'Authorization': uni.getStorageSync("token"),
 				"Accept": "application/json"
 			},
 			success(res) {
 				if (res.data) {
-					let resData = JSON.parse(res.data)					
+					let resData = JSON.parse(res.data)
 					if (resData.code == 401 || resData.code == 403) {
 						uni.removeStorageSync('token');
 						uni.showToast({
@@ -50,21 +50,21 @@ function uploadImg(url,files,formData){
 								url: '/pages/login/login'
 							});
 						}, 1000);
-					}					
-					if(resData.code == 200){						
+					}
+					if (resData.code == 200) {
 						resolve(resData);
 					}
-					} else {
-						resolve(null);
-						uni.hideLoading();
-					}
+				} else {
+					resolve(null);
+					uni.hideLoading();
+				}
 			}
 		})
 	});
 }
 
-function request(url, data = {}, method = "GET",contentType) {
-	return new Promise(function(resolve, reject) {		
+function request(url, data = {}, method = "GET", contentType) {
+	return new Promise(function(resolve, reject) {
 
 		uni.request({
 			url: BASEURL + url,
@@ -78,7 +78,7 @@ function request(url, data = {}, method = "GET",contentType) {
 				'Content-Type': contentType
 			},
 			success(res) {
-				if (res.data) {	
+				if (res.data) {
 					if (res.data.code == 401 || res.data.code == 403) {
 						uni.removeStorageSync('token');
 						uni.showToast({
@@ -91,7 +91,7 @@ function request(url, data = {}, method = "GET",contentType) {
 							});
 						}, 1000);
 					}
-					if(res.data.code == 200){						
+					if (res.data.code == 200) {
 						resolve(res.data);
 					}
 				} else {
@@ -116,5 +116,5 @@ export {
 	put,
 	deletes,
 	uploadFiles
-	
+
 };

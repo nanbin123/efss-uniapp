@@ -1,7 +1,6 @@
 <template>
 
 	<view class="head"></view>
-
 	
 	<view class="item">			
 		<text class="title">品名</text>
@@ -39,11 +38,11 @@
 	</view>
 	<view class="item">
 		<text  class="title">零售价:</text>
-		<input  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入零售价">
+		<input v-model="product.retailPrice" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入零售价">
 	</view>
 	<view class="item" @click="chooseCategory()">
 		<text class="title">类别:</text>
-		<input v-model="product.category" 
+		<input v-model="product.productCategoryName" 
 		:style="'backgroundImage:url('+getImgUrl('static/image/common/right.png')+')'" 
 		class="type" disabled="true" type="text"  placeholder-class="input-placeholder" placeholder="请选择类别">
 	</view>
@@ -112,12 +111,6 @@
 	width: 100%;
 	background-color:  #efeef3ff;
 }
-
-/* .product{	
-	margin: 5px;
-	border-radius: 5px;
-	background-color: #fff;
-} */
 .item{
 	display: flex;	
 	padding: 10px 0 5px 0;

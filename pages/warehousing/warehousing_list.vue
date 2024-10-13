@@ -1,49 +1,53 @@
 <template>
-
-	<view class="head">
-		<view class="status-search">
-			<view class="completion-status">
-				<view  v-for="(item,index) in completionStatusList" 
-					class="normal-class" :class="{'active-class': nowIndex == index}" 
-					@click="changeCompletionStatus(index)">{{item}}
+	<z-paging ref="paging" v-model="warehousingEntryList" @query="queryList">	
+		<template #top>
+			<view class="head">
+				<view class="status-search">
+					<view class="completion-status">
+						<view  v-for="(item,index) in completionStatusList" 
+							class="normal-class" :class="{'active-class': nowIndex == index}" 
+							@click="changeCompletionStatus(index)">{{item}}
+						</view>
+					</view>
+					<view class="search">
+						 <view class="same_search">
+							<input class="search_input"  v-model="searchVal" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'" type="text" placeholder="搜索货品"/>
+						</view>
+			
+						<navigator  class="more_search" url="/pages/warehousing/warehousing_query">
+							<i class="iconfont">&#xe69b;</i>
+						</navigator>
+					</view>
 				</view>
 			</view>
-			<view class="search">
-				 <view class="same_search">
-					<input class="search_input"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索货品"/>
-				</view>
+		</template>
 
-				<navigator  class="more_search" url="/pages/warehousing/warehousing_query">
-					<i class="iconfont">&#xe69b;</i>
-				</navigator>
-			</view>
-		</view>
-	</view>
-	<scroll-view style="height: calc(100vh - 165px);" scroll-y><!-- 90+30 -->
 		<navigator v-for="(item,index) in warehousingEntryList" :url="'/pages/warehousing/warehousing_details?id='+item.id"  :id="item.id">
-			<view class="content">
-				<view class="item">											
-					<text  class="info">入库单号:{{item.warehousingNumber}}</text>
-					<text  class="info">记录日期:{{item.recordDate}}</text>							
+			<view class="container">
+				<view class="item">
+					<text  class="info" style="width: 45%;">操&nbsp;作&nbsp;人&nbsp;:{{item.handledBy}}</text>	
+					<text  class="info" style="width: 55%;">入库单号:{{item.warehousingNumber}}</text>
 				</view>
 				<view class="item">
-					<text  class="info">操&nbsp;作&nbsp;人&nbsp;:{{item.handledBy}}</text>	
-					<text  class="info">供&nbsp;应&nbsp;商&nbsp;:{{item.supplier}}</text>							
+					<text  class="info" style="width: 45%;">记录日期:{{item.recordDate}}</text>
+					<text  class="info" style="width: 55%;">供&nbsp;应&nbsp;商&nbsp;:{{item.supplier}}</text>
 				</view>
-				<view>
-					<text  class="info">货&nbsp;品:&nbsp;{{item.productNames}}</text>
+
+				<view class="item">
+					<text  class="info" style="width: 100%;">货&nbsp;品:&nbsp;{{item.productNames}}</text>
 				</view>
 			</view>
 		</navigator>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="warehousingEntryList.length > 0"/>	
-	</scroll-view>
-
-	<view class="footer">
-		<navigator url="/pages/warehousing/warehousing_add">
-			新增入库
-		</navigator>
-	</view>
-
+		
+		<template #bottom>
+			<view class="warehousing_footer">
+				<navigator url="/pages/warehousing/warehousing_add">
+					新增入库
+				</navigator>
+			</view>
+		</template>
+		
+	</z-paging>
 </template>
 
 <script>
@@ -54,45 +58,39 @@
 				nowIndex: 0,
 				completionStatusList:['新单据','未完成','已完成'],
 				warehousingEntryList:[],
-				pageNum: 1, // 当前页				
-				status: 'more',
-				contentText: {
-					contentdown: '上拉加载更多~',				
-					contentrefresh: '正在加载更多~',				
-					contentnomore: '我是有底线的~'
-				},
-				iconType: 'auto'    // 图标样式 
+				searchWarehousing:{}			
+				
 			}
 		},
 		methods: {
+			refreshWarehousingList(){
+				console.log("searchWarehousing",JSON.stringify(this.searchWarehousing));
+				post("warehousing/selectListWarehousingEntry",this.searchWarehousing).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
+			queryList(pageNo, pageSize) {
+				this.searchWarehousing.pageNum = pageNo;
+				this.refreshWarehousingList(this.searchWarehousing);
+			},
 			changeCompletionStatus(index){
 				this.nowIndex = index
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
-		},
-		onLoad() {
-			post("warehousing/selectListWarehousingEntry").then(res =>{
-				this.totalCount = res.total
-				 if(this.totalCount >0){
-					this.warehousingEntryList = res.rows
-					uni.hideLoading();
-				 }
-				 if(this.totalCount == this.warehousingEntryList.length){					 
-					 this.status = "noMore"
-				 }
-			})
 		}
 	}
 </script>
 
-<style>
-/* 	@import "../../style/icon/iconfont.css"; */
+<style scoped>
 
 .head{
-	height: 90px;/* 88 +2 留出2px 的空间 */
+	height: 85px;
 }
 .head .status-search{
 	border-top: 5px solid #efeef3ff;
-	height: 33px; /* 30+3+45+2+3 */
+	height: 36px; 
 	position: fixed; 
 	width: 100%;
 }
@@ -100,6 +98,7 @@
 	display: flex;
 	justify-content: space-around;
 	padding-top: 3px;
+	padding-bottom: 3px;
 }
 .head .completion-status view{
 	width: 80px;
@@ -113,40 +112,35 @@
 .head .search{	
 	display: flex;
 	width: 100%;
-	height: 47px;/* 45+2 */
-	padding-top: 3px;
+	height: 43px;
 	z-index: 999;
-	background-color: #ffffff;	
-	
+	background-color: #ffffff;
 }
 .head .same_search{
-	width:100%;
+	flex: 1;
 }
  .search_input{	
-	height: 45px;
-	background-image:url("../../static/image/search.png");
+	height: 41px;	
 	background-repeat: no-repeat;
 	background-position: 98%;	
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
-	padding-left: 20px;
+	text-align: left;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 20px; 
+	margin-left: 5px; 
 }
 .more_search{
-	height: 40px;
-	width: 40px;
-	margin-top: 3px; 
-	border-radius: 5px;
+	height: 39px;
+	width: 39px;
+	margin-top: 2px; 
+	border-radius: 3px;
 	text-align: center;
-	line-height: 40px;
+	line-height: 39px;
 	background-color: #00b6aaff;
-	margin-left: 8px; 
-	margin-right: 10px;
-	
+	margin-left: 5px; 
+	margin-right: 7px;
 }
 .iconfont{
 	color: #ffffff;	
@@ -163,32 +157,29 @@
 }
 
 
-.content{
-	padding: 10px;
-	padding-bottom: 0;
-	border-bottom: #F0F0F0 2px solid;
+.container{	
+	padding: 3px 5px 3px 5px;
+	border-bottom: 2px solid #efeef3ff;
 }
 .item{
-	display: flex;
-	line-height: 15px;
-	padding-bottom: 10px;
+	display: flex;	
+	padding-bottom: 3px;
 }
 .info {
    width: 50%;
    color: #030303ff;
    font-size: 15px;
-   white-space: nowrap;  
+   white-space: nowrap; 
+   overflow: hidden; /* 超出部分隐藏 */
+   text-overflow: ellipsis; /* 以省略号形式显示 */
    -webkit-font-smoothing: antialiased;
 }
-.footer{
-	height: 30px;
-	font-size: 15px;
+.warehousing_footer{
+	font-size: 16px;
 	text-align: center;
+	height: 30px;
 	line-height: 30px;
-	background-color: #00a7e2ff;	
-	color: #daf2fbff;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
+	background-color: #38c1b9;
+	color: #ffffff;	
 }
 </style>

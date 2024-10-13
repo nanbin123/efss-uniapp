@@ -3,9 +3,9 @@
 		<view class="head"></view>
 	</view>
 
-	<scroll-view scroll-y style="height: calc(100vh - 80px);">
+	<scroll-view scroll-y style="height: calc(100vh - 35px);">
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
+			<image class="img" style="width: 19px;" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
 			<text class="title">客户姓名</text>
 			<text class="iconfont">&#xe639;</text>			
 			<input :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
@@ -16,23 +16,23 @@
 			<text class="iconfont">&#xe639;</text>
 			<view class="gender">
 				<radio-group class="radio-group" @change="radioChange">
-				  <radio class="radio1" value = '1' color="#38c1b9"  :checked="orderForm.sex === '1'">
+				  <radio class="radio1" value = '1' color="#00a7e2ff"  :checked="orderForm.sex === '1'">
 					  <text class="radio-text" :style="{'color':orderForm.sex === '1'?'#fff':'#333'}">男</text>
 				  </radio>
-				  <radio class="radio2" value = '2' color="#38c1b9" :checked="orderForm.sex === '2'">
+				  <radio class="radio2" value = '2' color="#00a7e2ff" :checked="orderForm.sex === '2'">
 					  <text class="radio-text" :style="{'color':orderForm.sex === '2'?'#fff':'#333'}">女</text>
 				  </radio>
 				</radio-group>
 			</view>
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
+			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
 			<text class="title">客户电话</text>
 			<text class="iconfont">&#xe639;</text>
 			<input  :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
 		</view>
 		<view class="item cusomer_address">
-			<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
+			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
 			<text class="title">客户地址</text>
 			<text class="iconfont">&#xe639;</text>
 			<input :focus='addressFocus'  @blur='addressFocus = false' v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
@@ -46,13 +46,8 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')"></image>
 			<text class="title">送货时间&nbsp:</text>
-			<view class="deliveryTime">
-				<view  @tap="toggle('delivery_time')">
-					<text  v-if='typeof orderForm.deliveryTime  == "undefined"' style="color: #a0a0a0;">请选择时间</text>
-					<text  v-else style="color: #333;">{{orderForm.deliveryTime}}</text>
-				</view>
-				<cPicker mode='date' @confirm="deliveryHand" ref="delivery_time"></cPicker>
-			</view>
+			<view  @tap="toggle('delivery_time')" class="time" :style="{color:isEmpty(orderForm.deliveryTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.deliveryTime)? "请选择":orderForm.deliveryTime}}</view>
+			<cPicker mode='date' :pageData="orderForm.deliveryTime" @confirm="deliveryHand" ref="delivery_time"></cPicker>
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
@@ -103,7 +98,6 @@
 
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
-import {picker} from "../../components/mixins/picker.js"
 import {get,post} from "../../components/utils/request.js"
 import useOrderStore from '@/store/modules/order.js'
 import useTransferOrderStore from '@/store/modules/transfer_order.js'
@@ -116,10 +110,6 @@ export default {
 	data() {
 		return {
 			deliveryTime:'请选择',
-			//列表数据，可根据自己的业务获取
-			csListArrl:[{
-				
-			}],
 			orderForm:{
 				orderProductList:[]
 			},
@@ -153,15 +143,18 @@ export default {
 		},
 		// 校验电话号码
 		checkPhone() {
-		  this.phoneFocus = false		 
-		  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
-		  this.phoneError = !reg.test(this.orderForm.phone);		  
-		  if (this.phoneError) {
-			uni.showToast({
-			  title: '请输入有效的电话号码',
-			  icon: 'none'
-			});
+		  if("" !=this.orderForm.phone && undefined != this.orderForm.phone){
+			  this.phoneFocus = false
+			  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
+			  this.phoneError = !reg.test(this.orderForm.phone);		  
+			  if (this.phoneError) {
+			  			uni.showToast({
+			  			  title: '请输入有效的电话号码',
+			  			  icon: 'none'
+			  			});
+			  }
 		  }
+
 		},		
 		//确认提交订单
 		addOrderForm(){
@@ -267,6 +260,9 @@ export default {
 		},
 		getImgUrl(image){
 		   return this.BASEURL+image;
+		},
+		isEmpty(str){
+			return typeof str === 'undefined' || '' === str;
 		}
 	},
 	computed:{
@@ -292,7 +288,7 @@ export default {
 		}
 	},
 	onLoad() {
-
+		
 	},
 	onShow() {
 		let pages = getCurrentPages();
@@ -322,25 +318,25 @@ export default {
 	width: 100%;
 	background-color:  #efeef3ff;
 	position: fixed;
-	z-index: 999;
+	/* z-index: 999; */
 }
 
 .item{
 	display: flex;	
-	padding: 10px 0 5px 0;
+	padding: 8px 0;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
 	
 }
 .item .img{
-	padding-left: 10px;
+	padding-left: 2px;
 	width: 20px;
 	height: 20px;	
 }
 .item .title{
-	margin-left: 10px;
-	font-size: 15px;
+	margin-left: 1px;
+	font-size: 12px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
@@ -366,16 +362,10 @@ export default {
 	color: #aaa;
 	text-rendering: optimizeLegibility;
 }
-.item .deliveryTime {
-	flex-grow: 1;
-	padding-right: 10px;
-	font-size: 15px;
+.item .time{
+	margin-left: auto;
 	text-align: right;
-	/* color: #aaa;	 */
-}
-.item .deliveryTime text{
-	white-space: nowrap;
-	text-rendering: optimizeLegibility;
+	padding-right: 12px;
 }
 .choice_porduct{
 	position: relative;
@@ -435,18 +425,15 @@ export default {
 	margin-left: auto;
 	padding-right: 15px;
 }
-
  /deep/ .gender .radio-group svg {
 	display: none  !important;
 }
-
-
 /deep/ .gender .uni-radio-input {
 	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
-	border-color: #38c1b9;
+	border-color: #00a7e2ff;
 }
 .gender .radio-group .radio1,.radio2{
 	position: relative !important;
@@ -473,6 +460,16 @@ export default {
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
+	border-color: #00a7e2ff !important;
+}
+.gender .radio-group .radio1 .wx-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+.gender .radio-group .radio2  .wx-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
 }
 
 .gender .wx-radio-input.wx-radio-input-checked::before{
@@ -486,19 +483,8 @@ export default {
 	text-align: center;
 	line-height: 30px;
 	background-color: #00a7e2ff;	
-	color: #daf2fbff;
-	/* position: fixed;
-	bottom: 0; */
+	color: #daf2fbff;	
 	width: 100%;
 }
-.btn{	
-/* 	position: fixed;
-	bottom: 0;
-	width: 100%;
-	height: 30px;
-	line-height: 30px;
-	background-color: #02a5e6ff;
-	color: #f4f7ffff;
-	text-align: center; */
-}
+
 </style>

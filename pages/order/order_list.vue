@@ -10,7 +10,7 @@
 	</view>
 </view>
 		
-<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 90px);" @scrolltolower="onReachBottom">
+<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" id="scrollList" style="height: calc(100vh - 90px);" @scrolltolower="onReachBottom">
 	<navigator v-for="(item,index) in orderList" :url="'/pages/order/order_deatil?id='+item.id"  :id="item.id">
 		<view class="container">
 			<view class="item">
@@ -21,40 +21,47 @@
 				<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
 				<text  class="info">客户电话:{{item.phone}}</text>
 			</view>
-			<view class="item ">					
+			<view class="item">					
 				<text  class="info">客户地址:{{item.address}}</text>
 				<text  class="info">送货时间:{{item.deliveryTime}}</text>
 			</view>
-			<view class="item ">
+			<view class="item">
 				<text  class="info">货品:{{item.productNames}}</text>
 				<text  class="info">实收金额:{{item.actualmoney}}</text>
 			</view>
-			<view class="item ">
+			<view class="item">
 				<text  class="info">下单时间：{{item.createTime}}</text>
 				<text  class="info">操作人:{{item.updateBy}}</text>
 			</view>
 		</view>			
 	</navigator>
 </scroll-view>
-
-<view class="footer">
-	<navigator url="/pages/order/order_add">
-		新增订单
-	</navigator>
+<view>
+	<view class="footer">
+		<navigator url="/pages/order/order_add">
+			新增订单
+		</navigator>
+	</view>
 </view>
-
 </template>
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	
+	import useOrderStore from '@/store/modules/order.js'
 
 	export default {
 		data() {
 			return {
 				orderList:[],
 				pageNum: 1,				
-				searchVal:''
+				searchVal:'',
+				searchOrder:{}
 			}
+		},
+		setup() {
+			const orderStore = useOrderStore();
+			return { orderStore }
 		},
 		methods: {
 			sexConvert(sex){
@@ -66,9 +73,9 @@
 			},
 			onReachBottom() {
 				if(this.totalCount > this.orderList.length){
-					this.pageNum++;				
-					post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{							
-						 this.orderList = this.orderList.concat(res.rows)					
+					this.searchOrder.pageNum = ++this.pageNum;
+					post("order/selectOrder",this.searchOrder).then(res =>{									 
+						this.orderList = this.orderList.concat(res.rows)	
 					})
 				}else if(this.totalCount == this.orderList.length){ 
 					 uni.showToast({
@@ -78,16 +85,36 @@
 					 });			
 				}
 			},
+			getOrderList(){//高级查询
+				this.searchVal = null;
+				this.searchOrder.customerNameOrPhone="";
+				let order = this.orderStore.moreSearchOrder;
+				this.searchOrder = order;
+				this.searchOrder.pageNum = 1;				
+				this.orderQueryList();
+			},
+			orderQueryList(){
+				post("order/selectOrder",this.searchOrder).then(res =>{
+					this.totalCount = res.total;					 
+					this.orderList = res.rows;
+				})
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
-		onShow() {
-			post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{
-				this.totalCount = res.total
-				this.orderList = res.rows
-				uni.hideLoading();
-			}) 
+		watch:{
+			searchVal(val){
+				if (val != null){
+					let order = {"pageNum":1,"customerNameOrPhone":val}
+					this.searchOrder = order;
+					this.orderQueryList()
+				}
+			}
+		},
+		onLoad() {
+			this.searchOrder.pageNum = this.pageNum;
+			this.orderQueryList()
 		}
 	}
 
@@ -120,10 +147,10 @@
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
 	text-align: left;
-	padding-left: 20px;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 10px; 
+	margin-left: 5px; 
 }
  .head .search .more_search{
 	height: 39px;
@@ -145,10 +172,7 @@
 
 .container{	
 	border-bottom: 2px solid #efeef3ff;
-	padding: 10px 10px 0 10px;
-}
-.grid {	
- 	
+	padding: 10px 5px 0 5px;
 }
 .item{
 	display: flex;
@@ -170,7 +194,7 @@
 	text-align: center;
 	line-height: 30px;
 	background-color: #00a7e2ff;	
-	color: #ffffff;
+	color: #fff;
 	position: fixed;
 	bottom: 0;
 	width: 100%;

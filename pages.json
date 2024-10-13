@@ -29,7 +29,8 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "销售订单",
-		        "enablePullDownRefresh": false
+		        "enablePullDownRefresh": false,
+				"onReachBottomDistance": 200
 		    }
 		    
 		},
@@ -237,10 +238,27 @@
 		    
 		},
 		{
-			"path" : "pages/product/product_query",
+			"path" : "pages/product/product_list",
 			"style" :                                                                                    
 			{
 				"navigationBarTitleText": "产品查询",
+				"enablePullDownRefresh": false
+				
+			}			
+		},
+		{
+			"path" : "pages/product/product_query",
+			"style" :
+			{
+				"navigationBarTitleText": "产品筛选",
+				"enablePullDownRefresh": false
+			}			
+		},
+		{
+			"path" : "pages/product/product_detail",
+			"style" :
+			{
+				"navigationBarTitleText": "产品详情",
 				"enablePullDownRefresh": false
 			}			
 		},

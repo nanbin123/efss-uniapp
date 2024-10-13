@@ -10,9 +10,9 @@
 			</view>
 			<view class="search">
 				 <view class="same_search">
-					<input class="search_input"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或订单号"/>
+					<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
+					v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
 				</view>
-	
 				<navigator  class="more_search" url="">
 					<i class="iconfont">&#xe69b;</i>
 				</navigator>
@@ -21,18 +21,25 @@
 	</view>
 	
 	
-	<scroll-view style="height: calc(100vh - 165px);" scroll-y><!-- 90+30 -->
+	<scroll-view scroll-y="true" :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 120px);" @scrolltolower="onReachBottom">
 		<navigator v-for="(item,index) in outboundList" :url="'/pages/outbound/outbound_details?id='+item.id">
 			<view class="content">
-				<view>订&nbsp单&nbsp号&nbsp:&nbsp;{{item.orderNumber}}</view>
-				<view>记录日期:&nbsp;{{item.recordDate}}</view>
+				<view class="item">
+					<view class="info">客户姓名:&nbsp;{{item.customerName}}</view>
+					<view class="info">客户电话:&nbsp;{{item.customerName}}</view>
+				</view>
+				<view class="item">
+					<view class="info">记录日期:&nbsp;{{item.recordDate}}</view>
+					<view class="info">操&nbsp作&nbsp人&nbsp:&nbsp;{{item.handledBy}}</view>					
+				</view>
+				<view class="item">订&nbsp单&nbsp号&nbsp:&nbsp;{{item.orderNumber}}</view>
+				
 				<view class="personal-name">
-					<view>操&nbsp作&nbsp人&nbsp:&nbsp;{{item.handledBy}}</view>
-					<view class="customer-name">客户姓名:&nbsp;{{item.customerName}}</view>
+					
+					
 				</view>
 			</view>		
 		</navigator>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="outboundList.length > 0"/>
 	</scroll-view>
 
 
@@ -52,40 +59,36 @@
 				nowIndex: 0,
 				completionStatusList:['新单据','未完成','已完成'],
 				outboundList:[],
-				pageNum: 1, // 当前页
-				status: 'more',
-				contentText: {
-					contentdown: '上拉加载更多~',				
-					contentrefresh: '正在加载更多~',				
-					contentnomore: '我是有底线的~'
-				},
-				iconType: 'auto'    // 图标样式 
+				pageNum: 1
 			}
 		},
 		methods: {
 			changeCompletionStatus(index){
 				this.nowIndex = index
-			}
-		},
-		onReachBottom() {
-			if(this.totalCount > this.outboundList.length){
-				this.pageNum++;				
-				post("outbound/selectOutbound",{"pageNum":this.pageNum}).then(res =>{					
-					 this.outboundList = this.outboundList.concat(res.rows)
-					 uni.hideLoading();
-				})
-			}else if(this.totalCount == this.outboundList.length){ 
-				 this.status = "noMore"				
+			},
+			onReachBottom() {
+				if(this.totalCount > this.outboundList.length){
+					this.pageNum++;				
+					post("outbound/selectOutbound",{"pageNum":this.pageNum}).then(res =>{					
+						 this.outboundList = this.outboundList.concat(res.rows)
+						 uni.hideLoading();
+					})
+				}else if(this.totalCount == this.outboundList.length){ 
+					 uni.showToast({
+					    title: '没有更多出库单了',
+					    duration: 3000,
+					    icon: 'none'
+					 });						
+				}
+			},
+			getImgUrl(image) {
+				return this.BASEURL + image;
 			}
 		},
 		onLoad() {
 			post("outbound/selectOutbound").then(res =>{
 				this.totalCount = res.total;				
 				this.outboundList = res.rows;
-				uni.hideLoading();				
-				 if(this.totalCount == this.warehousingEntryList.length){					 
-					 this.status = "noMore";
-				 }
 			})
 		}
 	}
@@ -111,11 +114,11 @@
 }
 .head .completion-status view{
 	width: 80px;
-	height: 30px;
+	height: 32px;
 	text-align: center;
-	line-height: 30px;	
-	border-radius: 5px;
-	font-size: 15px;
+	line-height: 32px;	
+	border-radius: 3px;
+	font-size: 13px;
 }
 
 .head .search{	
@@ -125,35 +128,33 @@
 	padding-top: 3px;
 	z-index: 999;
 	background-color: #ffffff;	
-	
 }
-.head .same_search{
-	width:100%;
+.head .search .same_search {
+	flex: 1;
 }
- .search_input{	
-	height: 45px;
-	background-image:url("../../static/image/search.png");
+.head .search .same_search .search_input {
+	height: 40px;
 	background-repeat: no-repeat;
-	background-position: 98%;	
+	background-position: 98%;
 	border: 1px solid #f2f2f2;
-	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
-	padding-left: 20px;
+	border-radius: 7px;
+	text-align: left;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 20px; 
+	margin-left: 5px;
 }
+
 .more_search{
-	height: 40px;
-	width: 40px;
-	margin-top: 3px; 
-	border-radius: 5px;
+	height: 39px;
+	width: 39px;
+	margin-top: 2px; 
+	border-radius: 3px;
 	text-align: center;
-	line-height: 40px;
+	line-height: 39px;
 	background-color: #00b6aaff;
-	margin-left: 8px; 
-	margin-right: 10px;
+	margin-left: 5px; 
+	margin-right: 7px;
 	
 }
 .iconfont{
@@ -170,26 +171,30 @@
 	color: rgb(46, 178, 138);
 }
 .content{
-	padding: 10px 0 10px 30px;
-	font-size: 15px;
-	line-height: 25px;
-	border-bottom: #F0F0F0 2px solid;
+	border-bottom: 2px solid #efeef3ff;
+	padding: 10px 5px 0 7px;
 }
-.personal-name{
+.content .item{
 	display: flex;
+	line-height: 14px;
+	padding-bottom: 10px;
+	font-size: 15px;
+	color: #030303ff;
+	white-space: nowrap; /* 文字不换行 */
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
-.customer-name{
-	margin-left: 7px;
+.content .item .info{
+    width: 50%;
 }
-
 
 .footer{
 	height: 30px;
-	font-size: 15px;
+	font-size: 16px;
 	text-align: center;
 	line-height: 30px;
-	background-color: #00a7e2ff;	
-	color: #daf2fbff;
+	background-color: #38c1b9;
+	color: #ffffff;	
 	position: fixed;
 	bottom: 0;
 	width: 100%;

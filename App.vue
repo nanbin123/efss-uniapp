@@ -42,15 +42,20 @@ page{
 	width: 100%;
 	height: 100%;
 }
- .uni-navigator {
-    height: 44px !important; /* 设置默认导航栏的高度为44px */
-	color: red;
-  }
-/* .scroll-view::-webkit-scrollbar {
-  overflow: hidden; /* 隐藏滚动条 */
- /* width: 0;
-  height: 0;
-  color: transparent; 
+.uni-navigator {
+height: 44px !important; /* 设置默认导航栏的高度为44px */
+color: red;
+}
+
+::-webkit-scrollbar {
+   width: 0 !important;
+}
+/* body::-webkit-scrollbar{
+	display: none;
 } */
+
+
+
+
 
 </style>

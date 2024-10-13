@@ -1,22 +1,18 @@
-<template>
-
-
-<!-- 	<view class="head">
-		 <view class="search">
-			<input class="search_input"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
-		</view>
-	</view> -->
-	<view class="head">
-		<view class="search">
-			 <view class="same_search">
-				<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+<template> 
+<z-paging  ref="paging" v-model="productList" @query="queryList">
+	  <template #top>
+			<view class="head">
+				<view class="search">
+					 <view class="same_search">
+						<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+					</view>
+					<navigator  class="more_search" url="">
+						<i class="iconfont">&#xe69b;</i>
+					</navigator>
+				</view>
 			</view>
-			<navigator  class="more_search" url="">
-				<i class="iconfont">&#xe69b;</i>
-			</navigator>
-		</view>
-	</view>
-	
+	   </template>
+
 	<view class="content"  v-for="(item,index) in productList" :key="index">
 		<view class="left">
 			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
@@ -41,8 +37,18 @@
 			</view>	
 		</view>
 	</view>
-			<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="productList.length > 0"/>
-			
+	<template #bottom>
+		 <view class="footer">
+			<navigator url="/pages/order/order_add">
+				新增订单
+			</navigator>
+		</view> 
+	</template>
+</z-paging>
+
+
+
+
 
 </template>
 
@@ -54,35 +60,23 @@
 				productList:[],
 				pageNum: 1, // 当前页
 				pageSize: 10, // 每页条数				
-				reload: false,				
-				status: 'more',	
-				contentText: {				
-						contentdown: '上拉加载更多~',				
-						contentrefresh: '正在加载更多~',				
-						contentnomore: '我是有底线的~'
-				 },				
-				 iconType: 'auto',    // 图标样式 
 				 searchVal:""
 			}
 		},
 		methods: {
 			getImgUrl(image){
 			   return this.BASEURL+image;
-			}
-		},
-		onReachBottom() {
-			if(this.totalCount > this.productList.length){
-				this.pageNum++;				
-				post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{					
-					 this.productList = this.productList.concat(res.rows)
-					 uni.hideLoading();
+			},
+			queryList(pageNo, pageSize) {	
+				/* this.$refs.paging.updatePageScrollTopHeight() */
+				post("product/selectListProduct",{"pageNum":pageNo}).then(res =>{					
+					 this.$refs.paging.complete(res.rows);
 				})
-			}else if(this.totalCount == this.productList.length){								 
-				 this.status = "noMore"				
+				
 			}
 		},
 		watch:{
-			searchVal(val){				
+			searchVal(val){
 				post("product/selectListProductPrice",{"pageNum":this.pageNum,"productNameOrType":val}).then(res =>{
 					this.totalCount = res.total
 					this.productList = res.rows
@@ -101,68 +95,78 @@
 					this.productList = res.rows
 					uni.hideLoading();
 				 }
-				 if(this.totalCount == this.productList.length){					 
-					 this.status = "noMore"
-				 }
 			})
 		},
 	}
 </script>
 
 <style>
-.head{
+::-webkit-scrollbar {
+   display: none;
+   
+}
+
+.head {
 	height: 60px;
 }
-.head .search{
-	border-top: 5px solid #efeef3ff; 
-	position: fixed; 
+
+.head .search {
 	width: 100%;
+	border-top: 5px solid #efeef3ff;
+/* 	position: fixed;
+	z-index: 999; */
 	height: 45px;
-	padding: 5px 0;	
-	z-index: 999;
-	background-color: #ffffff;	
+	padding: 5px 0;
+	background-color: #ffffff;
 	display: flex;
 }
-.head .same_search{	
-	width:100%;
+
+.head .search .same_search {
+	flex: 1;
 }
- .search_input{	
-	height: 45px;	
+
+.head .search .same_search .search_input {
+	height: 41px;
 	background-repeat: no-repeat;
-	background-position: 98%;	
+	background-position: 98%;
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
-	padding-left: 20px;
+	text-align: left;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin-left: 20px; 
+	margin-left: 5px;
 }
-.more_search{
-	height: 40px;
-	width: 40px;
-	margin-top: 3px; 
-	border-radius: 5px;
+
+.more_search {
+	height: 39px;
+	width: 39px;
+	margin-top: 2px;
+	border-radius: 3px;
 	text-align: center;
-	line-height: 40px;
-	background-color: #00b6aaff;
-	margin-left: 8px; 
-	margin-right: 10px;
-	
+	line-height: 39px;
+	background-color: #00a7e2ff;
+	margin-left: 5px;
+	margin-right: 7px;
+}
+.iconfont {
+	color: #ffffff;
+	font-size: 18px;
 }
 
-
-
-
-
+.a::-webkit-scrollbar{
+	width: 0 !important;
+	height: 0 !important;
+	background-color: transparent !important;
+	scrollbar-width: none;
+}
 .content{
 	display: flex;
 	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
 .left{
 	width: 20%;
@@ -188,14 +192,25 @@
 }
 .grid {	
  	display: flex;	
-	line-height: 14px;
+	line-height: 17px;
 }
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 12px;
-   white-space: nowrap;  
+   font-size: 13px;
+   white-space: nowrap; /* 文字不换行 */
+   overflow: hidden; /* 超出部分隐藏 */
+   text-overflow: ellipsis; /* 以省略号形式显示 */
 }
 
+.footer {
+	height: 30px;
+	font-size: 16px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #00a7e2ff;
+	color: #fff;
+	width: 100%;
+}
 
 </style>

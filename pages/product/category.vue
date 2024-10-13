@@ -1,22 +1,22 @@
 <template>
-	<view style="height: 5px;">
-		<view class="head"></view>
-	</view>
+<view style="height: 5px;">
+	<view class="head"></view>
+</view>
 	
 <scroll-view scroll-y id="scrollList" style="height: calc(100vh - 85px);" @scrolltolower="onReachBottom">
-		<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
-			<view class="type">{{item.category}}</view>
-			<view class="img-btn" v-show="!showEditAndDelete">
-				<image class="img-edit" @click.stop="imgEdit(item.category,item.id)" :src="getImgUrl('../../static/image/product/edit.png')"></image>
-				<image class="img-delete" @click.stop="imgDelete(item.id)" :src="getImgUrl('../../static/image/product/delete.png')"></image>
-			</view>
+	<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
+		<view class="type">{{item.category}}</view>
+		<view class="img-btn" v-show="!showEditAndDelete">
+			<image class="img-edit" @click.stop="imgEdit(item.category,item.id)" :src="getImgUrl('../../static/image/product/edit.png')"></image>
+			<image class="img-delete" @click.stop="imgDelete(item.id)" :src="getImgUrl('../../static/image/product/delete.png')"></image>
 		</view>
-	</scroll-view>
-	
-	<view class="bottom-button">
-		<view @click="add()" class="add">添加</view>
-		<view  @click="edit()" class="edit">{{editText}}</view>
 	</view>
+</scroll-view>
+	
+<view class="bottom-button">
+	<view @click="add()" class="add">添加</view>
+	<view  @click="edit()" class="edit">{{editText}}</view>
+</view>
 
 	
 <!--编辑新增弹窗-->
@@ -161,7 +161,7 @@
 			chooseCategory(id,category){				
 				let pages= getCurrentPages();
 				let prevPage = pages[pages.length-2]
-				prevPage.$vm.product.category  = category;
+				prevPage.$vm.product.productCategoryName  = category;
 				prevPage.$vm.product.productCategoryId = id;
 				uni.navigateBack({
 					delta: 1
