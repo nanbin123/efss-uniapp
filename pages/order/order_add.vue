@@ -2,7 +2,6 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>
-
 	<scroll-view scroll-y style="height: calc(100vh - 35px);">
 		<view class="item">
 			<image class="img" style="width: 19px;" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
@@ -47,7 +46,7 @@
 			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')"></image>
 			<text class="title">送货时间&nbsp:</text>
 			<view  @tap="toggle('delivery_time')" class="time" :style="{color:isEmpty(orderForm.deliveryTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.deliveryTime)? "请选择":orderForm.deliveryTime}}</view>
-			<cPicker mode='date' :pageData="orderForm.deliveryTime" @confirm="deliveryHand" ref="delivery_time"></cPicker>
+			<cPicker mode='date'  @confirm="deliveryHand" ref="delivery_time"></cPicker>
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
@@ -67,7 +66,7 @@
 		</view>
 		<view class="product"  v-for="(item,index) in orderForm.orderProductList">	
 			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="product-content">
+			<view class="product-content" @click="open(item)">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>
@@ -94,6 +93,21 @@
 	<view class="footer">
 		<view class="btn"  @click="addOrderForm()">保存</view>	
 	</view>
+	
+	<uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">
+		<view class="popup_content">
+			<view class="popup_title">{{popupProduct.productName}}</view>
+			<view class="popup_item">
+				<text class="popup_item_title">数量:</text>
+				<view class="popup_item_text"><input v-model="popupProduct.number" type="number"/></view>
+			</view>
+			<view class="popup_product_foot">
+				<view class="cancel" @click="cancelTrack()">取消</view>			
+				<view class="determine" @click="submitTrack()">确定</view>
+			</view>
+		</view>
+	</uni-popup>
+	
 </template>
 
 <script>
@@ -107,16 +121,21 @@ export default {
 	components: {
 		cPicker
 	},
+	options: {styleIsolation: 'shared'},
 	data() {
 		return {
-			deliveryTime:'请选择',
 			orderForm:{
 				orderProductList:[]
 			},
 			customerNameFocus:true,
 			phoneFocus:false,
 			addressFocus:false,
-			actualmoneyFocus:false
+			actualmoneyFocus:false,
+			popupProduct:{
+				productId:"",
+				productName:"",
+				number:""
+			}
 		}
 	},
 	setup() {
@@ -125,6 +144,22 @@ export default {
 		return { orderStore,transferOrderStore }
 	 },
 	methods: {
+		open(item){
+			this.popupProduct.productName = item.productName;
+			this.popupProduct.number = item.number;
+			this.popupProduct.productId = item.productId;
+			this.$refs.popup.open('center');			
+		},
+		cancelTrack(){
+			this.$refs.popup.close()
+		},
+		submitTrack(){
+			let orderProductList = this.orderForm.orderProductList;
+			let productId = this.popupProduct.productId;
+			let orderProduct = orderProductList.filter(obj =>obj.productId == productId)[0]			
+			orderProduct.number = this.popupProduct.number;
+			this.$refs.popup.close()
+		},
 		//移除指定产品
 		deleteProduct(productId){
 			let orderProductList = this.orderForm.orderProductList;
@@ -224,8 +259,7 @@ export default {
 			})
 			orderForm.orderProductList = productInfo;
 			post("order/insertOrderForm",JSON.stringify(orderForm),'application/json').then(res =>{
-				if(200 == res.code){
-					 this.orderForm.id= res.msg;
+				if(200 == res.code){					 
 					 uni.showToast({
 						title: '添加销售订单成功',
 						icon: 'none',
@@ -242,21 +276,8 @@ export default {
 			})
 		},
 		getOrderProduct(){
-			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
-			let products = this.orderStore.products; // 产品选择页面带过来的数据			
-			for (let i = 0; i < products.length; i++) {
-				let foundMatch = false;
-				for (let j = 0; j < orderProductList.length; j++) {
-					if (orderProductList[j].productId === products[i].productId) {
-						orderProductList[j].number = products[i].number;
-						foundMatch = true;
-						break;
-					}
-				}
-				if (!foundMatch) {
-					orderProductList.unshift(products[i]);						
-				}
-			}
+			let products = JSON.stringify(this.orderStore.products);
+			this.orderForm.orderProductList = JSON.parse(products);
 		},
 		getImgUrl(image){
 		   return this.BASEURL+image;
@@ -311,14 +332,12 @@ export default {
 </script>
 
 <style>
-/* @import "../../style/icon/iconfont.css"; */
 
 .head{
 	height: 5px;
 	width: 100%;
 	background-color:  #efeef3ff;
-	position: fixed;
-	/* z-index: 999; */
+	position: fixed;	
 }
 
 .item{
@@ -327,7 +346,6 @@ export default {
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
-	
 }
 .item .img{
 	padding-left: 2px;
@@ -485,6 +503,61 @@ export default {
 	background-color: #00a7e2ff;	
 	color: #daf2fbff;	
 	width: 100%;
+}
+
+.popup_content {
+	position: relative;
+	width: 260px;
+	height: 120px;
+	background-color: white;	
+	overflow: auto;
+ } 
+ .popup_title {
+ 	 font-size: 15px;	
+	 text-align: center;
+	 margin: 5px; 	
+ }
+ .popup_item {
+ 	 display: flex;	
+ 	 margin: 10px 15px;
+ }
+ .popup_item_title{
+ 	white-space: nowrap;
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+ .popup_item_text{
+ 	border-bottom: 1px solid #f1f1f1ff;
+ 	flex-grow: 1;
+ 	text-align: center;
+ 	white-space: nowrap;
+ }
+ .popup_item_text input{
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+
+.popup_product_foot {
+	width: 260px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+    height: 40px;
+	line-height: 40px;
+	color: #070707ff;
+	font-size: 15px;
+	display: flex;
+    border-top: 1px solid #f1f1f1ff;
+}
+
+.cancel{
+	text-align: center;
+	border-right: 1px solid #f1f1f1ff;
+	width: 50%;
+}
+.determine{
+	text-align: center;
+	width: 50%;
 }
 
 </style>

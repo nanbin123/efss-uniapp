@@ -2,68 +2,62 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>	
-	
-	<view class="item">
-		<image style="margin-top: 1px;margin-right: -2px;" class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')" ></image>
-		<text class="title">入库单号:</text>			
-		<uni-forms-item>
+	<scroll-view scroll-y style="height: calc(100vh - 35px);">
+		<view class="item">
+			<image  class="img" style="margin-top: 1px;margin-right: -2px;" :src="getImgUrl('static/image/warehousing/warehousing-number.png')" ></image>
+			<text class="title">入库单号:</text>	
 			<input v-model="warehousingEntry.warehousingNumber" type="text" disabled="disabled"/>
-		</uni-forms-item>
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')"></image>
-		<text class="title">记录日期:</text>	
-		<text class="content"></text>
-		<uni-forms-item>
-			<input v-model="warehousingEntry.recordDate" type="text" />
-		</uni-forms-item>
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
-		<text class="title">供应商:</text>
-		<uni-forms-item>
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')"></image>
+			<text class="title">记录日期:</text>
+			<view @tap="toggle('record_date')" class="time" :style="{color:isEmpty(warehousingEntry.recordDate) ?'#a0a0a0':'#333'}">{{isEmpty(warehousingEntry.recordDate)? "请选择":warehousingEntry.recordDate}}</view>
+			<cPicker mode='date' @confirm="recordDateHand" ref="record_date"></cPicker>
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
+			<text class="title">供应商:</text>
 			<input v-model="warehousingEntry.supplier" type="text" />
-		</uni-forms-item>
-	</view>	
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
-		<text class="title">备注 :</text>	
-		<uni-forms-item>
+		</view>	
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
+			<text class="title">备注 :</text>	
+			
 			<input v-model="warehousingEntry.remark" type="text" />
-		</uni-forms-item>
-	</view>
-	<view class="item choice_porduct" @click="addWarehousingProduct()">
-		<image class="img"  :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
-		<text class="title">选择产品</text>
-		<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
-	</view>
-	<view class="product"  v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
-		<view class="left">
-			<image class="left_img" :src="getImgUrl('static/image/茶几.png')"></image>
-		</view> 
-		<view class="right">
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
-			</view>
-			<view class="grid">
-				<text class="info" >尺寸：{{item.size}}</text>
-				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">类别：{{item.productType}}</text>
-				<text class="info">颜色：{{item.color}}</text>				
-			</view>
-			<view class="grid">
-				<text class="info">材质：{{item.texture}}</text>	
-				<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-			</view>
-			<view class="grid">
-				<text class="info">数量：{{item.number}}</text>	
-			</view>	
-		</view> 
-	</view>
-	
+			
+		</view>
+		<view class="item choice_porduct" @click="addWarehousingProduct()">
+			<image class="img"  :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
+			<text class="title">选择产品</text>
+			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
+		</view>
+		<view class="product"  v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
+			<view class="left">
+				<image class="left_img" :src="getImgUrl('static/image/茶几.png')"></image>
+			</view> 
+			<view class="right">
+				<view class="grid">
+					<text class="info">品名：{{item.productName}}</text>
+					<text class="info">型号：{{item.type}}</text>
+				</view>
+				<view class="grid">
+					<text class="info" >尺寸：{{item.size}}</text>
+					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+				</view>
+				<view class="grid">
+					<text class="info">类别：{{item.productType}}</text>
+					<text class="info">颜色：{{item.color}}</text>				
+				</view>
+				<view class="grid">
+					<text class="info">材质：{{item.texture}}</text>	
+					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+				</view>
+				<view class="grid">
+					<text class="info">数量：{{item.number}}</text>	
+				</view>	
+			</view> 
+		</view>
+	</scroll-view>
 	<view class="btn" @click="addOrderForm()">
 		<button>保存</button>
 	</view>
@@ -71,7 +65,12 @@
 </template>
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	import cPicker from "../../components/c-picker/c-picker.vue"
 	export default {
+		components: {
+			cPicker
+		},
+		options: {styleIsolation: 'shared'},
 		data() {
 			return {
 				warehousingEntry:{}
@@ -108,17 +107,27 @@
 					}
 				})
 			},
+			recordDateHand(value) {				
+				this.warehousingEntry.recordDate = value.result							
+			},
+			//时间弹窗
+			toggle(val) {
+				this.$refs[val].show();
+			},
+			isEmpty(str){
+				return typeof str === 'undefined' || '' === str;
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 		onLoad() {			
-			post("warehousing/insertWarehousingEntry").then(res =>{
+/* 			post("warehousing/insertWarehousingEntry").then(res =>{
 				if(200 == res.code){
 					this.warehousingEntry = res.data
 					uni.hideLoading(); 
 				}
-			})
+			}) */
 		}	
 	}
 </script>
@@ -128,27 +137,37 @@
 	height: 5px;
 	width: 100%;
 	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
+	position: fixed;	
 }
 .item{
-	display: flex;
-	align-items: center;	
-	padding-left: 10px;
-	padding-right: 10px;
-	padding-bottom: 2px;
-	padding-top: 2px;
-	border-bottom: 1px solid #efeef3ff;
+	display: flex;	
+	padding: 8px 0;
+	border-bottom: 1px solid #f1f1f1ff;	
+	align-items: center;
+	background-color: #fff;
 }
-.img{
-	width: 23px;
-	height: 20px;	
+.item .img{
+	padding-left: 2px;
+	width: 19px;
+	height: 19px;	
 }
-.title{	
-	white-space: nowrap;
-	padding: 0 10px;
-	font-size: 20px;
+.item .title{
+	margin-left: 1px;
+	font-size: 12px;
 	color: #333;
+	white-space: nowrap;
+	text-rendering: optimizeLegibility;
+}
+.item input{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;	
+	text-rendering: optimizeLegibility;
+}
+.item .time{
+	margin-left: auto;
+	text-align: right;
+	padding-right: 12px;
 }
 .content{
 	white-space: nowrap;

@@ -1,45 +1,48 @@
 <template>
-	
+<z-paging  ref="paging" v-model="productList" @query="refreshData">
+ 	<template #top>
 		<view class="head">
 			<view class="search">
 				 <view class="same_search">
-					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索订单号或客户姓名"/>
-				</view>				
+					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
+				</view>
+				<navigator  class="more_search" url="">
+					<i class="iconfont">&#xe69b;</i>
+				</navigator>
 			</view>
 		</view>
-				
-		<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 155px);" @scrolltolower="onReachBottom">
-			<view class="product" v-for="(item,index) in productList" :key="index">
-				<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-				<view class="right">
-					<view class="grid">
-						<text class="info">品名：{{item.productName}}</text>
-						<text class="info">型号：{{item.type}}</text>
-					</view>
-					<view class="grid">
-						<text class="info">尺寸：{{item.size}}</text>
-						<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-					</view>
-					<view class="grid">
-						<text class="info">类别：{{item.productType}}</text>
-						<text class="info">颜色：{{item.color}}</text>
-					</view>
-					<view class="grid">
-						<text class="info">材质：{{item.texture}}</text>
-						<text class="info">零售价：<text
-								style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-					</view>										
-					<view class="product_number">
-						<view class="reduce" @click="reduce(item)">-</view>
-						<view :bind="transformNumber(item)">
-							<input disabled="disabled" type="number" v-model="item.number">
-						</view>
-						<view class="add" @click="add(item)">+</view>
-					</view>					
-				</view>
-			</view>
-		</scroll-view>		
+	</template>
 	
+	<view class="product" v-for="(item,index) in productList" :key="item.id">
+		
+		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+ 		<view class="right" @click="selectProduct(item)">
+			<view class="grid">
+				<text class="info">品名：{{item.productName}}</text>
+				<text class="info">型号：{{item.type}}</text>
+			</view>
+			<view class="grid">
+				<text class="info">尺寸：{{item.size}}</text>
+				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+			</view>
+			<view class="grid">
+				<text class="info">材质：{{item.texture}}</text>
+				<text class="info">颜色：{{item.color}}</text>
+			</view>
+			<view class="grid">
+				<text class="info" style="color: #e96225ff;">数量：<text >{{item.number}}</text></text>	
+				<text class="info">零售价：<text
+						style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+			</view>
+			<view class="product_number">
+				<checkbox-group  @change="onCheckchange($event,item)">
+					<checkbox value="selected" :checked="item.selected"/>
+				</checkbox-group>
+			</view>	
+		</view>
+	</view>
+		
+	<template #bottom>
 		<view class="bottom">
 			<view class="liebiao">				
 				<i class="iconfont">&#xe608;</i>
@@ -54,233 +57,220 @@
 				选好了
 			</view>
 		</view>
-	
+	</template>
+</z-paging>
 </template>
 
 <script>
-	import {get,post} from "../../components/utils/request.js"
-	import useOrderStore from '@/store/modules/order.js' 
-	export default {
-		data() {
-			return {
-				productList: [],				
-				pageNum: 1, // 当前页
-				pageSize: 10, // 每页条数
-				totalCount:0,				
-				searchVal: "",
-				totalMoney: 0,
-				totalNumber:0
-			}
-		},
-		setup() {
-			const orderStore = useOrderStore();
-			const orderStoreProducts = orderStore.products;	
-			return { orderStoreProducts,orderStore }
-		 },
-		 computed:{
-
-		 },		
-		methods: {
-			transformNumber(item){
-				let products = this.orderStoreProducts;				 
-				let filterProduct = products.filter(product => product.productId == item.productId)				
-				let number = filterProduct.map(product => product.number)					
-				if(typeof number[0] != 'undefined') {
-					item.number = number[0];
-				}
-			},
-			refreshData(){
-				post("order/selectListOrderProduct", {
-					"pageNum": this.pageNum}).then(res => {
-					let that = this;							
-					if (res.code == 200) {
-						this.productList =res.rows;
-						this.totalCount = res.total;
-					}
-				})
-			},
-			reduce(item) {
-				if (item.number <= 0) {
-					uni.showToast({
-						title: '数值不能小于0',
-						icon: "none"
-					})
-					return;
-				}
-				item.number = item.number - 1;
-				this.totalNumber--;
-				this.totalMoney = parseFloat(this.totalMoney)-parseFloat(item.retailPrice);			 
-			},
-			add(item) {
-				item.number = item.number + 1;				
-				this.totalNumber++;
-				this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);		
-			},
-			confirm(){
-				var productChooseArray = this.productList.filter(function(item){
-					return item.number>0;
-				});				
-				this.orderStore.addProduct(productChooseArray);
-				let pages = getCurrentPages();
-				if(pages.length >1){
-					uni.navigateBack({
-						delta:1,
-						success:(event) =>{
-							pages[pages.length -2].$vm.getOrderProduct();
-						}
-					})
-				}
-			},
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			},
-			onReachBottom() {
-				if (this.totalCount > this.productList.length) {
-					this.pageNum++;
-					post("order/selectListOrderProduct", {"pageNum": this.pageNum}).then(res => {						
-						this.productList = this.productList.concat(res.rows)
-					})
-				} else if (this.totalCount == this.productList.length) {
-					uni.showToast({
-					   title: '没有更多数据了',
-					   duration: 3000,
-					   icon: 'none'
-					});
-				}
-			}
-		},		
-		watch: {
-			searchVal(val) {
-				this.pageNum = 1;
-				post("order/selectListOrderProduct",{"pageNum": this.pageNum,"productNameOrType": val,"customerId":this.customerId
-				}).then(res => {
-					this.totalCount = res.total
-					this.productList = res.rows;					
-					if (this.totalCount == this.productList.length) {
-						this.status = "noMore"
-					}
-				})
-			}
-		},
-		onLoad(option) {
-			 this.refreshData();
-		},
-		onShow(option){			
-			let products = this.orderStoreProducts;			
-			//计算总条数
-			this.totalNumber = products.reduce((accumulator, currentObject) => {
-			   return accumulator + currentObject.number;
-			}, 0);
-			//计算总金额
-			this.totalMoney = products.reduce((accumulator, currentObject) => {
-			   return accumulator + currentObject.retailPrice * currentObject.number;
-			}, 0);
+import {get,post} from "../../components/utils/request.js"
+import useOrderStore from '@/store/modules/order.js' 
+export default {
+	data() {
+		return {
+			productList: [],				
+			pageNum: 1, // 当前页
+			pageSize: 10, // 每页条数
+			totalCount:0,				
+			searchVal: "",
+			totalMoney: 0,
+			totalNumber:0
 		}
+	},
+	setup() {
+		const orderStore = useOrderStore();
+		const orderStoreProducts = orderStore.products;	
+		return { orderStoreProducts,orderStore }
+	 },
+	 computed:{
+
+	 },
+	methods: {
+		refreshData(pageNo, pageSize){			
+			post("order/selectListOrderProduct", {"pageNum":pageNo}).then(res => {									
+				if (res.code == 200) {
+					var productData = res.rows;
+					var products = this.orderStore.products;
+					for (var i = 0; i < productData.length; i++) {
+						let productId = productData[i].productId;
+						let newProducts = products.filter(item => item.productId === productId);
+						let isSelected = newProducts.length>0?true:false
+						productData[i].selected = isSelected;
+						if(isSelected){
+							productData[i].number = newProducts[0].number;
+						}
+					} 
+					
+					this.$refs.paging.complete(productData);
+					this.totalCount = res.total; 
+				}
+			})
+		},
+		onCheckchange(e,item){
+			item.selected = e.detail.value.includes("selected");
+			 if(item.selected === true){
+				this.add(item);
+			 }else if(item.selected === false){
+				this.subtraction(item);
+			 } 
+		},
+		selectProduct(item){
+			item.selected = !item.selected;
+			if(item.selected === true){
+				this.add(item);
+			}else if(item.selected === false){
+				this.subtraction(item);
+			}
+		},
+		subtraction(item) {
+			item.number=0;
+			this.totalNumber--;
+			/* this.totalMoney = parseFloat(this.totalMoney)-parseFloat(retailPrice); */
+		},
+		add(item) {
+			item.number++;
+			this.totalNumber++;
+			/*this.totalMoney = parseFloat(this.totalMoney) + parseFloat(retailPrice); */
+		},
+		confirm(){			
+			var productChooseArray = this.productList.filter(function(item){
+				return item.selected == true;
+			});			
+			this.orderStore.addProduct(productChooseArray);
+			let pages = getCurrentPages();
+			if(pages.length >1){
+				uni.navigateBack({
+					delta:1,
+					success:(event) =>{
+						pages[pages.length -2].$vm.getOrderProduct();
+					}
+				})
+			}
+		},
+		getImgUrl(image){
+		   return this.BASEURL+image;
+		},
+	},		
+	watch: {
+/* 			searchVal(val) {
+			this.pageNum = 1;
+			post("order/selectListOrderProduct",{"pageNum": this.pageNum,"productNameOrType": val,"customerId":this.customerId
+			}).then(res => {
+				this.totalCount = res.total
+				this.productList = res.rows;					
+				if (this.totalCount == this.productList.length) {
+					this.status = "noMore"
+				}
+			})
+		} */
+	},
+	onShow(option){		
+		let products = this.orderStoreProducts;
+		//计算总条数
+		this.totalNumber = products.reduce((accumulator, currentObject) => {
+		   return accumulator + currentObject.number;
+		}, 0);		
+		//计算总金额
+		this.totalMoney = products.reduce((accumulator, currentObject) => {
+		   return accumulator + currentObject.retailPrice * currentObject.number;
+		}, 0); 
 	}
+}
 </script>
 
 <style>
-/* @import "../../style/icon/iconfont.css"; */
-page{
-  height: 100%
-}
-.head{
-	height: 65px;	
+.head {
+	height: 60px;
 }
 
-.head .search{
-	border-top: 5px solid #efeef3ff; 
-	position: fixed; 
+.head .search {
 	width: 100%;
+	border-top: 5px solid #efeef3ff;
 	height: 45px;
-	padding: 5px 0;	
-	z-index: 999;
-	background-color: #ffffff;	
+	padding: 5px 0;
+	background-color: #ffffff;
 	display: flex;
 }
-.head .same_search{	
-	width:100%;
+
+.head .search .same_search {
+	flex: 1;
 }
- .search_input{	
-	height: 45px;
+
+.head .search .same_search .search_input {
+	height: 41px;
 	background-repeat: no-repeat;
-	background-position: 98%;	
+	background-position: 98%;
 	border: 1px solid #f2f2f2;
 	border-radius: 10px;
-	text-align: left;	
-	color:'#606266';	
-	padding-left:  20px;
+	text-align: left;
+	padding-left: 10px;
 	padding-right: 60px;
 	font-size: 15px;
-	margin:  0 20px; 
+	margin-left: 5px;
+}
+
+.more_search {
+	height: 39px;
+	width: 39px;
+	margin-top: 2px;
+	border-radius: 3px;
+	text-align: center;
+	line-height: 39px;
+	background-color: #00a7e2ff;
+	margin-left: 5px;
+	margin-right: 7px;
+}
+.more_search .iconfont {
+	color: #ffffff;
+	font-size: 18px;
 }
 
 .product {
-	position: relative;
 	display: flex;
+	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	
+/* 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale; */
 }
-.img{
-	width: 80px;
-	height: 80px;	
+.product .img{
+	width: 60px;
+	height: 65px;
 }
 
 .right {
 	flex: 1;
 	margin-left: 5px;
+	position: relative;
 }
 
-.grid {
-	display: flex;
-	line-height: 20px;
+.grid {	
+ 	display: flex;	
+	line-height: 17px;
 }
 
 .grid .info {
+	width: 50%;
 	color: #030303ff;
-	font-size: 14px;
-	color: #333;
-	white-space: nowrap;  
+	font-size: 13px;
+	white-space: nowrap; /* 文字不换行 */
 	overflow: hidden; /* 超出部分隐藏 */
-	text-overflow: ellipsis; /* 显示省略号 */
-	text-rendering: optimizeLegibility;
+	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
-.grid :first-child{
+/* .grid :first-child{
 	width: 40%;
 }
-
+ */
 .product_number {
 	position: absolute;
-	bottom: 50%;
-	right: 10px;
-	width: 80px;
+	bottom: 30%;
+	right: 1px;
+	/* width: 80px;
 	display: flex;		
 	align-items: center;
-	text-align: center;
-}
-
-.reduce {		
-	min-height: 25px;
-	min-width: 25px;
-	text-align: center;
-	line-height: 20px;
-	background-color: rgb(26, 161, 207);
-	color: #fff;	
-	border-radius: 50%;
-}
-
-.add {
-	min-height: 25px;
-	min-width: 25px;
-	text-align: center;
-	line-height: 22px;
-	background-color: rgb(26, 161, 207);
-	color: #fff;	
-	border-radius: 50%;
+	text-align: center; */
 }
 .product_number .number {
 	font-size: 15px;

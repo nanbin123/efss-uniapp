@@ -1,4 +1,4 @@
-const BASEURL = "http://192.168.221.8:8080/";
+const BASEURL = "http://127.0.0.1:8080/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);
@@ -65,7 +65,6 @@ function uploadImg(url, files, formData) {
 
 function request(url, data = {}, method = "GET", contentType) {
 	return new Promise(function(resolve, reject) {
-
 		uni.request({
 			url: BASEURL + url,
 			method: method,
@@ -96,7 +95,6 @@ function request(url, data = {}, method = "GET", contentType) {
 					}
 				} else {
 					resolve(null);
-					uni.hideLoading();
 				}
 			},
 			fail(res) {

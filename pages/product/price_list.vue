@@ -1,17 +1,17 @@
 <template> 
 <z-paging  ref="paging" v-model="productList" @query="queryList">
-	  <template #top>
-			<view class="head">
-				<view class="search">
-					 <view class="same_search">
-						<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
-					</view>
-					<navigator  class="more_search" url="">
-						<i class="iconfont">&#xe69b;</i>
-					</navigator>
+	<template #top>
+		<view class="head">
+			<view class="search">
+				 <view class="same_search">
+					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
 				</view>
+				<navigator  class="more_search" url="">
+					<i class="iconfont">&#xe69b;</i>
+				</navigator>
 			</view>
-	   </template>
+		</view>
+	</template>
 
 	<view class="content"  v-for="(item,index) in productList" :key="index">
 		<view class="left">
@@ -37,13 +37,7 @@
 			</view>	
 		</view>
 	</view>
-	<template #bottom>
-		 <view class="footer">
-			<navigator url="/pages/order/order_add">
-				新增订单
-			</navigator>
-		</view> 
-	</template>
+
 </z-paging>
 
 
@@ -67,12 +61,10 @@
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			},
-			queryList(pageNo, pageSize) {	
-				/* this.$refs.paging.updatePageScrollTopHeight() */
+			queryList(pageNo, pageSize) {				
 				post("product/selectListProduct",{"pageNum":pageNo}).then(res =>{					
 					 this.$refs.paging.complete(res.rows);
 				})
-				
 			}
 		},
 		watch:{
@@ -89,22 +81,15 @@
 			}
 		},
 		onLoad(){
-			post("product/selectListProduct",{"pageNum":this.pageNum}).then(res =>{				
-				this.totalCount = res.total				
-				 if(this.totalCount >0){
-					this.productList = res.rows
-					uni.hideLoading();
-				 }
-			})
+
 		},
 	}
 </script>
 
 <style>
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
    display: none;
-   
-}
+} */
 
 .head {
 	height: 60px;
@@ -113,8 +98,6 @@
 .head .search {
 	width: 100%;
 	border-top: 5px solid #efeef3ff;
-/* 	position: fixed;
-	z-index: 999; */
 	height: 45px;
 	padding: 5px 0;
 	background-color: #ffffff;
@@ -149,17 +132,11 @@
 	margin-left: 5px;
 	margin-right: 7px;
 }
-.iconfont {
+.more_search .iconfont {
 	color: #ffffff;
 	font-size: 18px;
 }
 
-.a::-webkit-scrollbar{
-	width: 0 !important;
-	height: 0 !important;
-	background-color: transparent !important;
-	scrollbar-width: none;
-}
 .content{
 	display: flex;
 	align-items: center;
@@ -201,16 +178,6 @@
    white-space: nowrap; /* 文字不换行 */
    overflow: hidden; /* 超出部分隐藏 */
    text-overflow: ellipsis; /* 以省略号形式显示 */
-}
-
-.footer {
-	height: 30px;
-	font-size: 16px;
-	text-align: center;
-	line-height: 30px;
-	background-color: #00a7e2ff;
-	color: #fff;
-	width: 100%;
 }
 
 </style>

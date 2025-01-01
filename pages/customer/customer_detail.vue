@@ -140,7 +140,7 @@
 		<view class="popup_item">
 		   <text class="popup_item_title">到店时间</text>
 		   <view class="popup_item_text">
-				<view  @tap="toggle('arrival_date')" class="time" :style="{color:arrivalFormData.arrivalTime=='yyyy-MM-dd	'?'#a0a0a0':'#333'}">{{arrivalFormData.arrivalTime}}</view>
+				<view @tap="toggle('arrival_date')" class="time" :style="{color:arrivalFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{arrivalFormData.arrivalTime}}</view>
 				<cPicker mode='date' @confirm="arrivalTimeHand" ref="arrival_date"></cPicker>
 		   </view>
 		</view>

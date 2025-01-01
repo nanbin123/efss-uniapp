@@ -37,7 +37,7 @@
 				pickVal: [],
 				showPicker: false,
 				resultStr: "",
-				itemHeight: `height: 44px;`
+				itemHeight: `height: 44px;`				
 			};
 		},
 		props: {
@@ -53,7 +53,7 @@
 			}
 		},
 		methods: {
-			useCurrent() {
+			useCurrent() {				
 				let aToday = new Date();
 				let tYear = aToday.getFullYear().toString();
 				let tMonth = this.formatNum(aToday.getMonth() + 1).toString();
@@ -97,7 +97,7 @@
 				_this.resultStr = `${year+'-'+month+'-'+day}`;
 				
 			},
-			initData(useCurrent) {
+		    initData(useCurrent) {
 				let _this = this;				
 				//全部内容和当前日期
 				let data = _this.init(useCurrent);				
@@ -156,8 +156,8 @@
 				return months;
 			},
 		},
-		created() {			
-			this.initData(this.useCurrent());
+		created() {
+			this.initData(this.useCurrent());			
 		},
 		watch:{
 			pageData(val){
@@ -166,7 +166,17 @@
 				let tMonth = this.formatNum(aToday.getMonth() + 1).toString();
 				let tDay = this.formatNum(aToday.getDate()).toString();
 				let useCurrent = [tYear, tMonth, tDay];
-				this.initData(useCurrent);
+				let returnArr=[
+					this.data.years.indexOf(useCurrent[0]),
+					this.data.months.indexOf(useCurrent[1]),
+					this.data.days.indexOf(useCurrent[2])
+				]
+				let defaultVal=[returnArr[0],returnArr[1],returnArr[2]];
+				let year = this.data.years[defaultVal[0]];
+				let month = this.data.months[defaultVal[1]];
+				let day = this.data.days[defaultVal[2]];
+				this.resultStr = `${year+'-'+month+'-'+day}`;				
+				this.pickVal = defaultVal; 
 			}
 		}
 

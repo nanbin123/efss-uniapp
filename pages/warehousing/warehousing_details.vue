@@ -1,80 +1,65 @@
 <template>
 	<view style="height: 5px;">
 		<view class="head"></view>
-	</view>	
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
-		<text class="title">入库单号</text>	
-		<text class="content">{{warehousingEntry.warehousingNumber}}</text>	
 	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')" mode=""></image>
-		<text class="title">记录日期</text>
-		<input v-model="warehousingEntry.recordDate" :disabled="isEditable"  type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请选择记录日期' ">
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/handled_by.png')" mode=""></image>
-		<text class="title">操作人</text>
-		<text class="content">{{warehousingEntry.handledBy}}</text>	
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
-		<text class="title">供应商</text>	
-		<text class="content">{{warehousingEntry.supplier}}</text>	
-	</view>		
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
-		<text class="title">备注 </text>
-		<text class="content">{{warehousingEntry.remark}}</text>
-	</view>
+	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" id="scrollList" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
+			<text class="title">入库单号</text>	
+			<text class="content">{{warehousingEntry.warehousingNumber}}</text>	
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')" mode=""></image>
+			<text class="title">记录日期</text>
+			<view  @tap="toggle('record_date')" class="time" :style="{color:isEmpty(warehousingEntry.recordDate) ?'#a0a0a0':'#333'}">{{isEmpty(warehousingEntry.recordDate)? "请选择记录日期":warehousingEntry.recordDate}}</view>
+			<cPicker mode='date' :pageData="warehousingEntry.recordDate" @confirm="deliveryHand" ref="record_date"></cPicker>
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/handled_by.png')" mode=""></image>
+			<text class="title">操作人</text>
+			<text class="content">{{warehousingEntry.handledBy}}</text>	
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
+			<text class="title">供应商</text>	
+			<text class="content">{{warehousingEntry.supplier}}</text>	
+		</view>		
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
+			<text  class="title">备注 </text>
+			<input v-model="warehousingEntry.remark" class="content" :disabled="isEditable">
+		</view>
 
 		
-	<view class="products">
-		<view class="item" style="border-bottom: 0;padding-bottom: 0;">
-			<image class="img" :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
-			<text class="title">产品明细</text>
+		<view class="products">
+			<view class="item" style="border-bottom: 0;padding-bottom: 0;">
+				<image class="img" :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
+				<text class="title">产品明细</text>
+			</view>
+			
+			<view class="product-content" v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
+					<view class="grid">
+						<text class="info">品名：{{item.productName}}</text>
+						<text class="info">型号：{{item.type}}</text>
+					</view>
+					<view class="grid">
+						<text class="info">产地：{{item.production}}</text>
+						<text class="info">颜色：{{item.color}}</text>
+					</view>
+					<view class="grid">
+						<text class="info">材质：{{item.texture}}</text>
+						<text class="info" style="width: 40%;">尺寸：{{item.size}}</text>
+					</view>	
+					<view class="grid">
+						<text class="info" style="color: #e96225ff;">数量：1</text>	
+						<text class="info"  style="color: #e96225ff;">是否入库：{{item.isInWarehouse == true ?'已入库':'未入库'}}</text>
+						<checkbox-group class="choice" @change="onCheckchange($event,item)">							
+							<checkbox value="isInWarehouse":checked="item.isInWarehouse" :disabled="isDisabled(item.isEdit)" />
+						</checkbox-group>
+					</view>	
+			</view>
 		</view>
-		
-		<view class="product-content" v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">产地：{{item.production}}</text>
-				<text class="info">颜色：{{item.color}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">材质：{{item.texture}}</text>
-				<text class="info" style="width: 40%;">尺寸：{{item.size}}</text>
-			</view>	
-			<view class="grid">
-				<text class="info" style="color: #e96225ff;">数量：1</text>	
-				<text class="info"  style="color: #e96225ff;">是否入库：已入库</text>
-				<checkbox class="choice" checked="true" disabled="true"/>	
-			</view>		
-					
-		</view>
-<!-- 		<view class="product-list">
-			<view class="grid">
-				<text class="info">品名：长茶几</text>
-				<text class="info">型号：7707-C</text>
-				<text class="info">产地：东莞</text>
-			</view>
-			<view class="grid">				
-				<text class="info">颜色：胡桃色</text>
-				<text class="info">材质：楸木</text>
-				<text class="info" style="width: 40%;">尺寸：1400*800*500</text>
-			</view>
-			<view class="choice">
-				<text class="delivery-status">未入库</text>
-				<checkbox checked="true"/>				
-			</view>			
-		</view> -->
-	</view>
-<!-- 	<view class="btn">
-		<button>确定</button>
-	</view> -->
+	</scroll-view>
 
 	<view class="bottom-bar">
 		  <text class="delete" @click="deleteWarehousing()">{{ isEditable ? '删除' : '取消'  }}</text>		 
@@ -83,55 +68,131 @@
 
 </template>
 <script>
-	import {get,post} from "../../components/utils/request.js"
-	export default {
-		data() {
-			return {
-				isEditable: true,
-				warehousingEntry:{}
+import {get,post} from "../../components/utils/request.js"
+import cPicker from "../../components/c-picker/c-picker.vue"
+export default {
+	components: {
+		cPicker
+	},
+	options: {styleIsolation: 'shared'},
+	data() {
+		return {
+			isEditable: true,
+			warehousingEntry:{warehousingEntryProductList:[]}
+		}
+	},
+	methods: {
+		isDisabled(itemIsEdit) {
+			if(this.isEditable){
+				return this.isEditable;
+			}else{
+				return itemIsEdit;
 			}
 		},
-		methods: {
-			deleteWarehousing(){				
-				let _this = this	
-				if(_this.isEditable == true){					 
-					uni.showModal({
-					  title: '提示',
-					  content: '是否删除入库单',
-					  success: (res)=> {						 
-						if (res.confirm) {
-							post("warehousing/deleteWarehousingEntryById",{"id":_this.warehousingEntry.id}).then(res =>{								
-								if(200 == res.code){									
-									_this.isEditable = true;
-									_this.warehousingEntry ={};
-									uni.showToast({
-									  title: '删除销售订单成功',
-									  icon: 'none', 
-									  duration: 2000 
-									});
-								}
-							})
-						}
-					  }
-					});
-				}else if(_this.isEditable == false){
-					_this.isEditable = true			
-				}
-			},
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			}
+		onCheckchange(e,item){			
+			item.isInWarehouse = e.detail.value.includes("isInWarehouse");
 		},
-		onLoad(option) {
-				this.warehousingEntry.id = option.id				
-				post("warehousing/selectWarehousingEntryById",{"id":this.warehousingEntry.id}).then(res =>{				
+		editWarehousing(){
+			if(this.isEditable == true){
+				this.isEditable = false					
+			}else if(this.isEditable == false){
+				const data = this.warehousingEntry.warehousingEntryProductList;
+				const groupSum = data.reduce((result, currentItem) => {
+					if(currentItem.isInWarehouse === true){ 
+						const group = currentItem["id"];
+						result[group] = result[group] || { "id": group, "receivedQuantity": 0 };						
+						result[group].receivedQuantity++;
+					} 
+					return result;
+				}, {});	
+				let warehousingEntry=JSON.parse(JSON.stringify(this.warehousingEntry));
+				warehousingEntry.warehousingEntryProductList = Object.keys(groupSum).map(function(key) {
+					return groupSum[key];
+				});
+				post("warehousing/updateWarehousingEntryById",JSON.stringify(warehousingEntry),'application/json').then(res =>{
 					if(200 == res.code){
-						this.warehousingEntry = res.data
-						uni.hideLoading(); 
+						this.isEditable = true
+						uni.showToast({
+						  title: '修改入库单成功',
+						  icon: 'none', 
+						  duration: 2000 
+						});
 					}
-				})
-		}	
-	}
+				}) 
+			}
+		},
+		deleteWarehousing(){				
+			let _this = this	
+			if(_this.isEditable == true){					 
+				uni.showModal({
+				  title: '提示',
+				  content: '是否删除入库单',
+				  success: (res)=> {						 
+					if (res.confirm) {
+						post("warehousing/deleteWarehousingEntryById",{"id":_this.warehousingEntry.id}).then(res =>{								
+							if(200 == res.code){									
+								_this.isEditable = true;
+								_this.warehousingEntry ={};
+								uni.showToast({
+								  title: '删除销售订单成功',
+								  icon: 'none', 
+								  duration: 2000 
+								});
+							}
+						})
+					}
+				  }
+				});
+			}else if(_this.isEditable == false){
+				_this.isEditable = true			
+			}
+		},
+		toggle(val) {
+			if(!this.isEditable){
+				this.$refs[val].show();
+			}
+		},
+		deliveryHand(value) {
+			this.warehousingEntry.recordDate = value.result
+		},
+		isEmpty(str){
+			return typeof str === 'undefined' || '' === str;
+		},
+		getImgUrl(image){
+		   return this.BASEURL+image;
+		}
+	},
+	onLoad(option) {
+		this.warehousingEntry.id = option.id				
+		post("warehousing/selectWarehousingEntryById",{"id":this.warehousingEntry.id}).then(res =>{				
+			if(200 == res.code){			
+				this.warehousingEntry.id = res.data.id;
+				this.warehousingEntry.warehousingNumber = res.data.warehousingNumber;
+				this.warehousingEntry.recordDate = res.data.recordDate;
+				this.warehousingEntry.handledBy = res.data.handledBy;
+				this.warehousingEntry.supplier = res.data.supplier;
+				this.warehousingEntry.remark = res.data.remark;
+				let dataProduct = res.data.warehousingEntryProductList;
+				for (var i = 0; i < dataProduct.length; i++) {
+					let receivedQuantity = dataProduct[i].receivedQuantity;
+					for (var j = 0; j < receivedQuantity; j++) {
+						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
+						warehousingEntryProduct.isInWarehouse=true;
+						warehousingEntryProduct.isEdit = true;
+						this.warehousingEntry.warehousingEntryProductList.push(warehousingEntryProduct)
+					}
+					let unInventoryQuantity = dataProduct[i].inventoryQuantity - receivedQuantity;
+					for (var k = 0; k < unInventoryQuantity; k++) {
+						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
+						warehousingEntryProduct.isInWarehouse=false;
+						warehousingEntryProduct.isEdit = false;
+						this.warehousingEntry.warehousingEntryProductList.push(warehousingEntryProduct)
+					}
+				}
+			}
+		})
+	}	
+}
 </script>
 
 <style scoped>
@@ -162,13 +223,18 @@
 	white-space: nowrap; /* 文字不换行 */
 	text-rendering: optimizeLegibility;
 }
+.item .time{
+	margin-left: auto;
+	text-align: right;
+	padding-right: 12px;
+}
 .content{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;
 	white-space: nowrap;
 	font-size: 15px;
-	color: #333;	
-	margin-left: auto;
-	margin-right: 10px;
-	text-align: right;	
+	color: #333;
 }
 .products{
 	border-top: 2px solid #cbcbcbff;
@@ -195,10 +261,9 @@
 	text-rendering: optimizeLegibility;
 }
 .choice {
-	transform:scale(0.9);
 	position: absolute;
 	right: 10px;
-	bottom: 1px;
+	bottom: 5px;
 }
 
 .bottom-bar {  
@@ -211,7 +276,6 @@
   border-top: 1px solid #cbcbcbff;
   display: flex;
   align-items: center; 
-   z-index: 999; /* 确保位于最顶层 */
 }
 .delete {
   flex: 1;

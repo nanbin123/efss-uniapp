@@ -61,7 +61,7 @@
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')"></image>
 			<text class="title">送货时间</text>
-			<view  @tap="toggle('delivery_time')" class="time" :style="{color:isEmpty(orderForm.deliveryTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.deliveryTime)? "请选择":orderForm.deliveryTime}}</view>
+			<view @tap="toggle('delivery_time')" class="time" :style="{color:isEmpty(orderForm.deliveryTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.deliveryTime)? "请选择":orderForm.deliveryTime}}</view>
 			<cPicker mode='date' :pageData="orderForm.deliveryTime" @confirm="deliveryHand" ref="delivery_time"></cPicker>
 		</view>
 		<view class="item choice_porduct"  @click="addOrderProduct()">
@@ -71,7 +71,7 @@
 		</view>		
 		<view class="product" v-for="(item,index) in orderForm.orderProductList" :key="item.id">
 			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="product-content">
+			<view class="product-content" @click="open(item)">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>
@@ -88,18 +88,32 @@
 				<view class="grid">
 					<text class="info" style="color: #e96225ff;">数量：<text >{{item.number}}</text></text>	
 					<text class="info" style="color: #e96225ff;">零售价：<text >￥{{item.retailPrice}}</text></text>
-				</view>				
+				</view>
 			</view>
 			<view class="remove" @click="deleteProduct(item.productId)" v-show="!isEditable">
 				<i class="iconfont">&#xe612;</i>
 			</view>
 		</view>
 	</scroll-view>
-	
+		
 	<view class="bottom-bar">
 		  <text class="delete" @click="deleteOrderForm()">{{ isEditable ? '删除' : '取消'  }}</text>		   
 		  <text class="edit"  @click="editOrderForm()">{{ isEditable ? '编辑' : '保存' }}</text>
 	</view>
+	
+	<uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">
+		<view class="popup_content">
+			<view class="popup_title">{{popupProduct.productName}}</view>
+			<view class="popup_item">
+				<text class="popup_item_title">数量:</text>
+				<view class="popup_item_text"><input v-model="popupProduct.number" type="number"/></view>
+			</view>
+			<view class="popup_product_foot">
+				<view class="cancel" @click="cancelTrack()">取消</view>			
+				<view class="determine" @click="submitTrack()">确定</view>
+			</view>
+		</view>
+	</uni-popup>
 	
 </template>
 <script>
@@ -114,13 +128,20 @@ export default {
 	options: {styleIsolation: 'shared'},
 	data() {
 		return {
-			orderForm:{},
+			orderForm:{
+				orderProductList:[],
+			},
 			condition: false ,// 根据条件设置是否显示 placeholder 内容
 			isEditable: true,				
 			customerNameFocus:true,
 			phoneFocus:false,
 			addressFocus:false,
-			actualmoneyFocus:false
+			actualmoneyFocus:false,			
+			popupProduct:{
+				productId:"",
+				productName:"",
+				number:""
+			}
 		}
 	},
 	setup() {
@@ -128,14 +149,33 @@ export default {
 		return { orderStore }
 	 },
 	methods: {
-		//移除指定产品
-		deleteProduct(productId){
+		open(item){
+			if(this.isEditable == false){
+				this.popupProduct.productName = item.productName;
+				this.popupProduct.number = item.number;
+				this.popupProduct.productId = item.productId;
+				this.$refs.popup.open('center');
+			}
+		},
+		cancelTrack(){
+			this.$refs.popup.close()
+		},
+		submitTrack(){
 			let orderProductList = this.orderForm.orderProductList;
-			this.orderForm.orderProductList = orderProductList.filter(obj => obj.productId != productId);				
+			let productId = this.popupProduct.productId;
+			let orderProduct = orderProductList.filter(obj =>obj.productId == productId)[0]			
+			orderProduct.number = this.popupProduct.number;
+			this.$refs.popup.close()
+		},
+		//移除指定产品
+		deleteProduct(){
+			let productId = this.popupProduct.productId;
+			let orderProductList = this.orderForm.orderProductList;
+			let index = orderProductList.findIndex(item =>item.productId == productId)
+			orderProductList.splice(index,1);
 		},
 		// 校验电话号码
 		checkPhone() {
-			alert(this.orderForm.phone)
 			if("" !=this.orderForm.phone && undefined != this.orderForm.phone){
 				this.phoneFocus = false
 				const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
@@ -210,7 +250,7 @@ export default {
 				let orderProductList = orderForm.orderProductList.map(item =>{
 					return {productId: item.productId,number:item.number}
 				});
-				orderForm.orderProductList = orderProductList;
+				orderForm.orderProductList = orderProductList;				
 				post("order/updateOrderFormById",JSON.stringify(orderForm),'application/json').then(res =>{
 					if(200 == res.code){
 						this.isEditable = true
@@ -261,31 +301,17 @@ export default {
 			this.orderForm.deliveryTime = value.result
 		},
 		addOrderProduct(){
-			let that = this
+			let arrProduct = this.orderForm.orderProductList;
+			this.orderStore.addProduct(arrProduct);			
 			if(this.isEditable == false){
-				let arrProduct = this.orderForm.orderProductList;					
-				this.orderStore.addProduct(arrProduct)
 				uni.navigateTo({
 					url:'/pages/order/order_product'
 				})
 			}
 		},
 		getOrderProduct(){
-			let orderProductList = this.orderForm.orderProductList; // 新增页面产品信息
-			let products = this.orderStore.products; // 产品选择页面带过来的数据			
-			for (let i = 0; i < products.length; i++) {
-				let foundMatch = false;
-				for (let j = 0; j < orderProductList.length; j++) {
-					if (orderProductList[j].productId === products[i].productId) {
-						orderProductList[j].number = products[i].number;
-						foundMatch = true;
-						break;
-					}
-				}
-				if (!foundMatch) {
-					orderProductList.unshift(products[i]);						
-				}
-			}
+			let products = JSON.stringify(this.orderStore.products);
+ 			this.orderForm.orderProductList = JSON.parse(products);
 		},
 		getImgUrl(image){
 		   return this.BASEURL+image;
@@ -359,7 +385,7 @@ export default {
 	font-size: 12px;
 	margin-left: -5px;
 }
-.item input{	
+.item input{
 	flex-grow: 1;
 	padding-right: 12px;
 	text-align: right;
@@ -432,7 +458,59 @@ export default {
 	font-size: 20px;
 }
 
+.popup_content {
+	position: relative;
+	width: 260px;
+	height: 120px;
+	background-color: white;	
+	overflow: auto;
+ } 
+ .popup_title {
+ 	 font-size: 15px;	
+	 text-align: center;
+	 margin: 5px; 	
+ }
+ .popup_item {
+ 	 display: flex;	
+ 	 margin: 10px 15px;
+ }
+ .popup_item_title{
+ 	white-space: nowrap;
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+ .popup_item_text{
+ 	border-bottom: 1px solid #f1f1f1ff;
+ 	flex-grow: 1;
+ 	text-align: center;
+ 	white-space: nowrap;
+ }
+ .popup_item_text input{
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
 
+.popup_product_foot {
+	width: 260px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+    height: 40px;
+	line-height: 40px;
+	color: #070707ff;
+	font-size: 15px;
+	display: flex;
+    border-top: 1px solid #f1f1f1ff;
+}
+.cancel{
+	text-align: center;
+	border-right: 1px solid #f1f1f1ff;
+	width: 50%;
+}
+.determine{
+	text-align: center;
+	width: 50%;
+}
 .gender{
 	margin-left: auto;
 	padding-right: 15px;
@@ -535,6 +613,5 @@ export default {
 	color: #00a7e2ff;
 	margin-right: 10px;
 }
-
 
 </style>
