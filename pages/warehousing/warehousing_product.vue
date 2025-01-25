@@ -1,48 +1,50 @@
 <template>
-	<view class="wrap">
+<z-paging  ref="paging" v-model="productList" @query="refreshData">
+
+	<template #top>
 		<view class="head">
 			<view class="search">
-				<input class="search_input" v-model="searchVal" confirm-type="search" type="text"
-					placeholder="搜索品名或型号" />
+				 <view class="same_search">
+					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
+				</view>
+				<navigator  class="more_search" url="">
+					<i class="iconfont">&#xe69b;</i>
+				</navigator>
 			</view>
 		</view>
-		<view class="content" v-for="(item,index) in productList" :key="index">
-			<view class="left">
-				<image class="left_img" :src="getImgUrl('static/image/red_add.png')" ></image>
-				<view class="left_text">点击添加图片</view>
+	 </template>
+		
+		
+	<view class="product" v-for="(item,index) in productList" :key="index">
+		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+		<view class="right" @click="selectProduct(item)">
+			<view class="grid">
+				<text class="info">品名：{{item.productName}}</text>
+				<text class="info">型号：{{item.type}}</text>
 			</view>
-			<view class="right">
-				<view class="grid">
-					<text class="info">品名：{{item.productName}}</text>
-					<text class="info">型号：{{item.type}}</text>
-				</view>
-				<view class="grid">
-					<text class="info">尺寸：{{item.size}}</text>
-					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-				</view>
-				<view class="grid">
-					<text class="info">类别：{{item.productType}}</text>
-					<text class="info">颜色：{{item.color}}</text>
-				</view>
-				<view class="grid">
-					<text class="info">材质：{{item.texture}}</text>
-					<text class="info">零售价：<text
-						style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-				</view>
-				<view class="grid">
-					<view class="info"></view>
-					<view class="product_number">
-						<view class="reduce" @click="reduce(item)">-</view>
-						<view>
-							<input disabled="disabled" type="number" v-model="item.receivedQuantity">
-						</view>
-						<view class="add" @click="add(item)">+</view>
-					</view>
-				</view>
+			<view class="grid">
+				<text class="info">尺寸：{{item.size}}</text>
+				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+			</view>
+			<view class="grid">
+				<text class="info">材质：{{item.texture}}</text>
+				<text class="info">颜色：{{item.color}}</text>
+				
+			</view>
+			<view class="grid">
+				<text class="info" style="color: #e96225ff;">数量：<text >{{item.inventoryQuantity}}</text></text>	
+				<text class="info">零售价：<text
+					style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
+			</view>
+			<view class="product_number">
+				<checkbox-group  @change="onCheckchange($event,item)">
+					<checkbox value="selected" :checked="item.selected"/>
+				</checkbox-group>
 			</view>
 		</view>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType"
-			v-if="productList.length > 0" />
+	</view>
+
+	<template #bottom>
 		<view class="bottom">
 			<view class="liebiao">				
 				<i class="iconfont">&#xe608;</i>				
@@ -57,317 +59,332 @@
 				选好了
 			</view>
 		</view>
-	</view>
+	</template>
+</z-paging>
 </template>
 
 <script>
-	import {
-		get,
-		post
-	} from "../../components/utils/request.js"
-	export default {
-		data() {
-			return {
-				productList: [],
-				//selectProductList: [],//选择的产品
-				pageNum: 1, // 当前页
-				pageSize: 10, // 每页条数				
-				reload: false,
-				status: 'more',
-				contentText: {
-					contentdown: '上拉加载更多~',
-					contentrefresh: '正在加载更多~',
-					contentnomore: '我是有底线的~'
-				},
-				iconType: 'auto', // 图标样式 
-				searchVal: "",
-				totalMoney: 0,
-				totalNumber:0,
-				evenatChannel:null,
-				warehousingEntryId:""
-				
-			}
-		},
-		methods: {
-			reduce(item) {
-				if (item.receivedQuantity <= 0) {
-					uni.showToast({
-						title: '数值不能小于0',
-						icon: "none"
-					})
-					return;
-				}
-				item.receivedQuantity = item.receivedQuantity - 1;
-				this.totalNumber--;
-				this.totalMoney = parseFloat(this.totalMoney)-parseFloat(item.retailPrice);			 
-			},
-			add(item) {
-				item.receivedQuantity = item.receivedQuantity + 1;
-				this.totalNumber++;
-				this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);				
-			},
-			confirm(){
-				var productChooseArray = this.productList.filter(function(item){
-					return item.receivedQuantity>0;
-				});			
-				let productArray = new Array();
-				for (var i = 0; i < productChooseArray.length; i++) {
-					let  product= new Object();
-					product.warehousingEntryId = this.warehousingEntryId;
-					product.productId = productChooseArray[i].id;
-					product.number = productChooseArray[i].number;				
-					productArray.push(product);
-				}
-				post("warehousing/insertWarehousingEntryProduct", {"productJson":JSON.stringify(productArray)}).then(res => {
-					uni.hideLoading();
-					let pages = getCurrentPages();
-					if(pages.length >1){
-						let prevPage = pages[pages.length -2];
-						uni.navigateBack({
-							delta:1,
-							success:(event) =>{
-								prevPage.getList();
-							}
-						})
-					}
-				})
-			},
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			}
-		},
-		onReachBottom() {
-			if (this.totalCount > this.productList.length) {
-				this.pageNum++;
-				post("warehousing/selectListWarehousingEntryProduct", {
-					"pageNum": this.pageNum,"warehousingEntryId":this.warehousingEntryId
-				}).then(res => {
-					this.productList = this.productList.concat(res.data.products)					
-					uni.hideLoading();
-				})
-			} else if (this.totalCount == this.productList.length) {
-				this.status = "noMore"
-			}
-		},
-		watch: {
-			searchVal(val) {
-				this.pageNum = 1;
-				post("warehousing/selectListWarehousingEntryProduct",{"pageNum": this.pageNum,"productNameOrType": val,"warehousingEntryId":this.warehousingEntryId
-				}).then(res => {
-					this.totalCount =  res.data.total
-					this.productList = res.data.products;
-					uni.hideLoading();
-					if (this.totalCount == this.productList.length) {
-						this.status = "noMore"
-					}
-				})
-			}
-		},
-		onLoad(option) {
-			this.warehousingEntryId = option.warehousingEntryId			
+import {get,post} from "../../components/utils/request.js"
+import useProductStore from '@/store/modules/product.js' 
+export default {
+	data() {
+		return {
+			productList: [],
+			totalMoney: 0,
+			totalNumber:0,
+			evenatChannel:null,
+			warehousingEntryId:""
+			
+		}
+	},
+	setup() {
+		const productStore = useProductStore();				
+		return { productStore } 
+	 },
+	methods: {
+		refreshData(pageNo, pageSize){
 			post("warehousing/selectListWarehousingEntryProduct", {
-				"pageNum": this.pageNum,"warehousingEntryId":this.warehousingEntryId}).then(res => {
-				let that = this;				
-				that.totalCount = res.data.total				
-				if (that.totalCount > 0) {
-					this.productList =res.data.products;
-					this.totalNumber =res.data.totalNumber;
-					this.totalMoney  =res.data.totalMoney;
-					uni.hideLoading();					
-				}
+				"pageNum": pageNo,"warehousingEntryId":this.warehousingEntryId}).then(res => {
+				if (res.code == 200) {
+					let productData = res.data;
+					var products = this.productStore.products;
+					for (var i = 0; i < productData.length; i++) {
+						let productId = productData[i].productId;
+						let newProducts = products.filter(item => item.productId === productId);
+						let isSelected = newProducts.length>0?true:false
+						productData[i].selected = isSelected;
+						if(isSelected){
+							productData[i].inventoryQuantity = newProducts[0].inventoryQuantity;
+						}
+					} 
+					this.$refs.paging.complete(productData);					
+				}				
+			})
+		},
+		selectProduct(item){
+			item.selected = !item.selected;
+			if(item.selected === true){
+				this.add(item);
+			}else if(item.selected === false){
+				this.subtraction(item);
+			}
+		},
+		onCheckchange(e,item){
+			item.selected = e.detail.value.includes("selected");
+			 if(item.selected === true){
+				this.add(item);
+			 }else if(item.selected === false){
+				this.subtraction(item);
+			 } 
+		},
+		subtraction(item) {
+			item.inventoryQuantity=0;
+			this.totalNumber--;
+			this.totalMoney = parseFloat(this.totalMoney)-parseFloat(item.retailPrice);
+		},
+		add(item) {
+			item.inventoryQuantity++;
+			this.totalNumber++;	
+			this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);
+		},
+		confirm(){
+			var productChooseArray = this.productList.filter(function(item){
+				return item.selected == true;
+			});
+			this.productStore.addProduct(productChooseArray);
+			let pages = getCurrentPages();
+			if(pages.length >1){
+				uni.navigateBack({
+					delta:1,
+					success:(event) =>{
+						pages[pages.length -2].$vm.getWarehousingProduct();
+					}
+				})
+			}
+		},
+		getImgUrl(image){
+		   return this.BASEURL+image;
+		}
+	},
+	watch: {
+/* 		searchVal(val) {
+			this.pageNum = 1;
+			post("warehousing/selectListWarehousingEntryProduct",{"pageNum": this.pageNum,"productNameOrType": val,"warehousingEntryId":this.warehousingEntryId
+			}).then(res => {
+				this.totalCount =  res.data.total
+				this.productList = res.data.products;
+				uni.hideLoading();
 				if (this.totalCount == this.productList.length) {
 					this.status = "noMore"
 				}
 			})
-			
-		}
+		} */
+	},
+	onLoad(option) {
+		this.warehousingEntryId = (!option.warehousingEntryId) ?'':option.warehousingEntryId
+	},
+	onShow(option){		
+		let products = this.productStore.products;
+		//计算总条数
+		this.totalNumber = products.reduce((accumulator, currentObject) => {
+		   return accumulator + currentObject.inventoryQuantity;
+		}, 0);
+		//计算总金额
+		this.totalMoney = products.reduce((accumulator, currentObject) => {
+		   return accumulator + currentObject.retailPrice * currentObject.inventoryQuantity;
+		}, 0); 
 	}
+}
 </script>
 
 <style>
-/* 	@import "../../style/icon/iconfont.css"; */
 
-	
-	.wrap {
-		width: 100%;
-		height: 100%;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
+.head {
+	height: 60px;
+}
 
-	.head {
-		height: 85px;
-	}
+.head .search {
+	width: 100%;
+	border-top: 5px solid #efeef3ff;
+	height: 45px;
+	padding: 5px 0;
+	background-color: #ffffff;
+	display: flex;
+}
+.head .search .same_search {
+	flex: 1;
+}
+.head .search .same_search .search_input {
+	height: 41px;
+	background-repeat: no-repeat;
+	background-position: 98%;
+	border: 1px solid #f2f2f2;
+	border-radius: 10px;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 5px;
+}
 
-	.head .search {
-		border-top: 5px solid #efeef3ff;
-		position: fixed;
-		width: 100%;
-		height: 60px;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		z-index: 999;
-		background-color: #ffffff;
-	}
+.more_search {
+	height: 39px;
+	width: 39px;
+	margin-top: 2px;
+	border-radius: 3px;
+	text-align: center;
+	line-height: 39px;
+	background-color: #00a7e2ff;
+	margin-left: 5px;
+	margin-right: 7px;
+}
+.more_search .iconfont {
+	color: #ffffff;
+	font-size: 18px;
+}
 
-	.search_input {
-		padding-right: 60px;
-		background-image: url("../../static/image/search.png");
-		background-repeat: no-repeat;
-		background-position: 98%;
-		height: 60px;
-		border: 1px solid #f2f2f2;
-		border-radius: 100rpx;
-		background-color: red;
-		text-align: left;
-		font: sist 14px;
-		color: '#606266';
-		background-color: #ffffff;
-		padding-left: 20px;
-		font-size: 28rpx;
-		margin-left: 20px;
-		margin-right: 20px;
-	}
 
-	.content {
-		display: flex;
-		background-color: #fff;
-		border-bottom: 1px solid #cbcbcbff;
-		padding-bottom: 10rpx;
-		margin-bottom: 15rpx;
-	}
 
-	.left {
-		width: 20%;
-		height: 88px;
-		background-color: #f2f2f2ff;
-		text-align: center;
-	}
 
-	.left_text {
-		font-size: 10px;
-		padding: 2px;
-		text-align: center;
-		margin-top: 5px;
-		color: #a3a3a1ff;
-	}
+.product {
+	display: flex;
+	align-items: center;
+	background-color: #fff;
+	border-bottom: 1px solid #cbcbcbff;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+}
+.product .img{
+	width: 60px;
+	height: 65px;
+}
 
-	.left_img {
-		width: 20px;
-		height: 20px;
-		margin-top: 15px;
-	}
+.right {
+	flex: 1;
+	margin-left: 5px;
+	position: relative;
+}
 
-	.right {
-		width: 80%;
-		margin-left: 5px;
-	}
+.grid {	
+ 	display: flex;	
+	line-height: 17px;
+}
 
-	.grid {
-		display: flex;
-		line-height: 14px;
-	}
+.grid .info {
+	width: 50%;
+	color: #030303ff;
+	font-size: 13px;
+	white-space: nowrap; /* 文字不换行 */
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 以省略号形式显示 */
+}
 
-	.info {
-		width: 50%;
-		color: #030303ff;
-		font-size: 12px;
-		white-space: nowrap;
-	}
+.product_number {
+	position: absolute;
+	bottom: 30%;
+	right: 1px;
+}
+.product_number .number {
+	font-size: 15px;
+	width: 20px;
+	text-align: center;
+}
 
-	.product_number {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		border: 1px solid #cdcdcdff;
-		border-radius: 5rpx;
-		width: 40%;
-		text-align: center;
-		margin-top: 5px;
-	}
+.bottom {
+	background: #fff;
+	border-top: 1px solid #cbcbcbff;
+	bottom: 0;
+	width: 100%;
+	height: 45px;
+	display: flex;
+}
 
-	.reduce {
-		padding: 0 25rpx;
-		height: 36rpx;
-		line-height: 30rpx;
-		border-right: 1px solid #cdcdcdff;
-		color: #010101ff;
-		font-weight: 500;
-	}
+.bottom .liebiao {
+	display: flex;
+	margin-left: 15px;
+	line-height: 52px;
+	position: relative;
+}
+.iconfont{
+	color: #02a5e6ff;
+	font-size: 35px;
+}
 
-	.add {
-		padding: 0 25rpx;
-		height: 36rpx;
-		line-height: 33rpx;
-		border-left: 1px solid #cdcdcdff;
-		color: #010101ff;
-	}
+.support-circle {
+	width: 17px;
+	height: 17px;
+	background-color: red;
+	border-radius: 50%;
+	position: absolute;
+	left: 25px;
+	top: 5px;
+}
 
-	.product_number input {
-		font-size: 26rpx;
-	}
+.support-num {
+	display: block;
+	font-size: 10px;
+	height: 17px;
+	line-height: 17px;
+	color: #ccc;
+	text-align: center;
+}
 
-	.bottom {
-		background: #fff;
-		border-top: 1px solid #cbcbcbff;
-		position: fixed;
-		bottom: 0;
-		width: 100%;
-		height: 45px;
-		display: flex;
-		z-index: 999;
-	}
+.total-amount {
+	display: flex;
+	margin-left: 20px;
+	line-height: 49px;
+	color: #030303ff;
+	font-size: 16px;
+}
 
-	.bottom .liebiao {
-		display: flex;
-		margin-left: 15px;
-		line-height: 52px;
-		position: relative;
-	}
-	.iconfont{
-		color: #02a5e6ff;
-		font-size: 35px;
-	}
+.total-amount-money {
+	margin-left: 10px;
+	color: rgb(26, 161, 207);
+}
 
-	.support-circle {
-		width: 17px;
-		height: 17px;
-		background-color: red;
-		border-radius: 50%;
-		position: absolute;
-		left: 25px;
-		top: 5px;
-	}
+.confirm {
+	height: 45px;
+	width: 100px;
+	background-color: rgb(26, 161, 207);
+	color: #fff;
+	line-height: 45px;
+	text-align: center;
+	margin-left: auto;
+}
 
-	.support-num {
-		display: block;
-		font-size: 10px;
-		height: 17px;
-		line-height: 17px;
-		color: #ccc;
-		text-align: center;
-	}
+.popup_content {
+	position: relative;
+	width: 260px;
+	height: 120px;
+	background-color: white;	
+	overflow: auto;
+ } 
+ .popup_title {
+ 	 font-size: 15px;	
+	 text-align: center;
+	 margin: 5px; 	
+ }
+ .popup_item {
+ 	 display: flex;	
+ 	 margin: 10px 15px;
+ }
+ .popup_item_title{
+ 	white-space: nowrap;
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+ .popup_item_text{
+ 	border-bottom: 1px solid #f1f1f1ff;
+ 	flex-grow: 1;
+ 	text-align: center;
+ 	white-space: nowrap;
+ }
+ .popup_item_text input{
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
 
-	.total-amount {
-		display: flex;
-		margin-left: 20px;
-		line-height: 49px;
-		color: #030303ff;
-		font-size: 16px;
-	}
+.popup_product_foot {
+	width: 260px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+    height: 40px;
+	line-height: 40px;
+	color: #070707ff;
+	font-size: 15px;
+	display: flex;
+    border-top: 1px solid #f1f1f1ff;
+}
 
-	.total-amount-money {
-		margin-left: 10px;
-		color: rgb(26, 161, 207);
-	}
+.cancel{
+	text-align: center;
+	border-right: 1px solid #f1f1f1ff;
+	width: 50%;
+}
+.determine{
+	text-align: center;
+	width: 50%;
+}
 
-	.confirm {
-		height: 45px;
-		width: 100px;
-		background-color: rgb(26, 161, 207);
-		color: #fff;
-		line-height: 45px;
-		text-align: center;
-		margin-left: auto;
-	}
 </style>

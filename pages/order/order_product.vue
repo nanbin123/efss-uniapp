@@ -134,7 +134,7 @@ export default {
 		confirm(){			
 			var productChooseArray = this.productList.filter(function(item){
 				return item.selected == true;
-			});			
+			});
 			this.orderStore.addProduct(productChooseArray);
 			let pages = getCurrentPages();
 			if(pages.length >1){
@@ -163,7 +163,7 @@ export default {
 			})
 		} */
 	},
-	onShow(option){		
+	onShow(option){
 		let products = this.orderStoreProducts;
 		//计算总条数
 		this.totalNumber = products.reduce((accumulator, currentObject) => {
@@ -282,12 +282,10 @@ export default {
 .bottom {	
 	background: #fff;
 	border-top: 1px solid #cbcbcbff;
-	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 45px;
-	display: flex;
-	z-index: 999;
+	display: flex;	
 }
 
 .bottom .liebiao {

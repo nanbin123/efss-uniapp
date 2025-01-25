@@ -3,17 +3,17 @@ import { defineStore } from 'pinia'
 const useProductStore = defineStore( 'productStore', {
     state: () => {
 		return{
-			moreSearchProduct:{}
+			products: []
 		}
     },
-    actions: {		
-		addMoreSearchProduct(moreSearchProduct){
-			this.moreSearchProduct = moreSearchProduct;
+    actions: {
+		addProduct(products){
+			this.products = products
 		},
 		clearProductStore(){
 			let _this = this;
-			Object.keys(this.moreSearchProduct).forEach(function(key){					
-				_this.moreSearchProduct[key]="";
+			Object.keys(this.products).forEach(function(key){					
+				_this.products[key]="";
 			})
 		}
     }

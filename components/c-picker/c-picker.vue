@@ -53,7 +53,7 @@
 			}
 		},
 		methods: {
-			useCurrent() {				
+			useCurrent() {
 				let aToday = new Date();
 				let tYear = aToday.getFullYear().toString();
 				let tMonth = this.formatNum(aToday.getMonth() + 1).toString();
