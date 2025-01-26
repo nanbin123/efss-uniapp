@@ -1,4 +1,4 @@
-const BASEURL = "http://127.0.0.1:8080/";
+const BASEURL = "http://192.168.149.8:8080/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);

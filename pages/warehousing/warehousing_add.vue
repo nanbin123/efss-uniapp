@@ -66,94 +66,100 @@
 
 </template>
 <script>
-	import {get,post} from "../../components/utils/request.js"
-	import cPicker from "../../components/c-picker/c-picker.vue"
-	import useProductStore from '@/store/modules/product.js' 
-	export default {
-		components: {
-			cPicker
-		},
-		options: {styleIsolation: 'shared'},
-		data() {
-			return {
-				warehousingEntry:{},
-				popupProduct:{
-					productId:"",
-					productName:"",
-					inventoryQuantity:""
-				}
+import {get,post} from "../../components/utils/request.js"
+import cPicker from "../../components/c-picker/c-picker.vue"
+import useProductStore from '@/store/modules/product.js' 
+export default {
+	components: {
+		cPicker
+	},
+	options: {styleIsolation: 'shared'},
+	data() {
+		return {
+			warehousingEntry:{},
+			popupProduct:{
+				productId:"",
+				productName:"",
+				inventoryQuantity:""
 			}
-		},
-		setup() {
-			const productStore = useProductStore();				
-			return { productStore } 
-		 },
-		methods: {
-			//选择产品
-			addWarehousingProduct(){
-				let that = this
-				uni.navigateTo({
-					url:'/pages/warehousing/warehousing_product'
-				})
-			},
-			getWarehousingProduct(){
-				let products = JSON.stringify(this.productStore.products);
-				this.warehousingEntry.warehousingEntryProductList = JSON.parse(products);
-			},
-			//确认提交 订单
-			addWarehousing(){
-				let warehousingEntryObj=JSON.parse(JSON.stringify(this.warehousingEntry));
-				delete warehousingEntryObj.warehousingEntryProductList				
-				post("warehousing/insertWarehousingEntry",warehousingEntryObj).then(res =>{					
-					if(200 == res.code){
-						uni.hideLoading();
-						uni.showToast({
-							title: '添加入库单成功',
-							icon: 'none',
-							duration: 2000
-						})
-					}
-				})
-			},
-			open(item){
-				 this.popupProduct.productName = item.productName;
-				this.popupProduct.inventoryQuantity = item.inventoryQuantity;
-				this.popupProduct.productId = item.productId;
-				this.$refs.popup.open('center');			
-			},
-			cancelTrack(){
-				this.$refs.popup.close()
-			},
-			submitTrack(){
-				let warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList;
-				let productId = this.popupProduct.productId;
-				let warehousingEntryProduct = warehousingEntryProductList.filter(obj =>obj.productId == productId)[0]
-				warehousingEntryProduct.inventoryQuantity = this.popupProduct.inventoryQuantity;
-				this.$refs.popup.close()
-			},
-			recordDateHand(value) {				
-				this.warehousingEntry.recordDate = value.result							
-			},
-			//时间弹窗
-			toggle(val) {
-				this.$refs[val].show();
-			},
-			isEmpty(str){
-				return typeof str === 'undefined' || '' === str;
-			},
-			getImgUrl(image){
-			   return this.BASEURL+image;
-			}
-		},
-		onLoad() {
-			let date = new Date();
-			let year = date.getFullYear();
-			let month = (date.getMonth() + 1).toString().padStart(2, '0');
-			let day = date.getDate().toString().padStart(2, '0');				
-			let formattedDate = `${year}-${month}-${day}`;
-			this.warehousingEntry.recordDate = formattedDate;
 		}
+	},
+	setup() {
+		const productStore = useProductStore();				
+		return { productStore } 
+	 },
+	methods: {
+		//选择产品
+		addWarehousingProduct(){
+			let warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList
+			if(!!warehousingEntryProductList){
+				this.productStore.addProduct(warehousingEntryProductList);
+			}
+			uni.navigateTo({
+				url:'/pages/warehousing/warehousing_product'
+			})
+		},
+		getWarehousingProduct(){
+			let products = JSON.stringify(this.productStore.products);
+			this.warehousingEntry.warehousingEntryProductList = JSON.parse(products);
+		},
+		//确认提交 订单
+		addWarehousing(){
+			let warehousingEntryObj=JSON.parse(JSON.stringify(this.warehousingEntry));			
+			let productInfo = warehousingEntryObj.warehousingEntryProductList.map(map =>{
+				return {productId:map.productId,inventoryQuantity:map.inventoryQuantity}
+			})
+			warehousingEntryObj.warehousingEntryProductList = productInfo
+			post("warehousing/insertWarehousingEntry",JSON.stringify(warehousingEntryObj),'application/json').then(res =>{
+				if(200 == res.code){					
+					uni.showToast({
+						title: '添加入库单成功',
+						icon: 'none',
+						duration: 2000
+					})
+					this.warehousingEntry = "";
+				}
+			})
+		},
+		open(item){
+			 this.popupProduct.productName = item.productName;
+			this.popupProduct.inventoryQuantity = item.inventoryQuantity;
+			this.popupProduct.productId = item.productId;
+			this.$refs.popup.open('center');			
+		},
+		cancelTrack(){
+			this.$refs.popup.close()
+		},
+		submitTrack(){
+			let warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList;
+			let productId = this.popupProduct.productId;
+			let warehousingEntryProduct = warehousingEntryProductList.filter(obj =>obj.productId == productId)[0]
+			warehousingEntryProduct.inventoryQuantity = this.popupProduct.inventoryQuantity;
+			this.$refs.popup.close()
+		},
+		recordDateHand(value) {				
+			this.warehousingEntry.recordDate = value.result							
+		},
+		//时间弹窗
+		toggle(val) {
+			this.$refs[val].show();
+		},
+		isEmpty(str){
+			return typeof str === 'undefined' || '' === str;
+		},
+		getImgUrl(image){
+		   return this.BASEURL+image;
+		}
+	},
+	onLoad() {
+		let date = new Date();
+		let year = date.getFullYear();
+		let month = (date.getMonth() + 1).toString().padStart(2, '0');
+		let day = date.getDate().toString().padStart(2, '0');				
+		let formattedDate = `${year}-${month}-${day}`;
+		this.warehousingEntry.recordDate = formattedDate;
 	}
+}
 </script>
 
 <style>
