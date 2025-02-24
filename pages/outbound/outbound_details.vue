@@ -1,69 +1,83 @@
 <template>
-<view class="wrap">
-	<view class="item">
-		<image class="img" style="width: 19px;height: 20px;" :src="getImgUrl('static/image/outbound/order_number.png')"></image>
-		<text class="title">订单编号:</text>	
-		<text class="content">{{outbound.orderNumber}}</text>	
+	<view style="height: 5px;">
+		<view class="head"></view>
 	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
-		<text class="title">客户姓名:</text>	
-		<text class="content">{{outbound.customerName}}</text>	
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
-		<text class="title">电话:</text>	
-		<text class="content">{{outbound.phone}}</text>	
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
-		<text class="title">地址:</text>	
-		<text class="content">{{outbound.address}}</text>	
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/outbound/sales_name.png')"></image>
-		<text class="title">销售人姓名:</text>	
-		<text class="content">{{outbound.orderNickName}}</text>	
-	</view>
-	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/outbound/sales_telephone.png')" ></image>
-		<text class="title">销售人电话:</text>	
-		<text class="content">{{outbound.orderPhonenumber}}</text>	
-	</view>	
-	<view class="products">
-		<view class="product-details">
-			<image class="img" :src="getImgUrl('static/image/outbound/product_details.png')"></image>
-			<text class="title">产品明细</text>
+	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
+		<view class="item">
+			<image class="img" style="width: 19px;height: 20px;" :src="getImgUrl('static/image/outbound/order_number.png')"></image>
+			<text class="title">订单编号:</text>	
+			<text class="content">{{outbound.orderNumber}}</text>	
 		</view>
-		<view class="product-list" v-for="(item,index) in outbound.outboundProductList">
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
-				<text class="info">产地：{{item.production}}</text>
-			</view>
-			<view class="grid">				
-				<text class="info">颜色：{{item.color}}</text>
-				<text class="info">材质：{{item.texture}}</text>
-				<text class="info" style="width: 40%;">尺寸：{{item.size}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">库存数：{{item.number}}</text>
-				<text class="info">待出库：{{item.toBeShippedOutNumber}}</text>
-				<text class="shipped_out">出库数:</text>
-				<view class="product_number">
-						<view class="reduce" @click="reduce(item)">-</view>					
-						<input disabled="disabled" type="number" :value="item.outboundQuantity" @input="countVal">				
-						<view class="add" @click="add(item)">+</view>
-				</view>			
-				<!-- <text class="info">订货数：{{item.number}}</text>				
-				<text class="info">已出库：{{item.outboundNumber}}</text> -->
-			</view>			
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
+			<text class="title">客户姓名:</text>	
+			<text class="content">{{outbound.customerName}}</text>	
 		</view>
-	</view>
-	<view class="btn"   @click="confirm()">
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
+			<text class="title">电话:</text>	
+			<text class="content">{{outbound.phone}}</text>	
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
+			<text class="title">地址:</text>	
+			<text class="content">{{outbound.address}}</text>	
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/outbound/sales_name.png')"></image>
+			<text class="title">销售人姓名:</text>	
+			<text class="content">{{outbound.orderOperator}}</text>	
+		</view>
+		<view class="item">
+			<image class="img" :src="getImgUrl('static/image/outbound/sales_telephone.png')" ></image>
+			<text class="title">销售人电话:</text>	
+			<text class="content">{{outbound.orderOperatorPhone}}</text>	
+		</view>	
+		<view class="products">
+			<view class="product-details">
+				<image class="img" :src="getImgUrl('static/image/outbound/product_details.png')"></image>
+				<text class="title">产品明细</text>
+			</view>
+			<view class="product" v-for="(item,index) in outbound.outboundProductList">
+				<view class="product-basic">
+					<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+					<view class="product-content" @click="checkOutboundProduct(item)">
+						<view class="grid">
+							<text class="info">品名：{{item.productName}}</text>
+							<text class="info">型号：{{item.type}}</text>				
+						</view>
+						<view class="grid">
+							<text class="info">尺寸：{{item.size}}</text>
+							<text class="info">产地：{{item.production}}</text>
+						</view>
+						<view class="grid">				
+							<text class="info">颜色：{{item.color}}</text>
+							<text class="info">材质：{{item.texture}}</text>
+						</view>
+					</view>				
+				</view>
+				<view class="product-inventory"  @click="open(item)">
+					<text class="info" style="width: 30%;">库存数：100</text>
+					<text class="info" style="width: 30%;">订单数：{{item.orderProductNumber}}</text>
+					<text class="info"  style="width: 30%;color: #e96225ff;">是否出库：{{item.isOutbound == true ?'已出库':'未出库'}}</text>
+				</view>
+				<view class="is_outbound">
+					<checkbox-group class="choice" @change="onCheckchange($event,item)">
+						<checkbox value="isOutbound" :checked="item.isOutbound" :disabled="isDisabled(item.isEdit)" />
+					</checkbox-group>
+				</view>
+				
+			</view>
+		</view>
+	</scroll-view>
+	<!-- <view @click="confirm()">
 		<button>确定</button>
+	</view> -->
+
+	<view class="bottom-bar">
+		<text class="delete" @click="deleteOutbound()">{{ isEditable ? '删除' : '取消'  }}</text>		 
+		<text class="edit"  @click="editOutbound()">{{ isEditable ? '编辑' : '保存' }}</text>
 	</view>
-</view>
 </template>
 
 <script>
@@ -71,57 +85,118 @@
 	export default {
 		data() {
 			return {
-				outbound:{}
+				outbound:{outboundProductList:[]},
+				isEditable: true
 			}
 		},
 		methods: {
-			reduce(item) {
-				if (item.outboundQuantity <= 0) {
-					uni.showToast({
-						title: '数值不能小于0',
-						icon: "none"
+			checkOutboundProduct(item){
+				if(!this.isEditable){
+					item.isOutbound = !item.isOutbound;
+				}
+			},
+			onCheckchange(e,item){
+				item.isOutbound = e.detail.value.includes("isOutbound"); 
+			},
+			isDisabled(itemIsEdit) {				
+				if(this.isEditable){
+					return this.isEditable;
+				}else{
+					return itemIsEdit;
+				}
+			},
+			//修改操作
+			editOutbound(){
+				if(this.isEditable == true){
+					this.isEditable = false	
+				}else if(this.isEditable == false){					
+					//对产品进行分组汇总
+					const data = this.outbound.outboundProductList;
+					const groupSum = data.reduce((result, currentItem) => {
+						if(currentItem.isOutbound === true && currentItem.isEdit === false){
+							const group = currentItem["id"];
+							result[group] = result[group] || { "id": group, "outboundNumber": 0 };						
+							result[group].outboundNumber++;
+						} 
+						return result;
+					}, {});
+					let outboundProductList = Object.keys(groupSum).map(function(key) {
+						return groupSum[key];
+					});					
+					post("outbound/updateOutboundNumber", JSON.stringify(outboundProductList),'application/json').then(res => {
+						if(200 == res.code){
+							this.getOutboundById();
+							this.isEditable = true
+							uni.showToast({
+								title: '出库成功',
+								icon: 'none',
+								duration: 20000
+							})
+						}
 					})
-					return;
 				}
-				item.outboundQuantity = item.outboundQuantity - 1;					 
 			},
-			add(item) {
-				if (item.outboundQuantity >= item.toBeShippedOutNumber) {
-					uni.showToast({
-						title: '出库数不能大于待出库',
-						icon: "none"
-					})
-					return;
+			deleteOutbound(){
+				let _this = this	
+				if(_this.isEditable == true){					 
+					uni.showModal({
+					  title: '提示',
+					  content: '是否删除出库单',
+					  success: (res)=> {						 
+						if (res.confirm) {
+							post("outbound/deleteOutboundById",{"id":_this.outbound.id}).then(res =>{								
+								if(200 == res.code){
+									_this.isEditable = true;
+									_this.outbound ={};
+									uni.showToast({
+									  title: '删除出库单成功',
+									  icon: 'none', 
+									  duration: 2000 
+									});
+								}
+							})
+						}
+					  }
+					});
+				}else if(_this.isEditable == false){
+					_this.isEditable = true			
 				}
-				item.outboundQuantity = item.outboundQuantity + 1;							
 			},
-			confirm(){
-				var outboundProductChooseArray = this.outbound.outboundProductList;
-				let outboundProductList = new Array(); 
-				for (var i = 0; i < outboundProductChooseArray.length; i++) {
-					if(outboundProductChooseArray[i].outboundQuantity >0){
-						let outboundProduct= new Object();
-						outboundProduct.outboundNumber = outboundProductChooseArray[i].outboundQuantity;
-						outboundProduct.id = outboundProductChooseArray[i].id;
-						outboundProductList.push(outboundProduct);
-					}
-				}
-				post("outbound/updateOutboundNumber", JSON.stringify(outboundProductList),'application/json').then(res => {
-					if(200 == res.code){						
-						this.getOutboundById(this.outbound.id);
-					}
-				})
-			},
-			getOutboundById(outboundId){
-				post("outbound/selectOutboundById",{"id":this.outboundId}).then(res =>{
+			getOutboundById(){
+				post("outbound/selectOutboundById",{"id":this.outbound.id}).then(res =>{
 					if(200 == res.code){
-						this.outbound = res.data
-						uni.showToast({
-							title: '出库成功',
-							icon: 'none',
-							duration: 20000
-						})
-						uni.hideLoading();
+						this.outbound = {outboundProductList:[]};
+						let resData = res.data;
+						console.log("resData",JSON.stringify(resData))
+						this.outbound.id = resData.id;
+						this.outbound.orderNumber = resData.orderNumber;
+						this.outbound.customerName = resData.customerName;
+						this.outbound.phone = resData.phone;
+						this.outbound.address = resData.address;
+						this.outbound.orderOperator = resData.orderOperator;
+						this.outbound.orderOperatorPhone = resData.orderOperatorPhone;
+						let dataProduct = res.data.outboundProductList;
+						for (var i = 0; i < dataProduct.length; i++) {				
+							// 已出库数量
+							let outboundNumber = dataProduct[i].outboundNumber;	
+							console.log("outboundNumber",outboundNumber)
+							for (var j = 0; j < outboundNumber; j++) {
+								let outboundProduct = JSON.parse(JSON.stringify(dataProduct[i]))
+								outboundProduct.isOutbound=true;
+								outboundProduct.isEdit = true;
+								this.outbound.outboundProductList.push(outboundProduct)
+							}
+							//销售订单数量
+							let orderProductNumber = dataProduct[i].orderProductNumber;
+							// 待出库数量
+							let toBeShippedOutNumber = orderProductNumber - outboundNumber;
+							for (var j = 0; j < toBeShippedOutNumber; j++) {
+								let outboundProduct = JSON.parse(JSON.stringify(dataProduct[i]))
+								outboundProduct.isOutbound=false;
+								outboundProduct.isEdit = false;
+								this.outbound.outboundProductList.push(outboundProduct)
+							}
+						}
 					}
 				})
 			},
@@ -130,37 +205,37 @@
 			}
 		},
 		onLoad(option) {
-			this.outboundId = option.id
-			post("outbound/selectOutboundById",{"id":this.outboundId}).then(res =>{
-				if(200 == res.code){
-					this.outbound = res.data
-					uni.hideLoading();
-				}
-			})
+			this.outbound.id = option.id;
+			this.getOutboundById();
 		}
 	}
 </script>
 
-<style>
-.wrap{
-	width: 100%;	
-	border-top: 8px solid #efeef3ff;
+<style scoped>
+.head{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+	position: fixed;
+	z-index: 999;
 }
 .item{
 	display: flex;
 	align-items: center;
-	padding: 6px;
+	padding: 8px 0;
 	border-bottom: 1px solid #efeef3ff;
 }
-.img{
-	width: 18px;
-	height: 18px;	
+.item .img{
+	margin-left: 2px;
+	width: 20px;
+	height: 20px;
 }
-.title{	
-	white-space: nowrap;
-	padding: 0 15px;
-	font-size: 15px;
+.item .title{
+	margin-left: 3px;
+	font-size: 14px;
 	color: #333;
+	white-space: nowrap;
+	text-rendering: optimizeLegibility;
 }
 .content{
 	white-space: nowrap;
@@ -176,94 +251,93 @@
 .product-details{
 	display: flex;
 	align-items: center;
-	padding: 10px 10px 0 10px;
+	padding: 8px 0;
 }
-.product-details .img{
-	padding-right: 10px;
+.product-details .img{	
+	margin-left: 2px;
+	width: 20px;
+	height: 20px;
 }
-.product-details text{
-	font-size: 17px;
-	font-weight: 600;
+.product-details .title{
+	margin-left: 3px;
+	font-size: 15px;
+	font-weight: 600;	
 	color: #949494ff;	
 }
-.product-list{
-	padding-left:10px;
-	padding-top: 10px;
-	border-bottom: 1px solid #c5c5c5ff;
-}
-.grid{
-	width: 100%;
-	display: flex;
-	align-items: center;
-	height: 28px;	
-}
-.grid .info{
-	width: 30%;
-	color: #333;
-	font-size: 15px;	
-	white-space: nowrap;
-}
-.grid .shipped_out{
-	color: #333;
-	font-size: 15px;	
-	white-space: nowrap;
-	margin-right: 10px;
-}
-.product_number{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border: 1px solid #cdcdcdff;
-	border-radius: 2px;
-	height: 22px;
-	width: 120px;
-	text-align: center;
-}
-.reduce{	
-	width: 50px;
-	height: 22px;
-	text-align: center;
-	line-height: 20px;
-	border-right: 1px solid #cdcdcdff;
-	color: #010101ff;
-	font-weight: 500;
-}
-.add{
-	width: 50px;
-	height: 22px;
-	line-height: 20px;
-	border-left: 1px solid #cdcdcdff;
-	color: #010101ff;
-}
-.product_number input{
-	font-size: 15px;
-}
-
-
-/* .choice{
-	display: flex;
-	justify-content: space-between;
-} 
-.delivery-status{
-	color: #db081bff;
-	font-size: 30rpx;
-	height: 50rpx;
-	margin-left: 10px;
-}
-.choice checkbox{
-	transform:scale(0.9);
-	margin-right: 20rpx;
-	/* margin-bottom: 10rpx; 
-}*/
-.btn{
-	width: 80%;
+.product{
+	background-color: #fff;
+	border-bottom: 1px solid #cbcbcbff;
+	margin-bottom: 5px;
 	position: relative;
-	top: 100rpx;
-	margin: 0 auto;
 }
-.btn button{
-	background-color: #00a7e2ff;
-	border: 0;
-	color: #daf2fbff;	
+.product-basic{
+	display: flex;
+	align-items: center;
+}
+.product .product-inventory{
+	display: flex;
+	align-items: center;
+	font-size: 14px;
+	color: rgb(233, 98, 37);
+	padding-left: 3px;
+}
+.product .img {
+	width: 50px;
+	height: 50px;
+}
+.product .product-content{	
+	flex: 1;
+	margin-left: 2px;
+}
+.product .product-content .grid{
+	display: flex;
+	line-height: 17px;
+}
+.product .grid .info{
+	width: 50%;
+	font-size: 14px;
+	color: #333;
+	white-space: nowrap;  
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 显示省略号 */
+	text-rendering: optimizeLegibility;
+}
+.product .is_outbound{
+	position: absolute;
+	bottom: 30%;
+	right: 10px;
+}
+.bottom-bar {  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 39px;
+  background-color: #fff;
+  border-top: 1px solid #cbcbcbff;
+  display: flex;
+  align-items: center; 
+}
+.delete {
+  flex: 1;
+  height: 39px;
+  line-height: 39px;
+  color: #38c1b9;
+  margin-left: 10px;
+}
+.transferOrder{
+	flex: 1;
+	height: 39px;
+	line-height: 39px;
+	text-align:center;
+	color: #38c1b9;
+}
+.edit {
+	flex: 1;
+	height: 100%;
+	line-height: 39px;
+	text-align:right;
+	color: #38c1b9;
+	margin-right: 10px;
 }
 </style>

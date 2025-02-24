@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="paging" v-model="warehousingEntryList" @query="queryList">	
+	<z-paging ref="paging" v-model="warehousingEntryList" @query="queryList">
 		<template #top>
 			<view class="head">
 				<view class="status-search">
@@ -13,7 +13,6 @@
 						 <view class="same_search">
 							<input class="search_input"  v-model="searchVal" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'" type="text" placeholder="搜索货品"/>
 						</view>
-			
 						<navigator  class="more_search" url="/pages/warehousing/warehousing_query">
 							<i class="iconfont">&#xe69b;</i>
 						</navigator>
@@ -64,14 +63,13 @@
 		},
 		methods: {
 			refreshWarehousingList(){
-				console.log("searchWarehousing",JSON.stringify(this.searchWarehousing));
 				post("warehousing/selectListWarehousingEntry",this.searchWarehousing).then(res =>{
 					this.$refs.paging.complete(res.rows);
 				})
 			},
 			queryList(pageNo, pageSize) {
 				this.searchWarehousing.pageNum = pageNo;
-				this.refreshWarehousingList(this.searchWarehousing);
+				this.refreshWarehousingList();
 			},
 			changeCompletionStatus(index){
 				this.nowIndex = index
@@ -90,8 +88,7 @@
 }
 .head .status-search{
 	border-top: 5px solid #efeef3ff;
-	height: 36px; 
-	position: fixed; 
+	height: 36px; 	
 	width: 100%;
 }
 .head .completion-status{

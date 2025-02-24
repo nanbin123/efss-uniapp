@@ -31,7 +31,7 @@
 			</view>
 			<view class="item">
 				<text  class="info">下单时间：{{item.createTime}}</text>
-				<text  class="info">操作人:{{item.updateBy}}</text>
+				<text  class="info">操作人:{{item.operator}}</text>
 			</view>
 		</view>			
 	</navigator>

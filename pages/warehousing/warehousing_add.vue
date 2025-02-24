@@ -25,7 +25,7 @@
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
 		<view class="product"  v-for="(item,index) in warehousingEntry.warehousingEntryProductList">			
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>			
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 			<view class="product-content" @click="open(item)">
 				<view class="grid">
 					<text class="info">品名：{{item.productName}}</text>
@@ -122,7 +122,7 @@ export default {
 			})
 		},
 		open(item){
-			 this.popupProduct.productName = item.productName;
+			this.popupProduct.productName = item.productName;
 			this.popupProduct.inventoryQuantity = item.inventoryQuantity;
 			this.popupProduct.productId = item.productId;
 			this.$refs.popup.open('center');			
@@ -235,8 +235,8 @@ export default {
 	align-items: center;
 	background-color: #fff;
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
 }
 .product .img {
 	width: 80px;

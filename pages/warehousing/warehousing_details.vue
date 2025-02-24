@@ -2,7 +2,7 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>
-	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" id="scrollList" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
+	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 			<text class="title">入库单号</text>	
@@ -134,7 +134,7 @@ export default {
 								_this.isEditable = true;
 								_this.warehousingEntry ={};
 								uni.showToast({
-								  title: '删除销售订单成功',
+								  title: '删除入库单成功',
 								  icon: 'none', 
 								  duration: 2000 
 								});
@@ -165,7 +165,7 @@ export default {
 	onLoad(option) {
 		this.warehousingEntry.id = option.id				
 		post("warehousing/selectWarehousingEntryById",{"id":this.warehousingEntry.id}).then(res =>{				
-			if(200 == res.code){			
+			if(200 == res.code){
 				this.warehousingEntry.id = res.data.id;
 				this.warehousingEntry.warehousingNumber = res.data.warehousingNumber;
 				this.warehousingEntry.recordDate = res.data.recordDate;

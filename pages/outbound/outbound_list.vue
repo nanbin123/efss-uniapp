@@ -1,32 +1,32 @@
 <template>
-	
-	<view class="head">
-		<view class="status-search">	
-			<view class="completion-status">
-				<view  v-for="(item,index) in completionStatusList" 
-					class="normal-class" :class="{'active-class': nowIndex == index}" 
-					@click="changeCompletionStatus(index)">{{item}}
+	<z-paging ref="paging" v-model="outboundList" @query="queryList">
+		<template #top>
+			<view class="head">
+				<view class="status-search">	
+					<view class="completion-status">
+						<view  v-for="(item,index) in completionStatusList" 
+							class="normal-class" :class="{'active-class': nowIndex == index}" 
+							@click="changeCompletionStatus(index)">{{item}}
+						</view>
+					</view>
+					<view class="search">
+						 <view class="same_search">
+							<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
+							v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+						</view>
+						<navigator  class="more_search" url="">
+							<i class="iconfont">&#xe69b;</i>
+						</navigator>
+					</view>
 				</view>
 			</view>
-			<view class="search">
-				 <view class="same_search">
-					<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
-					v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
-				</view>
-				<navigator  class="more_search" url="">
-					<i class="iconfont">&#xe69b;</i>
-				</navigator>
-			</view>
-		</view>
-	</view>
-	
-	
-	<scroll-view scroll-y="true" :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 120px);" @scrolltolower="onReachBottom">
+		</template>
+		
 		<navigator v-for="(item,index) in outboundList" :url="'/pages/outbound/outbound_details?id='+item.id">
 			<view class="content">
 				<view class="item">
 					<view class="info">客户姓名:&nbsp;{{item.customerName}}</view>
-					<view class="info">客户电话:&nbsp;{{item.customerName}}</view>
+					<view class="info">客户电话:&nbsp;{{item.phone}}</view>
 				</view>
 				<view class="item">
 					<view class="info">记录日期:&nbsp;{{item.recordDate}}</view>
@@ -36,19 +36,18 @@
 				
 				<view class="personal-name">
 					
-					
 				</view>
 			</view>		
 		</navigator>
-	</scroll-view>
-
-
-	<view class="footer">
-		<navigator url="/pages/outbound/outbound_add">
-			新增出库
-		</navigator>
-	</view>
-
+		
+		<template #bottom>
+			<view class="outbound_footer">
+				<navigator url="/pages/outbound/outbound_add">
+					新增出库
+				</navigator>
+			</view>
+		</template>
+	</z-paging>
 </template>
 
 <script>
@@ -59,52 +58,48 @@
 				nowIndex: 0,
 				completionStatusList:['新单据','未完成','已完成'],
 				outboundList:[],
-				pageNum: 1
+				searchOutbound:{},
+				searchVal:''
 			}
 		},
 		methods: {
 			changeCompletionStatus(index){
 				this.nowIndex = index
 			},
-			onReachBottom() {
-				if(this.totalCount > this.outboundList.length){
-					this.pageNum++;				
-					post("outbound/selectOutbound",{"pageNum":this.pageNum}).then(res =>{					
-						 this.outboundList = this.outboundList.concat(res.rows)
-						 uni.hideLoading();
-					})
-				}else if(this.totalCount == this.outboundList.length){ 
-					 uni.showToast({
-					    title: '没有更多出库单了',
-					    duration: 3000,
-					    icon: 'none'
-					 });						
-				}
+			refreshOutboundList(){
+				post("outbound/selectOutbound",this.searchOutbound).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
+			queryList(pageNo, pageSize) {
+				console.log(pageNo)
+				this.searchOutbound.pageNum = pageNo;
+				this.refreshOutboundList();
 			},
 			getImgUrl(image) {
 				return this.BASEURL + image;
 			}
 		},
+		watch:{
+			searchVal(newVal, oldVal) {
+				if (newVal != null){
+					this.searchOutbound = {"customerNameOrPhone":newVal};
+					this.$refs.paging.reload();
+				}
+			}
+		},
 		onLoad() {
-			post("outbound/selectOutbound").then(res =>{
-				this.totalCount = res.total;				
-				this.outboundList = res.rows;
-			})
 		}
 	}
 </script>
 
-<style>
-/* 	@import "../../style/icon/iconfont.css"; */
-
-
+<style scoped>
 .head{
 	height: 90px;/* 88 +2 留出2px 的空间 */
 }
 .head .status-search{
 	border-top: 5px solid #efeef3ff;
-	height: 33px; /* 30+3+45+2+3 */
-	position: fixed; 
+	height: 33px; /* 30+3+45+2+3 */	
 	width: 100%;
 }
 .head .completion-status{
@@ -188,15 +183,12 @@
     width: 50%;
 }
 
-.footer{
+.outbound_footer{
 	height: 30px;
 	font-size: 16px;
 	text-align: center;
 	line-height: 30px;
 	background-color: #38c1b9;
 	color: #ffffff;	
-	position: fixed;
-	bottom: 0;
-	width: 100%;
 }
 </style>
