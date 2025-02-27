@@ -374,7 +374,7 @@ export default {
 	height: 20px;	
 }
 .item .title{
-	margin-left: 1px;
+	margin-left: 2px;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap; /* 文字不换行 */

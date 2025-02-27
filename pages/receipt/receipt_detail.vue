@@ -1,8 +1,8 @@
 <template>
-	<view class="wrap">
-		<view style="height: 5px;">
-			<view class="head"></view>
-		</view>
+	<view style="height: 5px;">
+		<view class="head"></view>
+	</view>
+	<scroll-view scroll-y style="height: calc(100vh - 90px);">
 		<view class="item">
 			<image class="img" style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')"></image>
 			<text class="title">订单编号 :</text>
@@ -31,24 +31,25 @@
 		<view class="item">
 			<image class="img"  :src="getImgUrl('static/image/order/order_actual_amount.png')" ></image>
 			<text  class="title">已收款:</text>
-			<text class="right-content">{{receipt.received}}</text>
+			<text  class="right-content">{{receipt.received}}</text>
 		</view>
 		<view class="item">
 			<image class="img"  :src="getImgUrl('static/image/receipt/to_be_received.png')" ></image>
 			<text  class="title">待收款:</text>
-			<text class="right-content">{{receipt.tobeReceived}}</text>
+			<text  class="right-content">{{receipt.tobeReceived}}</text>
 		</view>
 		<view class="item">
 			<image class="img"  :src="getImgUrl('static/image/receipt/amount_collected.png')"></image>
 			<text  class="title">收款金额:</text>
-			<input v-model="receipt.amountCollected"  confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+			<input class="right-content" v-model="receipt.amountCollected" 
+				:focus='amountCollectedFocus'  @blur='amountCollectedFocus = false' :disabled="isEditable" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
 		</view>
 		<view class="voucher">
 			<text  class="voucher-title">上传收款凭证</text>
 			<view class="voucher-img">
 				<view class="voucher-item" v-for="(item, index) in receipt.voucherList">
-					<image @tap="onPreviewImage(index)"  :src="item.voucher" class="voucher-item-img"></image>
-					<view  @tap="onDeleteThis(index)" class="voucher-remove ">
+					<image @tap="onPreviewImage(index)"  :src="getVoucherUrl(item.voucherUrl)" class="voucher-item-img"></image>
+					<view  v-if="!isEditable" @tap="onDeleteThis(index)" class="voucher-remove">
 						<text>X</text>
 					</view>
 				</view>
@@ -56,17 +57,21 @@
 			</view>
 		</view>
 		<view class="remarks">
-			<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" @input="handInput"></textarea>
+			<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" 
+			:disabled="isEditable" @input="handInput"></textarea>
 			<label for="forFocus" class="textarea-count ">{{textateaL}}/{{maxlength}}</label>
 		</view>
-		<view class="btn" @click="addReceiptForm()">
-			<button>保存</button>
-		</view>
+	</scroll-view>
+	
+	<view class="bottom-bar">
+		<text class="delete" @click="deleteReceipt()">{{ isEditable ? '删除' : '取消'  }}</text>		   
+		<text class="edit"  @click="editOrderForm()">{{ isEditable ? '编辑' : '保存' }}</text>
 	</view>
+
 </template>
 
 <script>
-	import {get,post} from "../../components/utils/request.js"
+	import {get,post,uploadFiles} from "../../components/utils/request.js"
 	export default {
 		data() {
 			return {				
@@ -74,7 +79,9 @@
 				maxlength:200,
 				receipt:{
 					voucherList: []
-				}
+				},
+				isEditable: true,
+				amountCollectedFocus:false
 			}
 		},
 		computed:{
@@ -95,60 +102,116 @@
 				if(200 == res.code){
 					this.receipt = res.data
 					this.textateaL = this.receipt.remark.length;
-					uni.hideLoading(); 
 				}
 			})
 		},
 		methods: {
-			getList(orderId){
-				post("receipt/selectOrderById",{"orderFormId":orderId}).then(res =>{
-					if(200 == res.code){
-						this.receipt = res.data
-						uni.hideLoading();
+			editOrderForm(){
+				if(this.isEditable == true){
+					this.isEditable = false					
+				}else if(this.isEditable == false){					
+					if(!this.receipt.amountCollected){						
+						this.amountCollectedFocus = true						
+						uni.showToast({
+							title: '收款金额不能为空',
+							icon: 'none'
+						});
+						return
+					}					
+					let receipt={
+						id:this.receipt.id,
+						amountCollected:this.receipt.amountCollected,
+						remark:this.receipt.remark
 					}
-				})
+					let voucherList = this.receipt.voucherList.map(item =>{
+						return {id: item.id}
+					});
+					receipt.voucherList = voucherList;		
+					post("receipt/updateReceiptById",JSON.stringify(receipt),'application/json').then(res =>{
+						if(200 == res.code){
+							this.isEditable = true
+							uni.showToast({
+							  title: '修改收款单成功',
+							  icon: 'none', 
+							  duration: 2000 
+							});
+						}
+					})
+				}
+			},
+			deleteReceipt(){
+				let that = this
+				if(!that.receipt.id){
+					return;
+				}
+				if(this.isEditable == true){					 
+					uni.showModal({
+					  title: '提示',
+					  content: '是否删除收款单',
+					  success: (res)=> {						 
+						if (res.confirm) {
+							post("receipt/deleteReceiptById",{"id":that.receipt.id}).then(res =>{
+								if(200 == res.code){
+									this.isEditable = true;
+									that.receipt ={};
+									uni.showToast({
+									  title: '删除收款单成功',
+									  icon: 'none', 
+									  duration: 2000 
+									});
+								}
+							})
+						}
+					  }
+					});
+				}else if(this.isEditable == false){
+					this.isEditable = true			
+				}
 			},
 			handInput(value) {
 				let val = value.detail.value;
 				this.textateaL = val.length;
 			},
 			onChooseImage(){
-				uni.chooseImage({
-					count: 9,//最多可以选择的图片张
-					sizeType: ['original', 'compressed'],//original 原图，compressed 压缩图
-					sourceType: ['album', 'camera'],//album 从相册选图，camera 使用相机
-					success: (res) => {					
-						if (res.tempFiles.length > 0) {
-							const tempFilePaths = res.tempFiles[0].path
-							const size = res.tempFiles[0].size
-							if (size < 8388608) {
-								uni.showLoading({
-								    title: '上传中'
-								});
-								setTimeout(()=>{								  
-									this.voucherList.push(tempFilePaths)									
-								    uni.hideLoading();
-								}, 500);
-							}else{
-								uni.showToast({
-									title: '超出限制大小',
-									icon: "none"
-								})
+				if(!this.isEditable){
+					uni.chooseImage({
+						count: 9,//最多可以选择的图片张
+						sizeType: ['original', 'compressed'],//original 原图，compressed 压缩图
+						sourceType: ['album', 'camera'],//album 从相册选图，camera 使用相机
+						success: (res) => {					
+							if (res.tempFiles.length > 0) {
+								let tempFilePaths = [];
+								for (var i = 0; i < res.tempFilePaths.length; i++) {
+									let obj =new Object();
+									obj.uri = res.tempFiles[i].path;
+									tempFilePaths.push(obj);
+								}									
+								let size = res.tempFiles[0].size
+								if (size < 8388608) {
+									uploadFiles("receipt/voucher",tempFilePaths).then(res =>{
+										if(200 == res.code){
+											let that = this;											
+											that.receipt.voucherList = that.receipt.voucherList.concat(res.data);
+											uni.hideLoading();
+										}
+									})		
+								}else{
+									uni.showToast({
+										title: '超出限制大小',
+										icon: "none"
+									})
+								}
 							}
-						}else{
-							uni.showToast({
-								title: '文件不存在',
-								icon: "none"
-							})
 						}
-					}
-				});
+					});
+				}
 			},
 			//预览图片
 			onPreviewImage(index) {
 				let imageUrl=[];
-				for (var i = 0; i < this.receipt.voucherList.length; i++) {
-					imageUrl.push(this.receipt.voucherList[i].voucher)
+				for (var i = 0; i < this.receipt.voucherList.length; i++) {					
+					let voucherUrl = this.getVoucherUrl(this.receipt.voucherList[i].voucherUrl)
+					imageUrl.push(voucherUrl)
 				}
 				uni.previewImage({
 					current: index,
@@ -162,15 +225,16 @@
 					content: '您确定删除吗？',
 					success: (res)=> {
 						if(res.confirm) {
-							this.voucherList.splice(index, 1);
-							wx.showToast({
-							    title: '删除成功',
-							    icon: 'success',
-							    duration: 1000
-							});
+							this.receipt.voucherList.splice(index, 1);
 						}
 					}
 				});
+			},
+			getVoucherUrl(image){
+				// 处理上传的图片比baseUrl多一个/
+				let baseUrl = this.BASEURL;
+				let baseSubUrl =  baseUrl.substring(0, baseUrl.length - 1);				
+				return baseSubUrl+image;
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
@@ -180,12 +244,6 @@
 </script>
 
 <style>
-
-.wrap{
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
 .head{
 	height: 5px;
 	width: 100%;
@@ -194,35 +252,41 @@
 	z-index: 999;
 }
 .item{	
-	display: flex;
-	align-items: center;
-	padding: 10px;
+	display: flex;	
+	padding: 8px 0;
 	border-bottom: 1px solid #efeef3ff;
+	align-items: center;
+	background-color: #fff;	
 }
 .item .img{
-	width: 18px;
-	height: 18px;		
+	margin-left: 2px;
+	width: 20px;
+	height: 20px;	
 }
 .item .title{
-	white-space: nowrap;
-	padding: 0 15px;
+	margin-left: 3px;
+	font-size: 15px;
+	color: #333;
+	white-space: nowrap; /* 文字不换行 */
+	text-rendering: optimizeLegibility;
+}
+.item .right-content{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;
+	margin-left: 20px;
+	text-rendering: optimizeLegibility;
 	font-size: 15px;
 	color: #333;
 }
-.item .right-content{
-	white-space: nowrap;
-	font-size: 15px;
-	color: #333;	
-	margin-left: auto;
-	margin-right: 10px;
-	text-align: right;	
-}
-
-.item input{
-	font-size: 16px;
-	margin-left: auto;
-	padding-right: 15px;
+.item input {
+	flex-grow: 1;
+	padding-right: 12px;
 	text-align: right;
+	margin-left: 20px;
+	text-rendering: optimizeLegibility;
+	font-size: 15px;
+	color: #333;
 }
 
 .item .input-placeholder{
@@ -303,15 +367,33 @@
 	right: 0px;
 	color: #999;
 }
-.btn{
-	width: 80%;
-	position: relative;
-	top: 30rpx;
-	margin: 0 auto;
+
+.bottom-bar {  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 39px;
+  background-color: #fff;
+  border-top: 1px solid #cbcbcbff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
 }
-.btn button{
-	background-color: #00a7e2ff;
-	border: 0;
-	color: #daf2fbff;	
+.delete {
+  width:50%;
+  height: 39px;
+  line-height: 39px;
+  color: #00a7e2ff;
+  margin-left: 10px;
+}
+
+.edit {
+	width:50%;
+	height: 100%;
+	line-height: 39px;
+	text-align:right;
+	color: #00a7e2ff;
+	margin-right: 10px;
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
-		<view style="height: 5px;">
-			<view class="head"></view>
-		</view>
+	<view style="height: 5px;">
+		<view class="head"></view>
+	</view>
+	<scroll-view scroll-y style="height: calc(100vh - 35px);">
 		<view class="item"   @click="importOrder()">
 			<image class="img" :src="getImgUrl('static/image/receipt/import-order.png')" ></image>
 			<text class="title">导入订单</text>
@@ -51,7 +52,7 @@
 			<text  class="voucher-title">上传收款凭证</text>
 			<view class="voucher-img">
 				<view class="voucher-item" v-for="(item, index) in receipt.voucherList">				 
-					<image @tap="onPreviewImage(index)"  :src="item.voucher" class="voucher-item-img"></image> 
+					<image @tap="onPreviewImage(index)" :src="getVoucherUrl(item.voucherUrl)" class="voucher-item-img"></image> 
 					<view  @tap="onDeleteThis(index)" class="voucher-remove ">
 						<text>X</text>
 					</view>
@@ -63,9 +64,10 @@
 			<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" @input="handInput"></textarea>
 			<label for="forFocus" class="textarea-count ">{{textateaL}}/{{maxlength}}</label>
 		</view>
-		<view class="btn" @click="addReceiptForm()">
-			<button>保存</button>
-		</view>
+	</scroll-view>
+	<view class="footer" @click="addReceiptForm()">
+		<view>保存</view>
+	</view>
 
 </template>
 
@@ -100,7 +102,7 @@
 					url:'/pages/receipt/import_order'
 				})
 			},
-			getList(orderId){
+			getOrderById(orderId){
 				post("receipt/selectOrderById",{"orderFormId":orderId}).then(res =>{
 					if(200 == res.code){
 						this.receipt = res.data
@@ -142,11 +144,11 @@
 							if (size < 8388608) {						
 								uploadFiles("receipt/voucher",tempFilePaths).then(res =>{									
 									if(200 == res.code){
-										let that = this;										
-										that.receipt.voucherList = that.receipt.voucherList.concat(res.receiptVouchers);
+										let that = this;
+										that.receipt.voucherList = that.receipt.voucherList.concat(res.data);
 										uni.hideLoading();
 									}
-								})			
+								})
 							}else{
 								uni.showToast({
 									title: '超出限制大小',
@@ -190,6 +192,12 @@
 					}
 				});
 			},
+			getVoucherUrl(image){
+				// 处理上传的图片比baseUrl多一个/
+				let baseUrl = this.BASEURL;
+				let baseSubUrl =  baseUrl.substring(0, baseUrl.length - 1);				
+				return baseSubUrl+image;
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
@@ -205,29 +213,42 @@
 	position: fixed;
 	z-index: 999;
 }
-.item{	
+.item{
 	display: flex;
-	align-items: center;
-	padding: 10px;
+	padding: 8px 0;
 	border-bottom: 1px solid #efeef3ff;
+	align-items: center;	
+	background-color: #fff;	
 }
 .item .img{
+	margin-left: 2px;
 	width: 18px;
 	height: 18px;		
 }
 .item .title{
-	white-space: nowrap;
-	padding: 0 15px;
+	margin-left: 3px;
+	font-size: 15px;
+	color: #333;
+	white-space: nowrap; /* 文字不换行 */
+	text-rendering: optimizeLegibility;
+}
+.item .right-content{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;
+	margin-left: 20px;
+	text-rendering: optimizeLegibility;
 	font-size: 15px;
 	color: #333;
 }
-.item .right-content{
-	white-space: nowrap;
+.item input{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;
+	margin-left: 20px;
+	text-rendering: optimizeLegibility;
 	font-size: 15px;
-	color: #333;	
-	margin-left: auto;
-	margin-right: 10px;
-	text-align: right;	
+	color: #333;
 }
 .item .right-img{
 	margin-left: auto;
@@ -235,13 +256,6 @@
 	width: 25px;
 	height: 25px;
 }
-.item input{
-	font-size: 16px;
-	margin-left: auto;
-	padding-right: 15px;
-	text-align: right;
-}
-
 .item .input-placeholder{
 	font-size: 16px;
 	text-align: right;
@@ -320,15 +334,14 @@
 	right: 0px;
 	color: #999;
 }
-.btn{
-	width: 80%;
-	position: relative;
-	top: 30rpx;
-	margin: 0 auto;
-}
-.btn button{
-	background-color: #00a7e2ff;
-	border: 0;
+
+.footer{
+	height: 30px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #00a7e2ff;	
 	color: #daf2fbff;	
+	width: 100%;
 }
 </style>

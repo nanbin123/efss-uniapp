@@ -17,12 +17,12 @@
 				<text  class="info">订单号:{{item.orderNumber}}</text>
 				<text  class="info">客户姓名:{{item.customerName}}</text>
 			</view>
-			<view class="item">					
-				<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
-				<text  class="info">客户电话:{{item.phone}}</text>
+			<view class="item">
+				<text  class="info">客户电话:{{item.customerPhone}}</text>
+				<text  class="info">客户地址:{{item.customerAddress}}</text>
 			</view>
-			<view class="item">					
-				<text  class="info">客户地址:{{item.address}}</text>
+			<view class="item">
+				<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>				
 				<text  class="info">送货时间:{{item.deliveryTime}}</text>
 			</view>
 			<view class="item">

@@ -1,35 +1,42 @@
 <template>
-	
-	<view class="wrap">
-		<view style="height: 5px;">
-			<view class="head"></view>
+	<z-paging ref="paging" v-model="orderList" @query="queryList">		
+		<template #top>
+			<view class="head">
+				<view class="search">
+					 <view class="same_search">
+						<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+					</view>
+					<navigator  class="more_search" url="">
+						<i class="iconfont">&#xe69b;</i>
+					</navigator>
+				</view>
+			</view>
+		</template>
+		
+		<view class="container" v-for="(item,index) in orderList" @click="chooseOrder(item.id)">
+			<view class="item">
+				<text  class="info">订单号:{{item.orderNumber}}</text>								
+				<text  class="info">客户姓名:{{item.customerName}}</text>
+			</view>
+			<view class="item">					
+				<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
+				<text  class="info">客户电话:{{item.phone}}</text>
+			</view>
+			<view class="item ">					
+				<text  class="info">客户地址:{{item.address}}</text>
+				<text  class="info">送货时间:{{item.deliveryTime}}</text>
+			</view>
+			<view class="item ">
+				<text  class="info">货品:{{item.productNames}}</text>
+				<text  class="info">实收金额:{{item.actualmoney}}</text>
+			</view>
+			<view class="item ">
+				<text  class="info">下单时间：{{item.createTime}}</text>
+				<text  class="info">操作人:{{item.updateBy}}</text>
+			</view>
 		</view>
-		<view v-for="(item,index) in orderList" :id="item.id"  >
-			<view class="container" @click="chooseOrder(item.id)">
-				<view class="item">
-					<text  class="info">订单号:{{item.orderNumber}}</text>								
-					<text  class="info">客户姓名:{{item.customerName}}</text>
-				</view>
-				<view class="item">					
-					<text  class="info">客户性别:{{sexConvert(item.sex)}}</text>	
-					<text  class="info">客户电话:{{item.phone}}</text>
-				</view>
-				<view class="item ">					
-					<text  class="info">客户地址:{{item.address}}</text>
-					<text  class="info">送货时间:{{item.deliveryTime}}</text>
-				</view>
-				<view class="item ">
-					<text  class="info">货品:{{item.productNames}}</text>
-					<text  class="info">实收金额:{{item.actualmoney}}</text>
-				</view>
-				<view class="item ">
-					<text  class="info">下单时间：{{item.createTime}}</text>
-					<text  class="info">操作人:{{item.updateBy}}</text>
-				</view>
-			</view>			
-		</view>
-		<uni-load-more class="load" :content-text="contentText" :status="status" :icon-size="24" :iconType="iconType" v-if="orderList.length > 0"/>
-	</view>
+		
+	</z-paging>	
 </template>
 
 <script>
@@ -39,17 +46,20 @@
 		data() {
 			return {
 				orderList:[],
-				pageNum: 1, // 当前页				
-				status: 'more',
-				contentText: {
-					contentdown: '上拉加载更多~',				
-					contentrefresh: '正在加载更多~',				
-					contentnomore: '我是有底线的~'
-				},
-				iconType: 'auto'    // 图标样式 
+				searchVal:'',
+				searchImportOrder:{}
 			}
 		},
 		methods: {
+			refreshImportOrderList(){
+				post("receipt/selectOrderList",this.searchImportOrder).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
+			queryList(pageNo, pageSize) {
+				this.searchImportOrder.pageNum = pageNo;
+				this.refreshImportOrderList();
+			},
 			sexConvert(sex){
 				if('1'==sex){
 					return '男'
@@ -57,68 +67,80 @@
 					return '女'
 				}
 			},
-			chooseOrder(id){
+			chooseOrder(id){	
 				let pages = getCurrentPages();
 				if(pages.length >1){
 					let prevPage = pages[pages.length -2];
 					uni.navigateBack({
 						delta:1,
-						success:(event) =>{
-							prevPage.getList(id);
+						success:(event) =>{	
+							pages[pages.length -2].$vm.getOrderById(id);
 						}
 					})
 				}
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
 			}
 		},
-		onReachBottom() {
-			if(this.totalCount > this.orderList.length){
-				this.pageNum++;				
-				post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{					
-					 this.orderList = this.orderList.concat(res.rows)
-					 uni.hideLoading();
-				})
-			}else if(this.totalCount == this.orderList.length){ 
-				 this.status = "noMore"				
+		watch:{
+			searchVal(newVal, oldVal) {
+				if (newVal != null){
+					this.searchImportOrder = {"customerNameOrPhone":newVal};
+					this.$refs.paging.reload();
+				}
 			}
-		},
-		onLoad(){
-			post("order/selectOrder",{"pageNum":this.pageNum}).then(res =>{
-				this.totalCount = res.total
-				 if(this.totalCount >0){
-					this.orderList = res.rows
-					uni.hideLoading();
-				 }
-				 if(this.totalCount == this.orderList.length){					 
-					 this.status = "noMore"
-				 }
-			}) 
 		}
 	}
-
-
 </script>
 
-<style>
-
-
-.wrap{
-	width: 100%;
-	height: 100%;
-}
+<style scoped>
 .head{
-	height: 5px;
-	width: 100%;
-	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
+	height: 60px;
 }
+.head .search{
+	width: 100%;
+	border-top: 5px solid #efeef3ff;	
+	height: 45px;
+	padding: 5px 0;	
+	background-color: #ffffff;	
+	display: flex;
+}
+.head .search  .same_search{	
+	flex: 1;
+}
+.head .search .same_search .search_input{	
+	height: 41px;	
+	background-repeat: no-repeat;
+	background-position: 98%;	
+	border: 1px solid #f2f2f2;
+	border-radius: 10px;
+	text-align: left;	
+	color:'#606266';	
+	padding-left: 10px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 5px; 
+}
+.head .search .more_search{
+	height: 39px;
+	width: 39px;
+	margin-top: 2px; 
+	border-radius: 3px;
+	text-align: center;
+	line-height: 39px;
+	background-color: #00b6aaff;
+	margin-left: 5px; 
+	margin-right: 7px;
+	
+}
+.iconfont{
+	color: #ffffff;	
+	font-size: 18px;
+}	
 .container{
-	position: relative;
 	border-bottom: 2px solid #efeef3ff;
 	padding: 10px 10px 0 10px;
-}
-.grid {	
- 	
 }
 .item{
 	display: flex;
@@ -128,7 +150,9 @@
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 12px;
-   white-space: nowrap;  
+   font-size: 13px;
+   white-space: nowrap; /* 文字不换行 */
+   overflow: hidden; /* 超出部分隐藏 */
+   text-overflow: ellipsis; /* 以省略号形式显示 */
 }
 </style>

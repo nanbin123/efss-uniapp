@@ -72,7 +72,6 @@
 				})
 			},
 			queryList(pageNo, pageSize) {
-				console.log(pageNo)
 				this.searchOutbound.pageNum = pageNo;
 				this.refreshOutboundList();
 			},

@@ -163,7 +163,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 .head-line{
 	height: 5px;
 	width: 100%;

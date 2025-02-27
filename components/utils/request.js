@@ -1,4 +1,4 @@
-const BASEURL = "http://192.168.160.8:8080/";
+const BASEURL = "http://192.168.32.8:8080/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);
@@ -25,13 +25,15 @@ function uploadFiles(url, files, formData = {}) {
 }
 
 function uploadImg(url, files, formData) {
+	console.log("files",files)
 	return new Promise(function(resolve, reject) {
 		uni.showLoading({
 			title: "上传中"
 		});
 		uni.uploadFile({
 			url: BASEURL + url,
-			files: files,
+			filePath: files[0],
+			name: 'file',
 			header: {
 				'Authorization': uni.getStorageSync("token"),
 				"Accept": "application/json"
