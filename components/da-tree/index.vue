@@ -998,7 +998,7 @@ export default defineComponent({
 
 .da-tree-item.is-show {
   height: auto;
-  padding: 6px 12px;
+  padding: 6px;
   visibility: visible;
   opacity: 1;
 }
@@ -1007,7 +1007,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
+  width: 20px;
   height: 25px;
   overflow: hidden;
 }

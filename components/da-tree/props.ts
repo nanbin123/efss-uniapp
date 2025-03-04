@@ -188,10 +188,10 @@ export default {
     default: 'left',
   },
   /**
-   * 子项缩进距离，默认40，单位rpx
+   * 子项缩进距离，默认10，单位rpx
    */
   indent: {
     type: Number,
-    default: 40,
+    default: 10,
   },
 }
