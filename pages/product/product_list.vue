@@ -1,17 +1,19 @@
 <template>
-	<view class="head">
-		<view class="search">
-			<view class="same_search">
-				<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
-					v-model="searchProduct.productNameOrType" confirm-type="search" type="text" placeholder="搜索品名或型号" />
+	<z-paging ref="paging" v-model="productList" @query="queryList">
+		<template #top>
+			<view class="head">
+				<view class="search">
+					<view class="same_search">
+						<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
+							v-model="searchVal" type="text" placeholder="搜索品名或型号" />
+					</view>
+					<view class="more_search"  @click="moreSearch()">
+						<i class="iconfont">&#xe69b;</i>
+					</view>
+				</view>
 			</view>
-			<view class="more_search"  @click="moreSearch()">
-				<i class="iconfont">&#xe69b;</i>
-			</view>
-		</view>
-	</view>
-
-	<scroll-view  scroll-y="true" :show-scrollbar="false" :enhanced="true"  id="scrollList" style="height: calc(100vh - 90px);" @scrolltolower="onReachBottom">
+		</template>
+	
 		<navigator class="content" v-for="(item,index) in productList" :url="'/pages/product/product_detail?id='+item.id">
 			<view class="item">
 				<text class="info">品名：{{item.productName}}</text>
@@ -36,45 +38,58 @@
 						style="color: #1aa1cfff; font-size: 14px;">￥{{item.purchasePrice}}</text></text>
 			</view>
 		</navigator>
-	</scroll-view>
-	
-
-	<view class="footer">
-		<navigator url="/pages/product/product_add">
-			添加产品
-		</navigator>
-	</view>
-
-
+		
+		<template #bottom>
+			<view class="footer">
+				<navigator url="/pages/product/product_add">
+					添加产品
+				</navigator>
+			</view>
+		</template>
+		
+	</z-paging>
 </template>
 <script>
-	import {
-		get,
-		post
-	} from "../../components/utils/request.js"
-	import useProductStore from '@/store/modules/product.js'
+	import {get,post} from "../../components/utils/request.js"
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
 				productList: [],						
-				searchProduct:{productNameOrType: ""},
-				status: 'more',	
+				searchProduct:{},
+				searchVal:'',
 			}
 		},
 		setup() {
-			const productStore = useProductStore();
-			return {
-				productStore
-			}
+			const moreSearchStore= useMoreSearchStore();
+			return {moreSearchStore}
 		},
 		methods: {
+			getProductList(){//高级查询
+			    this.searchVal = null;
+				// let customer = JSON.stringify(this.moreSearchStore.moreSearch);
+				let customer = this.moreSearchStore.moreSearch;
+				// this.searchProduct = JSON.parse(customer);
+				this.searchProduct =  customer;
+				this.$refs.paging.reload();
+			},
+			
+			refreshProductList(){
+				post("product/selectListProduct",this.searchProduct).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
+			queryList(pageNo, pageSize) {	
+				this.searchProduct.pageNum = pageNo;
+				this.refreshProductList();
+			},
 			moreSearch(){
-				let searchProduct = JSON.parse(JSON.stringify(this.searchProduct));
+/* 				let searchProduct = JSON.parse(JSON.stringify(this.searchProduct));
 				searchProduct.productNameOrType="";
-				this.productStore.addMoreSearchProduct(searchProduct);
+				this.productStore.addMoreSearchProduct(searchProduct);*/
 				uni.navigateTo({
 					url:'/pages/product/product_query'
-				})
+				}) 
 			},
 			onReachBottom() {
 				if (this.totalCount > this.productList.length) {
@@ -88,10 +103,6 @@
 					this.status = "noMore"
 				}
 			},
-			getProductList(searchProduct) {
-				console.log(JSON.stringify(searchProduct))
-				return post("product/selectListProduct", searchProduct);
-			},
 			getImgUrl(image) {
 				return this.BASEURL + image;
 			},
@@ -99,44 +110,39 @@
 				return typeof str === 'undefined' || '' === str;
 			}
 		},
-
-		watch: {
-			'searchProduct.productNameOrType':function(val) {				
-				if (!this.isEmpty(val)) {
-					this.searchProduct = {"pageNum":1,"productNameOrType":val};
-					this.getProductList(this.searchProduct).then(res => {
-						this.totalCount = res.total
-						this.productList = res.rows
-					})
+		watch:{
+			searchVal(newVal, oldVal) {
+				if (newVal != null){
+					this.searchProduct = {"productNameOrType":newVal};
+					this.$refs.paging.reload();
 				}
 			}
 		},
 		onLoad() {
-			this.productStore.clearProductStore();
+			alert(1)
+			/* this.productStore.clearProductStore(); */
 		},
 		onShow() {
-			let product = this.productStore.moreSearchProduct;
-			this.searchProduct = JSON.parse(JSON.stringify(product));
-			this.searchProduct.pageNum = 1;	
+/* 			let product = this.productStore.moreSearchProduct;
+			this.searchProduct = JSON.parse(JSON.stringify(product)); */
+/* 			this.searchProduct.pageNum = 1;	
 			this.getProductList(this.searchProduct).then(res => {
 				this.totalCount = res.total
 				this.productList = res.rows
-			})
+			}) */
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 60px;
 }
 .head .search {
 	width: 100%;
 	border-top: 5px solid #efeef3ff;
-	position: fixed;
 	height: 45px;
 	padding: 5px 0;
-	z-index: 999;
 	background-color: #ffffff;
 	display: flex;
 }
@@ -192,11 +198,6 @@
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
-/* 隐藏滚动条，但仍然允许滚动 */
-/* .load-more-container {
-  overflow: auto;
-  scrollbar-width: none; 
-} */
 .footer {
 	height: 30px;
 	font-size: 16px;
@@ -204,7 +205,6 @@
 	line-height: 30px;
 	background-color: #00a7e2ff;
 	color: #fff;
-	position: fixed;
 	bottom: 0;
 	width: 100%;
 }

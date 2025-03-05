@@ -55,12 +55,8 @@
 	</view>
 </template>
 <script>
-	import {
-		get,
-		post
-	} from "../../components/utils/request.js"
-	import useProductStore from '@/store/modules/product.js'
-
+	import {get,post} from "../../components/utils/request.js"
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
@@ -80,23 +76,23 @@
 			}
 		},
 		setup() {
-			const productStore = useProductStore();
+			const moreSearchStore = useMoreSearchStore();
 			return {
-				productStore
+				moreSearchStore
 			}
 		},
 		methods: {
 			search() {
-				let product = JSON.parse(JSON.stringify(this.productForm));	
-				product.productNameOrType="";
-				this.productStore.addMoreSearchProduct(product);
+				// let product = JSON.parse(JSON.stringify(this.productForm));
+				let product = this.productForm;
+				this.moreSearchStore.addMoreSearch(product);
 				let pages = getCurrentPages();				
 				if (pages.length > 1) {
 					uni.navigateBack({
-						delta: 1/* ,
+						delta: 1,
 						 success: (event) => {
-							pages[pages.length - 2].$vm.clearProductNameOrType();
-						} */
+							pages[pages.length - 2].$vm.getProductList();
+						}
 					})
 				}
 			},
@@ -105,7 +101,6 @@
 				Object.keys(this.productForm).forEach(function(key){					
 					_this.productForm[key]="";
 				})
-				this.productStore.addMoreSearchProduct(this.productForm);
 			},
 			getImgUrl(image) {
 				return this.BASEURL + image;
@@ -115,8 +110,10 @@
 			}
 		},
 		onShow() {
-			let productForm = JSON.parse(JSON.stringify(this.productStore.moreSearchProduct));			
-			this.productForm = productForm;
+			/* let productForm = JSON.parse(JSON.stringify(this.productStore.moreSearchProduct));			
+			this.productForm = productForm; */
+			
+			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}
 </script>

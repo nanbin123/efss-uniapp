@@ -6,18 +6,21 @@
 		<view class="main">
 			<view class="item">
 				<image class="img" :src="getImgUrl('static/image/user/user_name.png')"></image>
-				<text class="title">账号 :</text>
-				<input  v-model="user.userName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入登录账号">
+				<text class="title">账&nbsp号</text>
+				<text class="iconfont">&#xe639;</text>
+				<input :focus='userNameFocus' @blur='userNameFocus = false' v-model="user.userName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入登录账号">
 			</view>
 			<view class="item">
 				<image class="img" :src="getImgUrl('static/image/user/nick_name.png')"></image>
-				<text class="title">姓名 :</text>
-				<input v-model="user.nickName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
+				<text class="title">姓&nbsp名</text>
+				<text class="iconfont">&#xe639;</text>
+				<input :focus='userPasswordFocus' @blur='userPasswordFocus = false' v-model="user.nickName" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 			</view>
 			<view class="item">
 				<image class="img" style="width: 20px;height: 19px;"  :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
-				<text  class="title">手机号 :</text>
-				<input v-model="user.phonenumber" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入手机号">
+				<text  class="title">手机号</text>
+				<text class="iconfont">&#xe639;</text>
+				<input :focus='userPhonenumberFocus' @blur='userPhonenumberFocus = false' v-model="user.phonenumber" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入手机号">
 			</view>
 			<view class="permission_list">
 				<image class="img" style="width: 25px;height: 20px;" :src="getImgUrl('static/image/user/permission.png')"></image>				
@@ -76,7 +79,10 @@
 				roomTreeDataRight:[],
 				defaultCheckedKeysValue:[],
 				isEditable: true,
-				checkedDisabled:true
+				checkedDisabled:true,
+				userNameFocus:false,
+				userPasswordFocus:false,
+				userPhonenumberFocus:false
 			}
 		},	
 		components: {
@@ -139,7 +145,31 @@
 					}
 				})	
 			},
- 			editUser(){	
+ 			editUser(){
+				if(!this.user.userName){
+					this.userNameFocus = true						
+					uni.showToast({
+						title: '账号不能为空',
+						icon: 'none'
+					});
+					return
+				}
+				if(!this.user.password){
+					this.userPasswordFocus = true						
+					uni.showToast({
+						title: '密码不能为空',
+						icon: 'none'
+					});
+					return
+				}
+				if(!this.user.phonenumber){
+					this.userPhonenumberFocus = true						
+					uni.showToast({
+						title: '手机号不能为空',
+						icon: 'none'
+					});
+					return
+				}
 				//左侧菜单
 			    let leftCheckedKeys = this.$refs.menuRefLeft.getCheckedKeys();
 				//右侧菜单
@@ -230,6 +260,7 @@
 }
 .item .title{
 	margin-left: 3px;
+	margin-right: 1px;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
@@ -242,7 +273,11 @@
 	padding-right: 15px;
 	text-align: right;
 }
-
+.item .iconfont{
+	color: red;	
+	font-size: 12px;
+	margin-left: -5px;
+}
 .item .input-placeholder{
 	font-size: 15px;
 	text-align: right;

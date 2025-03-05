@@ -1,4 +1,4 @@
-const BASEURL = "http://192.168.250.8:8080/";
+const BASEURL = "http://192.168.72.8:8080/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);
@@ -91,6 +91,12 @@ function request(url, data = {}, method = "GET", contentType) {
 								url: '/pages/login/login'
 							});
 						}, 1000);
+					}
+					if (res.data.code == 500) {
+						uni.showToast({
+							title: res.data.msg,
+							icon: 'none'
+						});
 					}
 					if (res.data.code == 200) {
 						resolve(res.data);

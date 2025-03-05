@@ -113,7 +113,6 @@
 			addReceiptForm(){
 				post("receipt/insertReceipt",JSON.stringify(this.receipt),'application/json').then(res =>{
 					if(200 == res.code){
-						uni.hideLoading();
 						uni.showToast({
 							title: '添加收款单成功',
 							icon: 'none',

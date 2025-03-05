@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
 
-const useProductStore = defineStore( 'productStore', {
+const useMoreSearchStore = defineStore( 'moreSearchStore', {
     state: () => {
 		return{		
 			moreSearch:{}
 		}
     },
     actions: {
-		addMoreSearchProduct(moreSearchProduct){
-			this.moreSearchProduct = moreSearchProduct;
+		addMoreSearch(moreSearch){
+			this.moreSearch = moreSearch;
 		},
 		clearMoreSearchStore(){
 			let _this = this;
@@ -19,4 +19,4 @@ const useProductStore = defineStore( 'productStore', {
     }
   })
 
-export default useProductStore
+export default useMoreSearchStore
