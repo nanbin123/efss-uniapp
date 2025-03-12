@@ -65,11 +65,8 @@
 			return {moreSearchStore}
 		},
 		methods: {
-			getProductList(){//高级查询
-			    this.searchVal = null;
-				// let customer = JSON.stringify(this.moreSearchStore.moreSearch);
-				let customer = this.moreSearchStore.moreSearch;
-				// this.searchProduct = JSON.parse(customer);
+			getProductList(){//高级查询  
+				let customer = this.moreSearchStore.moreSearch;				
 				this.searchProduct =  customer;
 				this.$refs.paging.reload();
 			},
@@ -84,24 +81,9 @@
 				this.refreshProductList();
 			},
 			moreSearch(){
-/* 				let searchProduct = JSON.parse(JSON.stringify(this.searchProduct));
-				searchProduct.productNameOrType="";
-				this.productStore.addMoreSearchProduct(searchProduct);*/
 				uni.navigateTo({
 					url:'/pages/product/product_query'
 				}) 
-			},
-			onReachBottom() {
-				if (this.totalCount > this.productList.length) {
-					let searchProduct = this.searchProduct;
-					searchProduct.pageNum = ++searchProduct.pageNum;
-					this.getProductList(searchProduct).then(res => {
-						this.totalCount = res.total;
-						this.productList = this.productList.concat(res.rows);
-					})
-				} else if (this.totalCount == this.productList.length) {
-					this.status = "noMore"
-				}
 			},
 			getImgUrl(image) {
 				return this.BASEURL + image;
@@ -112,24 +94,13 @@
 		},
 		watch:{
 			searchVal(newVal, oldVal) {
-				if (newVal != null){
-					this.searchProduct = {"productNameOrType":newVal};
-					this.$refs.paging.reload();
-				}
+				this.searchProduct.productNameOrType = newVal;
+				this.$refs.paging.reload();
+				
 			}
 		},
-		onLoad() {
-			alert(1)
-			/* this.productStore.clearProductStore(); */
-		},
-		onShow() {
-/* 			let product = this.productStore.moreSearchProduct;
-			this.searchProduct = JSON.parse(JSON.stringify(product)); */
-/* 			this.searchProduct.pageNum = 1;	
-			this.getProductList(this.searchProduct).then(res => {
-				this.totalCount = res.total
-				this.productList = res.rows
-			}) */
+		onLoad() {			
+			this.moreSearchStore.clearMoreSearchStore();
 		}
 	}
 </script>

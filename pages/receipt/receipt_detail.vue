@@ -182,23 +182,12 @@
 							if (res.tempFiles.length > 0) {
 								let tempFilePaths = [];
 								for (var i = 0; i < res.tempFilePaths.length; i++) {
-									let obj =new Object();
-									obj.uri = res.tempFiles[i].path;
-									tempFilePaths.push(obj);
-								}									
-								let size = res.tempFiles[0].size
-								if (size < 8388608) {
-									uploadFiles("receipt/voucher",tempFilePaths).then(res =>{
+									uploadFiles("receipt/voucher",res.tempFiles[i].path).then(res =>{
 										if(200 == res.code){
 											let that = this;											
 											that.receipt.voucherList = that.receipt.voucherList.concat(res.data);
 											uni.hideLoading();
 										}
-									})		
-								}else{
-									uni.showToast({
-										title: '超出限制大小',
-										icon: "none"
 									})
 								}
 							}
@@ -243,7 +232,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 5px;
 	width: 100%;
@@ -294,7 +283,7 @@
 	text-align: right;
 	color: #aaa;
 }
-.voucher{	
+.voucher{
 	padding: 7px 0 0 15px;	
 }
 .voucher-title{

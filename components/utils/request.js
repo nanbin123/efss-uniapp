@@ -1,4 +1,4 @@
-const BASEURL = "http://192.168.72.8:8080/";
+const BASEURL = "http://172.16.18.63:8080/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);
@@ -32,7 +32,7 @@ function uploadImg(url, files, formData) {
 		});
 		uni.uploadFile({
 			url: BASEURL + url,
-			filePath: files[0],
+			filePath: files,
 			name: 'file',
 			header: {
 				'Authorization': uni.getStorageSync("token"),

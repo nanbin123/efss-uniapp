@@ -1,23 +1,25 @@
 <template>
-<view style="height: 5px;">
-	<view class="head"></view>
-</view>
-	
-<scroll-view scroll-y id="scrollList" style="height: calc(100vh - 85px);" @scrolltolower="onReachBottom">
-	<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
-		<view class="type">{{item.category}}</view>
-		<view class="img-btn" v-show="!showEditAndDelete">
-			<image class="img-edit" @click.stop="imgEdit(item.category,item.id)" :src="getImgUrl('../../static/image/product/edit.png')"></image>
-			<image class="img-delete" @click.stop="imgDelete(item.id)" :src="getImgUrl('../../static/image/product/delete.png')"></image>
+	<z-paging ref="paging" v-model="productCategoryList" @query="queryList">
+		<template #top>
+			<view class="head">
 		</view>
-	</view>
-</scroll-view>
 	
-<view class="bottom-button">
-	<view @click="add()" class="add">添加</view>
-	<view  @click="edit()" class="edit">{{editText}}</view>
-</view>
 
+		<view  class="content" v-for="(item,index) in productCategoryList" :key="index" :id="item.id" @click="chooseCategory(item.id,item.category)">
+			<view class="type">{{item.category}}</view>
+			<view class="img-btn" v-show="!showEditAndDelete">
+				<image class="img-edit" @click.stop="imgEdit(item.category,item.id)" :src="getImgUrl('../../static/image/product/edit.png')"></image>
+				<image class="img-delete" @click.stop="imgDelete(item.id)" :src="getImgUrl('../../static/image/product/delete.png')"></image>
+			</view>
+		</view>
+
+	
+		<view class="bottom-button">
+			<view @click="add()" class="add">添加</view>
+			<view  @click="edit()" class="edit">{{editText}}</view>
+		</view>
+		
+	</z-paging>
 	
 <!--编辑新增弹窗-->
 <view>
@@ -178,12 +180,17 @@
 					 this.status = "noMore"				
 				}
 			},
+			queryList(pageNo, pageSize) {
+				post("product/selectCategory",{"pageNum":pageNo}).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 		onLoad(){
-			post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{
+/* 			post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{
 				this.totalCount = res.total				
 				 if(this.totalCount >0){
 					this.productCategoryList = res.rows
@@ -192,7 +199,7 @@
 				 if(this.totalCount == this.productCategoryList.length){					 
 					 this.status = "noMore"
 				 }
-			})
+			}) */
 		}
 	}
 </script>
@@ -202,8 +209,6 @@
 	height: 5px;
 	width: 100%;
 	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
 }
 .content{
 	position: relative;

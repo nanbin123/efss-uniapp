@@ -95,7 +95,7 @@
 			},
 			orderQueryList(){
 				post("order/selectOrder",this.searchOrder).then(res =>{
-					this.totalCount = res.total;					 
+					this.totalCount = res.total;
 					this.orderList = res.rows;
 				})
 			},
