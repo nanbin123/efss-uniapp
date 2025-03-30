@@ -24,9 +24,10 @@
 <!--编辑新增弹窗-->
 	<uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0">
 		<view  class="popup_content">			
-			<view class="popup_title">{{addOrEditCateGory}}{{formData.id}}</view>
+			<view class="popup_title">{{addOrEditCateGory}}</view>
 			<view class="add-category">
 				<textarea maxlength="100" v-model="formData.category" 
+					:focus='categoryFocus'  @blur='categoryFocus = false' 
 					placeholder="请输入类别名称" 
 					placeholder-class="textarea-placeholder">
 				</textarea>
@@ -55,15 +56,7 @@
 					id:"",
 					category:"",
 				},
-				rules: {
-					category: {
-						rules: [{// 对name字段进行必填验证
-								required: true,
-								errorMessage: '请输入类别名称',
-							}
-						]
-					}
-				}
+				categoryFocus:true
 			}
 		},
 		methods: {
@@ -78,13 +71,12 @@
 			add(){
 				this.addOrEditCateGory = "添加产品类别";
 				this.$refs.popup.open('center');
-				/* this.addCategoryHidden = true; */
 			},
 			imgEdit(category,id){
 				this.formData.category = category;
 				this.formData.id = id;
 				this.addOrEditCateGory = "修改产品类别";
-				/* this.addCategoryHidden = true;	 */			
+				this.$refs.popup.open('center');
 			},
 			getList(){
 				post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{
@@ -103,7 +95,6 @@
 						if(res.confirm){
 							post("product/delProductCategory",{"id":id}).then(res =>{
 								if(200 == res.code){
-									uni.hideLoading();
 									//移除元素
 									let index = that.productCategoryList.findIndex((obj)=> obj.id == id)
 									 that.productCategoryList.splice(index,1)
@@ -113,21 +104,28 @@
 					}
 				})
 			},
-			cancelArrival(){
-				/* this.addCategoryHidden = false;	 */
-			},	
- 			hideDiv(){
-				uni.redirectTo({//跳转当前页面执行刷新
-					url: '/pages/product/category'
-				});
+			cancelArrival(){// 弹窗取消
+				this.formData.category = "";
+				this.formData.id = "";
+				this.$refs.popup.close();
 			},
 			submit(){
-				let category = this.formData.category;
+				if(!this.formData.category){
+					this.categoryFocus = true
+					uni.showToast({
+						title: '产品类别不能为空',
+						icon: 'none'
+					});
+					return
+				}
+				let category = this.formData.category;				
 				if("添加产品类别" == this.addOrEditCateGory){
 					post("product/insertProductCategory",{"category":category}).then(res =>{
 						if(200 == res.code){
 							this.formData.category = "";
-							uni.hideLoading();
+							this.formData.id = "";
+							this.$refs.popup.close();
+							this.$refs.paging.reload();
 							uni.showToast({
 								title: '添加产品类别成功',
 								icon: 'none',
@@ -136,22 +134,22 @@
 						}
 					})
 				}else if ("修改产品类别" == this.addOrEditCateGory){
-					post("product/updateProductCategory",{"id":res.id,"category":res.category}).then(res =>{
+					let id = this.formData.id;
+					post("product/updateProductCategory",{"id":id,"category":category}).then(res =>{						
 						if(200 == res.code){
-							this.formData.category = "";
-							uni.hideLoading();
+							this.formData.category = "";		
 							uni.showToast({
 								title: '修改产品类别成功',
 								icon: 'none',
 								duration: 2000
 							})
-							/* this.addCategoryHidden = false; */
-							this.getList()
+							this.formData.category = "";
+							this.formData.id = "";
+							this.$refs.popup.close();
+							this.$refs.paging.reload();
 						}
 					})
 				}
-				
-
 			},
 			chooseCategory(id,category){
 				let pages= getCurrentPages();
@@ -162,17 +160,6 @@
 					delta: 1
 				});
 			},
-/* 			onReachBottom() {
-				if(this.totalCount > this.productCategoryList.length){
-					this.pageNum++;				
-					post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{					
-						 this.productCategoryList = this.productCategoryList.concat(res.rows)
-						 uni.hideLoading();
-					})
-				}else if(this.totalCount == this.productCategoryList.length){								 
-					 this.status = "noMore"				
-				}
-			}, */
 			queryList(pageNo, pageSize) {
 				post("product/selectCategory",{"pageNum":pageNo}).then(res =>{
 					this.$refs.paging.complete(res.rows);
@@ -183,16 +170,6 @@
 			}
 		},
 		onLoad(){
-/* 			post("product/selectCategory",{"pageNum":this.pageNum}).then(res =>{
-				this.totalCount = res.total				
-				 if(this.totalCount >0){
-					this.productCategoryList = res.rows
-					uni.hideLoading();
-				 }
-				 if(this.totalCount == this.productCategoryList.length){					 
-					 this.status = "noMore"
-				 }
-			}) */
 		}
 	}
 </script>

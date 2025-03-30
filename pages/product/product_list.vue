@@ -70,7 +70,6 @@
 				this.searchProduct =  customer;
 				this.$refs.paging.reload();
 			},
-			
 			refreshProductList(){
 				post("product/selectListProduct",this.searchProduct).then(res =>{
 					this.$refs.paging.complete(res.rows);
