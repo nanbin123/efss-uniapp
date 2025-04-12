@@ -83,7 +83,6 @@
 		},
 		methods: {
 			search() {
-				// let product = JSON.parse(JSON.stringify(this.productForm));
 				let product = this.productForm;
 				this.moreSearchStore.addMoreSearch(product);
 				let pages = getCurrentPages();				
@@ -109,10 +108,7 @@
 				return typeof str === 'undefined' || '' === str;
 			}
 		},
-		onShow() {
-			/* let productForm = JSON.parse(JSON.stringify(this.productStore.moreSearchProduct));			
-			this.productForm = productForm; */
-			
+		onShow() {			
 			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}

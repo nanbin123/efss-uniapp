@@ -4,7 +4,7 @@
 			<view class="head">
 				<view class="search">
 					 <view class="same_search">
-						<input v-model="searchCustomer.customerNameOrPhone" class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  type="text" placeholder="搜索客户姓名或手机号"/>
+						<input v-model="searchVal" class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  type="text" placeholder="搜索客户姓名或手机号"/>
 					</view>
 					<view  class="more_search" @click="moreSearch()">
 						<view class="iconfont">&#xe69b;</view>
@@ -58,7 +58,7 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
-	import useCustomerStore from '@/store/modules/customer.js'
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	
 	export default {
 		data() {
@@ -66,23 +66,24 @@
 				customerList:[],
 				fullStarUrl:'static/image/cusomer/star.png',
 				nullStarUrl:'static/image/cusomer/empty.png',
-				searchCustomer:{customerNameOrPhone:""}
+				searchCustomer:{},
+				searchVal:''
 			}
 		},
 		setup() {
-			const customerStore = useCustomerStore();
-			return { customerStore} 
+			const moreSearchStore= useMoreSearchStore();
+			return {moreSearchStore}
 		 },
 
 		methods: {
 			refreshCustomerList(){
-				console.log("searchCustomer",JSON.stringify(this.searchCustomer));
 				post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{
 					this.$refs.paging.complete(res.rows);
 				})
 			},
  			queryList(pageNo, pageSize) {
-				this.searchCustomer.pageNum = pageNo;				
+				this.searchCustomer.pageNum = pageNo;
+				this.searchCustomer.customerNameOrPhone = this.searchVal;
 				this.refreshCustomerList(this.searchCustomer);
 			}, 
  			moreSearch(){
@@ -91,9 +92,8 @@
 				})
 			},
 			getCustomerList(){//高级查询
-				let customer = JSON.stringify(this.customerStore.data.moreSearchCustomer);
-				this.searchCustomer.customerNameOrPhone=""
-				this.searchCustomer = JSON.parse(customer);	
+				let customer = this.moreSearchStore.moreSearch;				
+				this.searchCustomer =  customer;
 				this.$refs.paging.reload();
 			},
 			getImgUrl(image){
@@ -101,19 +101,12 @@
 			}
 		},
 		watch:{
-			'searchCustomer.customerNameOrPhone':function(val) {				
-				if (val != null){
-					let _this = this;
-					Object.keys(this.searchCustomer).forEach(function(key){					
-						_this.searchCustomer[key]=""
-					})
-					this.searchCustomer.customerNameOrPhone = val;					
-					this.$refs.paging.reload()
-				}
+			searchVal(newVal, oldVal) {
+				this.$refs.paging.reload()
 			}
 		},
 		onLoad(){
-
+			this.moreSearchStore.clearMoreSearchStore();
 		}
 	}
 

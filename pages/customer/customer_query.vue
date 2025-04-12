@@ -52,7 +52,7 @@
 <script>
 	import {get,post} from "../../components/utils/request.js"
 	import cPicker from "../../components/c-picker/c-picker.vue"
-	import useCustomerStore from '@/store/modules/customer.js'
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		components: {
 			cPicker
@@ -66,8 +66,10 @@
 			}
 		},
 		setup() {
-			const customerStore = useCustomerStore();
-			return { customerStore}
+			const moreSearchStore = useMoreSearchStore();
+			return {
+				moreSearchStore
+			}
 		 },
 		methods: {
 			toggle(val) {
@@ -84,7 +86,7 @@
 			},	
 			search(){
 				let customer = this.customer;
-				this.customerStore.addMoreSearchCustomer(customer);
+				this.moreSearchStore.addMoreSearch(customer);			
 				let pages = getCurrentPages();
 				if(pages.length >1){
 					uni.navigateBack({
@@ -96,11 +98,10 @@
 				}
 			},
 			clearFilters(){
-				let that = this;
+				let _this = this;
 				Object.keys(this.customer).forEach(function(key){					
-					that.customer[key]="";
+					_this.customer[key]="";
 				})
-				this.customerStore.addMoreSearchCustomer(this.customer);
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
@@ -110,9 +111,8 @@
 			}
 		},
 		onShow() {
-			let customer = this.customerStore.data.moreSearchCustomer;			
-			this.customer = customer;
-			console.log(this.customer.startTime)
+			this.customer = this.moreSearchStore.moreSearch;
+			alert(JSON.stringify(this.customer))
 		}	
 	} 
 </script>
