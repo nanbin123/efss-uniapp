@@ -56,7 +56,7 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
-	import useCustomerStore from '@/store/modules/customer.js'
+	//import useCustomerStore from '@/store/modules/customer.js'
 	export default {
 		data() {
 			return {

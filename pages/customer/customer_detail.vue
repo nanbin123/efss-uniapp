@@ -134,8 +134,8 @@
 
 
 <!--到店时间弹窗-->
-<view>
-	<view :hidden="arrivalHidden" class="popup_content">
+<uni-popup ref="arrival_popup" type="bottom" border-radius="10px 10px 0 0">
+	<view class="popup_content">
 		<view class="popup_title">{{addOrEditArrival}}</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">到店时间</text>
@@ -149,8 +149,7 @@
 		   <view class="popup_item_text">
 			 <input v-model="arrivalFormData.arrivalLength" type="number"/>
 		   </view>
-		    <text class="minute">分钟</text>
-		 
+		    <text class="minute">分钟</text>		 
 		</view>
 		<view class="arrival_record">
 			<textarea v-model="arrivalFormData.arrivalRecord" maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
@@ -160,8 +159,7 @@
 			<view class="determine" @click="submitArrival()">确定</view>
 		</view>
 	</view>
-	<view class="popup_overlay" :hidden="arrivalHidden" @click="hideDiv()"></view>
-</view>
+</uni-popup>
 
 <!--跟踪记录弹窗-->
 <view>
@@ -189,7 +187,7 @@
 			<view class="determine" @click="submitTrack()">确定</view>
 		</view>
 	</view>
-	<view class="popup_overlay" :hidden="trackHidden" @click="hideDiv()"></view>
+	<!-- <view class="popup_overlay" :hidden="trackHidden" @click="hideDiv()"></view> -->
 </view>
 
 </template>
@@ -197,7 +195,7 @@
 <script>
 	import cPicker from "../../components/c-picker/c-picker.vue"
 	import {get,post} from "../../components/utils/request.js"
-	import useCustomerStore from '@/store/modules/customer.js'
+	// import useCustomerStore from '@/store/modules/customer.js'
 	import useTransferOrderStore from '@/store/modules/transfer_order.js'
 	export default {
 		components: {
@@ -211,9 +209,7 @@
 				isEditable: true,				
 				fullStarUrl:'static/image/cusomer/star.png',
 				nullStarUrl:'static/image/cusomer/empty.png',			
-				//到店记录弹窗
-				arrivalHidden:true,
-				//跟踪记录
+		    	//跟踪记录
 				trackHidden:true,				
 				customer:{customerProducts:[],listCustomerArrival:[],listCustomerTailAfter:[]},//客户数据
 				addOrEditArrival:'',
@@ -223,7 +219,7 @@
 					arrivalTime:currentDate,
 					arrivalLength:"",
 					arrivalRecord:"",
-					arrivalType:"arrival"
+					arrivalType:""
 				},
 				tailAfterFormData:{
 					id:"",
@@ -383,27 +379,21 @@
 				if(this.isEditable == false){
 					this.customer.grade=val;
 				}
-			},
-			//到店记录跟踪记录弹窗遮罩	
-			hideDiv(){
-				this.arrivalHidden = true;
-			},
-			guid() {
-			    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			        var r = Math.random() * 16 | 0,
-			            v = c == 'x' ? r : (r & 0x3 | 0x8);
-			        return v.toString(16);
-			    });
-			},
+			},			
+			// guid() {
+			//     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			//         var r = Math.random() * 16 | 0,
+			//             v = c == 'x' ? r : (r & 0x3 | 0x8);
+			//         return v.toString(16);
+			//     });
+			// },
 			//提交到店记录
 			submitArrival(){
 				let arrivalFormData=JSON.parse(JSON.stringify(this.arrivalFormData));
-				arrivalFormData.customerId = this.customer.id;
-				this.arrivalHidden = true;
+				arrivalFormData.customerId = this.customer.id;				
 				let listCustomerArrival = this.customer.listCustomerArrival;
 				//添加
 				if("添加到店记录"==this.addOrEditArrival){
-					arrivalFormData.id = this.guid();
 					listCustomerArrival.unshift(arrivalFormData);					
 				}else if("修改到店记录"==this.addOrEditArrival){					
 					this.customer.listCustomerArrival = listCustomerArrival.map(item => (item.id == arrivalFormData.id ? arrivalFormData : item));
@@ -411,37 +401,33 @@
 				//清空对象
 				let that = this;
 				Object.keys(this.arrivalFormData).forEach(function(key){
-					if(key!="arrivalTime" && key!="arrivalType"){
-						that.arrivalFormData[key]=""
-					}
+					that.arrivalFormData[key]=""
 				})
-				this.arrivalFormData.arrivalTime = this.getDate();
-				
+				this.$refs.arrival_popup.close()
 			},
 			//添加到店记录
 			arriveAdd(){
-				if(this.isEditable == false){
+				 if(this.isEditable == false){
 					this.addOrEditArrival ="添加到店记录"
-					this.arrivalHidden = false;
+					this.arrivalFormData.arrivalTime = this.getDate();
+					this.arrivalFormData.arrivalType ="arrival";
+					this.$refs.arrival_popup.open('center');					
 				}
 			},
 			cancelArrival(){
-				this.arrivalHidden = true;
 				//清空对象
 				let that = this;
-				Object.keys(this.arrivalFormData).forEach(function(key){
-					if(key!="arrivalTime" && key!="arrivalType"){
-						that.arrivalFormData[key]=""
-					}
+				Object.keys(this.arrivalFormData).forEach(function(key){					
+					that.arrivalFormData[key]="";
 				})
-				this.arrivalFormData.arrivalTime = this.getDate();
 			},
 			//修改到店记录
 			editCustomerArrival(item){
 				 this.addOrEditArrival ="修改到店记录"
 				 if(this.isEditable == false){
-					this.arrivalHidden = false;	
+					this.$refs.arrival_popup.open('center');
 					this.arrivalFormData.id = item.id;
+					this.arrivalFormData.arrivalType ="arrival";
 					this.arrivalFormData.customerId = item.customerId;
 					this.arrivalFormData.arrivalTime = item.arrivalTime;
 					this.arrivalFormData.arrivalLength = item.arrivalLength;
@@ -567,7 +553,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 5px;
 	width: 100%;
@@ -824,15 +810,16 @@
 	 filter: alpha(opacity=88);
  }
  .popup_content {
-	 position: fixed;
+/* 	 position: fixed;
 	 top: 30px;
-	 left: 50%;
+	 left: 50%; */
+	 position: relative;
 	 width: 260px;
 	 height: 235px;
-	 margin-left: -130px;
-	 border-radius: 20rpx;
+/* 	 margin-left: -130px;
+	 border-radius: 20rpx; */
 	 background-color: white;
-	 z-index: 1002;
+/* 	 z-index: 1002; */
 	 overflow: auto;
  }
 
