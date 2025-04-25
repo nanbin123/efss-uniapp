@@ -162,8 +162,8 @@
 </uni-popup>
 
 <!--跟踪记录弹窗-->
-<view>
-	<view :hidden="trackHidden" class="popup_content">
+<uni-popup ref="tailafter_popup" type="bottom" border-radius="10px 10px 0 0">
+	<view class="popup_content">
 		<view class="popup_title">{{addOrEditArrival}}</view>
 		<view class="popup_item">
 		   <text class="popup_item_title">跟踪时间</text>
@@ -187,15 +187,14 @@
 			<view class="determine" @click="submitTrack()">确定</view>
 		</view>
 	</view>
-	<!-- <view class="popup_overlay" :hidden="trackHidden" @click="hideDiv()"></view> -->
-</view>
+</uni-popup>
 
 </template>
 
 <script>
 	import cPicker from "../../components/c-picker/c-picker.vue"
 	import {get,post} from "../../components/utils/request.js"
-	// import useCustomerStore from '@/store/modules/customer.js'
+	import useProductStore from '@/store/modules/product.js' 
 	import useTransferOrderStore from '@/store/modules/transfer_order.js'
 	export default {
 		components: {
@@ -206,17 +205,15 @@
 				format: true
 			})
 			return {
-				isEditable: true,				
+				isEditable: true,
 				fullStarUrl:'static/image/cusomer/star.png',
-				nullStarUrl:'static/image/cusomer/empty.png',			
-		    	//跟踪记录
-				trackHidden:true,				
+				nullStarUrl:'static/image/cusomer/empty.png',
 				customer:{customerProducts:[],listCustomerArrival:[],listCustomerTailAfter:[]},//客户数据
 				addOrEditArrival:'',
 				arrivalFormData:{
 					id:"",
 					customerId:"",
-					arrivalTime:currentDate,
+					arrivalTime:"",
 					arrivalLength:"",
 					arrivalRecord:"",
 					arrivalType:""
@@ -224,20 +221,20 @@
 				tailAfterFormData:{
 					id:"",
 					customerId:"",
-					arrivalTime:currentDate,
+					arrivalTime:"",
 					arrivalLength:"",
 					arrivalRecord:"",
-					arrivalType:"tailafter"
+					arrivalType:""
 				},
 				customerId:"",//存放列表传来的意向客户id
 				customerNameFocus:true,
 				phoneFocus:false
 			}
 		},
-		setup() {
-			const customerStore = useCustomerStore();	
+		setup() {			
+			const productStore = useProductStore();
 			const transferOrderStore = useTransferOrderStore();
-			return { customerStore,transferOrderStore } 
+			return { productStore,transferOrderStore } 
 		 },
 		methods: {
 			// 校验电话号码
@@ -379,14 +376,7 @@
 				if(this.isEditable == false){
 					this.customer.grade=val;
 				}
-			},			
-			// guid() {
-			//     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			//         var r = Math.random() * 16 | 0,
-			//             v = c == 'x' ? r : (r & 0x3 | 0x8);
-			//         return v.toString(16);
-			//     });
-			// },
+			},
 			//提交到店记录
 			submitArrival(){
 				let arrivalFormData=JSON.parse(JSON.stringify(this.arrivalFormData));
@@ -420,6 +410,7 @@
 				Object.keys(this.arrivalFormData).forEach(function(key){					
 					that.arrivalFormData[key]="";
 				})
+				this.$refs.arrival_popup.close()
 			},
 			//修改到店记录
 			editCustomerArrival(item){
@@ -437,57 +428,53 @@
 			//添加跟踪记录
 			trackAdd(){
 				if(this.isEditable == false){
-					this.trackHidden = false;
 					this.addOrEditArrival ="添加跟踪记录"
+					this.tailAfterFormData.arrivalTime = this.getDate();
+					this.tailAfterFormData.arrivalType ="tailafter";
+					this.$refs.tailafter_popup.open('center');
 				}				
 			},
-			cancelTrack(){
-				this.trackHidden = true;
+			cancelTrack(){				
 				//清空表单
 				let that = this;
-				Object.keys(this.tailAfterFormData).forEach(function(key){
-					if(key!="arrivalTime" && key!="arrivalType"){
-						that.tailAfterFormData[key]=""
-					}
+				Object.keys(this.tailAfterFormData).forEach(function(key){					
+					that.tailAfterFormData[key]=""
 				})
-				this.tailAfterFormData.arrivalTime = this.getDate();
+				this.$refs.tailafter_popup.close()
 			},
 			//提交跟踪记录 
 			submitTrack(){
 				let tailAfterFormData=JSON.parse(JSON.stringify(this.tailAfterFormData));
-				tailAfterFormData.customerId = this.customer.id							
-				this.trackHidden = true;
+				tailAfterFormData.customerId = this.customer.id
 				//添加
 				let  listCustomerTailAfter = this.customer.listCustomerTailAfter;
 				if("添加跟踪记录"==this.addOrEditArrival){
-					tailAfterFormData.id = this.guid();
-					listCustomerTailAfter.unshift(tailAfterFormData);						
-				}else if("修改跟踪记录"==this.addOrEditArrival){					
+					listCustomerTailAfter.unshift(tailAfterFormData);
+				}else if("修改跟踪记录"==this.addOrEditArrival){
 					this.customer.listCustomerTailAfter = listCustomerTailAfter.map(item => (item.id == tailAfterFormData.id ? tailAfterFormData : item));
 				}
 				//清空表单
 				let that = this;
 				Object.keys(this.tailAfterFormData).forEach(function(key){
-					if(key!="arrivalTime" && key!="arrivalType"){
-						that.tailAfterFormData[key]=""
-					}
+					that.tailAfterFormData[key]="";
 				})
-				this.tailAfterFormData.arrivalTime = this.getDate();
+				this.$refs.tailafter_popup.close()
 			},
 			editCustomerTailAfter(item){
 				this.addOrEditArrival ="修改跟踪记录"
 				 if(this.isEditable == false){
-					this.trackHidden = false;	
 					this.tailAfterFormData.id = item.id;
+					this.tailAfterFormData.arrivalType ="tailafter";
 					this.tailAfterFormData.customerId = item.customerId;
 					this.tailAfterFormData.arrivalTime = item.arrivalTime;
 					this.tailAfterFormData.arrivalLength = item.arrivalLength;
 					this.tailAfterFormData.arrivalRecord = item.arrivalRecord;
+					this.$refs.tailafter_popup.open('center');
 				}
 			},
 			getCustomerProduct(){
 				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
-				let products = this.customerStore.products; // 产品选择页面带过来的数据			
+				let products = this.productStore.products; // 产品选择页面带过来的数据			
 				for (let i = 0; i < products.length; i++) {
 					let foundMatch = false;
 					for (let j = 0; j < customerProducts.length; j++) {
@@ -505,7 +492,7 @@
 			addCustomerProduct(){
 				if(this.isEditable == false){
 					let arrProduct = this.customer.customerProducts;
-					this.customerStore.addProduct(arrProduct);
+					this.productStore.addProduct(arrProduct);
 					uni.navigateTo({
 						url:'/pages/customer/customer_product'
 					})
@@ -795,40 +782,20 @@
 
 
 /**
- * 遮罩层 到店时间弹窗
+ * 弹窗
  */
-.popup_overlay {
-	 position: fixed;
-	 top: 0%;
-	 left: 0%;
-	 width: 100%;
-	 height: 100%;
-	 background-color: #b3b3b3ff;
-	 z-index: 1001;
-	 -moz-opacity: 0.8;
-	 opacity: .80;
-	 filter: alpha(opacity=88);
- }
  .popup_content {
-/* 	 position: fixed;
-	 top: 30px;
-	 left: 50%; */
 	 position: relative;
 	 width: 260px;
 	 height: 235px;
-/* 	 margin-left: -130px;
-	 border-radius: 20rpx; */
 	 background-color: white;
-/* 	 z-index: 1002; */
 	 overflow: auto;
  }
-
  .popup_title {	 
 	 font-size: 18px;	 
 	 text-align: center;
 	 margin: 15px 0;
  }
-
  .popup_item {
 	 display: flex;	
 	 margin: 10px 15px;
