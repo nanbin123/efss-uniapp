@@ -47,7 +47,7 @@
 		<text class="title">报价:</text>
 		<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
 	</view>
-	<view class="item" @click="remarksAddOrEdit()">
+	<view class="item">
 		<image class="img" style="margin-top: 1px;" :src="getImgUrl('static/image/cusomer/arrive.png')" mode=""></image>
 		<text class="title">备注:</text>			
 		<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
@@ -90,7 +90,7 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
-	//import useCustomerStore from '@/store/modules/customer.js'
+	import useProductStore from '@/store/modules/product.js' 
 	export default {
 		data() {
 			return {
@@ -101,8 +101,8 @@
 			}
 		},
 		setup() {
-			const customerStore = useCustomerStore();				
-			return { customerStore } 
+			const productStore = useProductStore();				
+			return { productStore } 
 		 },
 		methods: {
 			getImgUrl(image){
@@ -145,29 +145,13 @@
 					}
 				})
 			},
-			getCustomerProduct(){				
-				console.log("-------888------")
-				let customerProducts = this.customer.customerProducts; // 新增页面产品信息	
-				let products = this.customerStore.products;// 产品选择页面带过来的数据	
-				for (let i = 0; i < products.length; i++) {
-					let foundMatch = false;
-					for (let j = 0; j < customerProducts.length; j++) {
-						if (customerProducts[j].productId === products[i].productId) {
-							customerProducts[j].number = products[i].number;
-							foundMatch = true;
-							break;
-						}
-					}
-					if (!foundMatch) {
-						customerProducts.unshift(products[i]);
-					}
-				}
+			getCustomerProduct(){
+				let products = JSON.stringify(this.productStore.products);
+				this.customer.customerProducts = JSON.parse(products);
 			},
 			addCustomerProduct(){
-				console.log(JSON.stringify("1111"))				
 				let arrProduct = this.customer.customerProducts;
-				//useCustomerStore().addProduct(arrProduct);
-				this.customerStore.addProduct(arrProduct);
+				this.productStore.addProduct(arrProduct);
 				uni.navigateTo({
 					url:'/pages/customer/customer_product'
 				})

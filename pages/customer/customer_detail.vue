@@ -250,7 +250,7 @@
 				phoneFocus:false
 			}
 		},
-		setup() {			
+		setup() {
 			const productStore = useProductStore();
 			const transferOrderStore = useTransferOrderStore();
 			return { productStore,transferOrderStore } 
