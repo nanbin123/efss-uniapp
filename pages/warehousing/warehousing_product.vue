@@ -163,7 +163,7 @@ export default {
 	onLoad(option) {
 		this.warehousingEntryId = (!option.warehousingEntryId) ?'':option.warehousingEntryId
 	},
-	onShow(option){		
+	onShow(option){
 		let products = this.productStore.products;
 		//计算总条数
 		this.totalNumber = products.reduce((accumulator, currentObject) => {

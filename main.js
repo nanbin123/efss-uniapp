@@ -18,7 +18,7 @@ import { hasPermi } from '@/components/utils/hasPermi.js'
 export function createApp() {
   const app = createSSRApp(App)
   app.config.globalProperties.hasPermi = hasPermi
-  app.config.globalProperties.BASEURL = 'http://192.168.67.112:8080/'
+  app.config.globalProperties.BASEURL = 'http://192.168.1.41:8080/'
   app.use(store)
   return {
     app

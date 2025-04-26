@@ -102,7 +102,7 @@
 	
 	<view class="product" v-for="(item, index) in customer.customerProducts">		
 		<image  class="product_img" :src="getImgUrl('static/image/茶几.png')"></image>
-		<view class="product-content">
+		<view class="product-content"  @click="openPopupProductNumber(item)">
 			<view class="grid">
 				<view class="info">品名：{{item.productName}}</view>
 				<view class="info">型号：{{item.type}}</view>
@@ -133,61 +133,75 @@
 	</view>
 
 
-<!--到店时间弹窗-->
-<uni-popup ref="arrival_popup" type="bottom" border-radius="10px 10px 0 0">
-	<view class="popup_content">
-		<view class="popup_title">{{addOrEditArrival}}</view>
-		<view class="popup_item">
-		   <text class="popup_item_title">到店时间</text>
-		   <view class="popup_item_text">
-				<view @tap="toggle('arrival_date')" class="time" :style="{color:arrivalFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{arrivalFormData.arrivalTime}}</view>
-				<cPicker mode='date' @confirm="arrivalTimeHand" ref="arrival_date"></cPicker>
-		   </view>
+	<!--到店时间弹窗-->
+	<uni-popup ref="arrival_popup" type="bottom" border-radius="10px 10px 0 0">
+		<view class="popup_content">
+			<view class="popup_title">{{addOrEditArrival}}</view>
+			<view class="popup_item">
+			   <text class="popup_item_title">到店时间</text>
+			   <view class="popup_item_text">
+					<view @tap="toggle('arrival_date')" class="time" :style="{color:arrivalFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{arrivalFormData.arrivalTime}}</view>
+					<cPicker mode='date' @confirm="arrivalTimeHand" ref="arrival_date"></cPicker>
+			   </view>
+			</view>
+			<view class="popup_item">
+			   <text class="popup_item_title">停留时间</text>
+			   <view class="popup_item_text">
+				 <input v-model="arrivalFormData.arrivalLength" type="number"/>
+			   </view>
+				<text class="minute">分钟</text>		 
+			</view>
+			<view class="arrival_record">
+				<textarea v-model="arrivalFormData.arrivalRecord" maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
+			</view>
+			<view class="arrival_foot">
+				<view class="cancel" @click="cancelArrival()">取消</view>
+				<view class="determine" @click="submitArrival()">确定</view>
+			</view>
 		</view>
-		<view class="popup_item">
-		   <text class="popup_item_title">停留时间</text>
-		   <view class="popup_item_text">
-			 <input v-model="arrivalFormData.arrivalLength" type="number"/>
-		   </view>
-		    <text class="minute">分钟</text>		 
-		</view>
-		<view class="arrival_record">
-			<textarea v-model="arrivalFormData.arrivalRecord" maxlength="200" placeholder="请输入到店记录" placeholder-class="textarea-placeholder"></textarea>
-		</view>
-		<view class="arrival_foot">
-			<view class="cancel" @click="cancelArrival()">取消</view>
-			<view class="determine" @click="submitArrival()">确定</view>
-		</view>
-	</view>
-</uni-popup>
+	</uni-popup>
 
-<!--跟踪记录弹窗-->
-<uni-popup ref="tailafter_popup" type="bottom" border-radius="10px 10px 0 0">
-	<view class="popup_content">
-		<view class="popup_title">{{addOrEditArrival}}</view>
-		<view class="popup_item">
-		   <text class="popup_item_title">跟踪时间</text>
-		   <view class="popup_item_text">			
-			 <view  @click="tailAfterToggle('tail_after_date')" :style="{color:tailAfterFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{tailAfterFormData.arrivalTime}}</view>
-			 <cPicker mode='date' @confirm="tailAfterTimeHand" ref='tail_after_date'></cPicker>
-		   </view>
-		</view> 
-		<view class="popup_item">
-		   <text class="popup_item_title">跟踪时长</text>
-		   <view class="popup_item_text">
-			 <input  v-model="tailAfterFormData.arrivalLength"  type="number" />				 
-		   </view>
-		   <text class="minute">分钟</text>
+	<!--跟踪记录弹窗-->
+	<uni-popup ref="tailafter_popup" type="bottom" border-radius="10px 10px 0 0">
+		<view class="popup_content">
+			<view class="popup_title">{{addOrEditArrival}}</view>
+			<view class="popup_item">
+			   <text class="popup_item_title">跟踪时间</text>
+			   <view class="popup_item_text">			
+				 <view  @click="tailAfterToggle('tail_after_date')" :style="{color:tailAfterFormData.arrivalTime=='yyyy-MM-dd'?'#a0a0a0':'#333'}">{{tailAfterFormData.arrivalTime}}</view>
+				 <cPicker mode='date' @confirm="tailAfterTimeHand" ref='tail_after_date'></cPicker>
+			   </view>
+			</view> 
+			<view class="popup_item">
+			   <text class="popup_item_title">跟踪时长</text>
+			   <view class="popup_item_text">
+				 <input  v-model="tailAfterFormData.arrivalLength"  type="number" />				 
+			   </view>
+			   <text class="minute">分钟</text>
+			</view>
+			<view class="arrival_record">
+				<textarea v-model="tailAfterFormData.arrivalRecord" maxlength="200" placeholder="请输入跟踪记录" placeholder-class="textarea-placeholder"></textarea>
+			</view>
+			<view class="arrival_foot">
+				<view class="cancel" @click="cancelTrack()">取消</view>			
+				<view class="determine" @click="submitTrack()">确定</view>
+			</view>
 		</view>
-		<view class="arrival_record">
-			<textarea v-model="tailAfterFormData.arrivalRecord" maxlength="200" placeholder="请输入跟踪记录" placeholder-class="textarea-placeholder"></textarea>
+	</uni-popup>
+	<!-- 修改产品数量弹窗 -->
+	<uni-popup ref="popup_product_number" type="bottom" border-radius="10px 10px 0 0">
+		<view class="popup_product_number_content">
+			<view class="popup_product_number_title">{{popupProduct.productName}}</view>
+			<view class="popup_product_number_item">
+				<text class="popup_product_number_item_title">数量:</text>
+				<view class="popup_product_number_item_text"><input v-model="popupProduct.number" type="number"/></view>
+			</view>
+			<view class="popup_product_number_foot">
+				<view class="cancel" @click="cancelProductNumber()">取消</view>			
+				<view class="determine" @click="submitProductNumber()">确定</view>
+			</view>
 		</view>
-		<view class="arrival_foot">
-			<view class="cancel" @click="cancelTrack()">取消</view>			
-			<view class="determine" @click="submitTrack()">确定</view>
-		</view>
-	</view>
-</uni-popup>
+	</uni-popup>
 
 </template>
 
@@ -225,6 +239,11 @@
 					arrivalLength:"",
 					arrivalRecord:"",
 					arrivalType:""
+				},
+				popupProduct:{
+					productId:"",
+					productName:"",
+					number:""
 				},
 				customerId:"",//存放列表传来的意向客户id
 				customerNameFocus:true,
@@ -473,30 +492,41 @@
 				}
 			},
 			getCustomerProduct(){
-				let customerProducts = this.customer.customerProducts; // 新增页面产品信息
-				let products = this.productStore.products; // 产品选择页面带过来的数据			
-				for (let i = 0; i < products.length; i++) {
-					let foundMatch = false;
-					for (let j = 0; j < customerProducts.length; j++) {
-						if (customerProducts[j].productId === products[i].productId) {
-							customerProducts[j].number = products[i].number;
-							foundMatch = true;
-							break;
-						}
-					}
-					if (!foundMatch) {
-						customerProducts.unshift(products[i]);
-					}
-				}
+				let products = JSON.stringify(this.productStore.products);
+				this.customer.customerProducts = JSON.parse(products);
 			},
 			addCustomerProduct(){
 				if(this.isEditable == false){
-					let arrProduct = this.customer.customerProducts;
-					this.productStore.addProduct(arrProduct);
+					let customerProductList = this.customer.customerProducts
+					if(!!customerProductList){
+						this.productStore.addProduct(customerProductList);
+					}
 					uni.navigateTo({
 						url:'/pages/customer/customer_product'
 					})
 				}
+			},
+			// 产品修改数量弹窗
+			openPopupProductNumber(item){
+				this.popupProduct.productName = item.productName;
+				this.popupProduct.number = item.number;
+				this.popupProduct.productId = item.productId;
+				this.$refs.popup_product_number.open('center');
+			},
+			cancelProductNumber(){
+				//清空对象
+				let that = this;
+				Object.keys(this.popupProduct).forEach(function(key){					
+					that.popupProduct[key]="";
+				})
+				this.$refs.popup_product_number.close('center');
+			},
+			submitProductNumber(){
+				let customerProductList = this.customer.customerProducts;				
+				let productId = this.popupProduct.productId;
+				let customerProduct = customerProductList.filter(obj =>obj.productId == productId)[0]
+				customerProduct.number = this.popupProduct.number;
+				this.$refs.popup_product_number.close()
 			},
 			/**
 			 * 转订单
@@ -901,4 +931,50 @@
 	color: #38c1b9;
 	margin-right: 10px;
 }
+/* 预购产品修改数量弹窗 */
+.popup_product_number_content  {
+	position: relative;
+	width: 260px;
+	height: 120px;
+	background-color: white;	
+	overflow: auto;
+ } 
+ .popup_product_number_title {
+ 	 font-size: 15px;	
+	 text-align: center;
+	 margin: 5px; 	
+ }
+ .popup_product_number_item {
+ 	 display: flex;	
+ 	 margin: 10px 15px;
+ }
+ .popup_product_number_item_title{
+ 	white-space: nowrap;
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+ .popup_product_number_item_text{
+ 	border-bottom: 1px solid #f1f1f1ff;
+ 	flex-grow: 1;
+ 	text-align: center;
+ 	white-space: nowrap;
+ }
+ .popup_product_number_item_text input{
+ 	font-size: 15px;
+ 	color: #070707ff;
+ }
+
+.popup_product_number_foot {
+	width: 260px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+    height: 40px;
+	line-height: 40px;
+	color: #070707ff;
+	font-size: 15px;
+	display: flex;
+    border-top: 1px solid #f1f1f1ff;
+}
+
 </style>
