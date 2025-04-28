@@ -77,7 +77,7 @@
 
 		methods: {
 			refreshCustomerList(){
-				post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{
+				post("customer/selectIntendedCustomers",this.searchCustomer).then(res =>{					
 					this.$refs.paging.complete(res.rows);
 				})
 			},
