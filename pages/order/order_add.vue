@@ -113,7 +113,7 @@
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
 import {get,post} from "../../components/utils/request.js"
-import useOrderStore from '@/store/modules/order.js'
+import useProductStore from '@/store/modules/product.js' 
 import useTransferOrderStore from '@/store/modules/transfer_order.js'
 import { getCurrentScope } from "vue"
 
@@ -139,9 +139,9 @@ export default {
 		}
 	},
 	setup() {
-		const orderStore = useOrderStore();
+		const productStore = useProductStore();
 		const transferOrderStore = useTransferOrderStore();
-		return { orderStore,transferOrderStore }
+		return { productStore,transferOrderStore }
 	 },
 	methods: {
 		open(item){
@@ -151,7 +151,7 @@ export default {
 			this.$refs.popup.open('center');			
 		},
 		cancelTrack(){
-			this.$refs.popup.close()
+			this.$refs.popup.close();
 		},
 		submitTrack(){
 			let orderProductList = this.orderForm.orderProductList;
@@ -270,13 +270,13 @@ export default {
 		},
 		addOrderProduct(){			
 			let arrProduct = this.orderForm.orderProductList;
-			useOrderStore().addProduct(arrProduct);
+			this.productStore.addProduct(arrProduct);
 			uni.navigateTo({
 				url:'/pages/order/order_product'
 			})
 		},
 		getOrderProduct(){
-			let products = JSON.stringify(this.orderStore.products);
+			let products = JSON.stringify(this.productStore.products);
 			this.orderForm.orderProductList = JSON.parse(products);
 		},
 		getImgUrl(image){

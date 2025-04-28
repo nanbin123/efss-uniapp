@@ -4,11 +4,12 @@
 			<view class="head">
 				<view class="search">
 					 <view class="same_search">
-						<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
+						<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"  
+							v-model="searchVal" type="text" placeholder="搜索客户姓名或手机号"/>
 					</view>
-					<navigator class="more_search" url="/pages/order/order_query">
+					<view class="more_search" @click="moreSearch()">
 						<i class="iconfont">&#xe69b;</i>
-					</navigator>
+					</view>
 				</view>
 			</view>
 		</template>
@@ -68,16 +69,26 @@
 			return { moreSearchStore }
 		},
 		methods: {
-			refreshOrderList(){				
+			refreshOrderList(){
 				post("order/selectOrder",this.searchOrder).then(res =>{	
 					this.$refs.paging.complete(res.rows);
 				})
 			},
 			queryList(pageNo, pageSize) {
-				this.searchOrder.pageNum = pageNo;				
+				this.searchOrder.pageNum = pageNo;
+				this.searchOrder.customerNameOrPhone = this.searchVal;
 				this.refreshOrderList(this.searchOrder);
 			},
-			
+			moreSearch(){
+				uni.navigateTo({
+					url:'/pages/order/order_query'
+				})
+			},
+			getOrderList(){//高级查询
+				let order = this.moreSearchStore.moreSearch;
+				this.searchOrder = order;
+				this.$refs.paging.reload();
+			},
 			sexConvert(sex){
 				if('1'==sex){
 					return '男'
@@ -85,33 +96,13 @@
 					return '女'
 				}
 			},
-			onReachBottom() {
-				if(this.totalCount > this.orderList.length){
-					this.searchOrder.pageNum = ++this.pageNum;
-					post("order/selectOrder",this.searchOrder).then(res =>{									 
-						this.orderList = this.orderList.concat(res.rows)	
-					})
-				}
-			},
-			getOrderList(){//高级查询
-				this.searchVal = null;
-				this.searchOrder.customerNameOrPhone="";
-				let order = this.moreSearchStore.moreSearchOrder;
-				this.searchOrder = order;
-				this.searchOrder.pageNum = 1;				
-				// this.orderQueryList();
-			},			
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
 		},
 		watch:{
 			searchVal(val){
-				if (val != null){
-					let order = {"pageNum":1,"customerNameOrPhone":val}
-					this.searchOrder = order;
-					// this.orderQueryList()
-				}
+				this.$refs.paging.reload()
 			}
 		},
 		onLoad() {
@@ -123,7 +114,7 @@
 
 </script>
 
-<style>
+<style scoped>
 
 .head{
 	height: 60px;

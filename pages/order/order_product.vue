@@ -63,7 +63,7 @@
 
 <script>
 import {get,post} from "../../components/utils/request.js"
-import useOrderStore from '@/store/modules/order.js' 
+import useProductStore from '@/store/modules/product.js' 
 export default {
 	data() {
 		return {
@@ -77,19 +77,15 @@ export default {
 		}
 	},
 	setup() {
-		const orderStore = useOrderStore();
-		const orderStoreProducts = orderStore.products;	
-		return { orderStoreProducts,orderStore }
-	 },
-	 computed:{
-
+		const productStore = useProductStore();
+		return { productStore }
 	 },
 	methods: {
 		refreshData(pageNo, pageSize){			
 			post("order/selectListOrderProduct", {"pageNum":pageNo}).then(res => {									
 				if (res.code == 200) {
 					var productData = res.rows;
-					var products = this.orderStore.products;
+					var products = this.productStore.products;
 					for (var i = 0; i < productData.length; i++) {
 						let productId = productData[i].productId;
 						let newProducts = products.filter(item => item.productId === productId);
@@ -98,8 +94,7 @@ export default {
 						if(isSelected){
 							productData[i].number = newProducts[0].number;
 						}
-					} 
-					
+					}					
 					this.$refs.paging.complete(productData);
 					this.totalCount = res.total; 
 				}
@@ -135,7 +130,7 @@ export default {
 			var productChooseArray = this.productList.filter(function(item){
 				return item.selected == true;
 			});
-			this.orderStore.addProduct(productChooseArray);
+			this.productStore.addProduct(productChooseArray);
 			let pages = getCurrentPages();
 			if(pages.length >1){
 				uni.navigateBack({
@@ -164,7 +159,7 @@ export default {
 		} */
 	},
 	onShow(option){
-		let products = this.orderStoreProducts;
+		let products = this.productStore.products;
 		//计算总条数
 		this.totalNumber = products.reduce((accumulator, currentObject) => {
 		   return accumulator + currentObject.number;
@@ -175,7 +170,7 @@ export default {
 		}, 0); 
 	}
 }
-</script>
+</script scoped>
 
 <style>
 .head {

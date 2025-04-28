@@ -67,12 +67,11 @@
 	export default {
 		data() {
 			return {
-				productList: [],							
+				productList: [],
 				searchVal: "",
 				totalMoney: 0,
-				totalNumber:0,				
+				totalNumber:0,
 				customerId:""
-				
 			}
 		},
 		setup() {
@@ -81,7 +80,7 @@
 		 },
 		methods: {
 			refreshData(pageNo, pageSize){
-				post("customer/selectListCustomerProduct", {"pageNum": pageNo}).then(res => {											
+				post("customer/selectListCustomerProduct", {"pageNum": pageNo}).then(res => {
 					if (res.code == 200) {
 						let productData = res.rows;
 						var products = this.productStore.products;
@@ -176,7 +175,7 @@
 			//计算总条数
 			this.totalNumber = products.reduce((accumulator, currentObject) => {
 			   return accumulator + currentObject.number;
-			}, 0);
+			}, 0);		
 			//计算总金额
 			this.totalMoney = products.reduce((accumulator, currentObject) => {
 			   return accumulator + currentObject.retailPrice * currentObject.number;

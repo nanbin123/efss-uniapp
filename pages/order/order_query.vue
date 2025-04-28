@@ -1,49 +1,48 @@
 <template>
 <view class="head"></view>
 
-<view class="item">
-    <image class="img" style="width: 19px;" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
-	<view  class="title">客户姓名</view>			
-	<input v-model="orderForm.customerName" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
-</view>
-<view class="item">
-	<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
-	<view style="margin-left: 0;" class="title">客户电话</view>			
-	<input  v-model="orderForm.phone" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
-</view>
-<view class="item">
-	<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
-	<view class="title">客户地址</view>
-	<input  v-model="orderForm.address" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
-</view>
-<view class="item">
-	<image class="img" :src="getImgUrl('static/image/order/order_number.png')"></image>
-	<view class="title">订单号</view>		
-	<input type="text"  v-model="orderForm.orderNumber"	placeholder-class="input-placeholder"  placeholder="请输入订单号"/>
-</view>
-<view class="item">
-	<image class="img" :src="getImgUrl('static/image/order/start_time.png')"></image>
-	<view class="title">下单开始时间</view>
-	<view  @tap="toggle('start_date')" class="time" :style="{color:isEmpty(orderForm.startTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.startTime)? "请选择":orderForm.startTime}}</view>
-	<cPicker mode='date' @confirm="startHand" ref="start_date"></cPicker>
-</view>
-<view class="item">			
-	<image class="img" :src="getImgUrl('static/image/order/end_time.png')"></image>
-	<view class="title">下单终止时间</view>
-	<view  @tap="toggle('end_date')" class="time" :style="{color:isEmpty(orderForm.endTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.endTime) ? "请选择":orderForm.endTime}}</view>
-	<cPicker mode='date' @confirm="endHand" ref="end_date"></cPicker>
-</view>
-
+	<view class="item">
+		<image class="img" style="width: 19px;" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
+		<view  class="title">客户姓名</view>			
+		<input v-model="orderForm.customerName" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
+	</view>
+	<view class="item">
+		<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
+		<view style="margin-left: 0;" class="title">客户电话</view>			
+		<input  v-model="orderForm.phone" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
+	</view>
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
+		<view class="title">客户地址</view>
+		<input  v-model="orderForm.address" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
+	</view>
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/order/order_number.png')"></image>
+		<view class="title">订单号</view>		
+		<input type="text"  v-model="orderForm.orderNumber"	placeholder-class="input-placeholder"  placeholder="请输入订单号"/>
+	</view>
+	<view class="item">
+		<image class="img" :src="getImgUrl('static/image/order/start_time.png')"></image>
+		<view class="title">下单开始时间</view>
+		<view  @tap="toggle('start_date')" class="time" :style="{color:isEmpty(orderForm.startTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.startTime)? "请选择":orderForm.startTime}}</view>
+		<cPicker mode='date' @confirm="startHand" ref="start_date"></cPicker>
+	</view>
+	<view class="item">			
+		<image class="img" :src="getImgUrl('static/image/order/end_time.png')"></image>
+		<view class="title">下单终止时间</view>
+		<view  @tap="toggle('end_date')" class="time" :style="{color:isEmpty(orderForm.endTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.endTime) ? "请选择":orderForm.endTime}}</view>
+		<cPicker mode='date' @confirm="endHand" ref="end_date"></cPicker>
+	</view>
 	
-<view class="bottom-bar">
-	<view class="clear-btn" @click="clearFilters">清空所有筛选条件</view>
-	<view class="search-btn" @click="search">查询</view>
-</view>
+	<view class="bottom-bar">
+		<view class="clear-btn" @click="clearFilters">清空所有筛选条件</view>
+		<view class="search-btn" @click="search">查询</view>
+	</view>
 </template>
 <script>
 	import {get,post} from "../../components/utils/request.js"
 	import cPicker from "../../components/c-picker/c-picker.vue"
-	import useOrderStore from '@/store/modules/order.js'
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 
 	export default {
 		components: {
@@ -58,8 +57,10 @@
 			}
 		},
 		setup() {
-			const orderStore = useOrderStore();
-			return { orderStore }
+			const moreSearchStore = useMoreSearchStore();
+			return {
+				moreSearchStore
+			}
 		 },
 		methods: {
 			toggle(val) {
@@ -73,7 +74,7 @@
 			},
 			search(){
 				let order = this.orderForm;
-				this.orderStore.addMoreSearchOrder(order);
+				this.moreSearchStore.addMoreSearch(order);
 				let pages = getCurrentPages();
 				if(pages.length >1){
 					uni.navigateBack({
@@ -89,7 +90,7 @@
 				Object.keys(this.orderForm).forEach(function(key){					
 					that.orderForm[key]="";
 				})
-				this.orderStore.addMoreSearchOrder(this.orderForm);
+				this.moreSearchStore.addMoreSearchOrder(this.orderForm);
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
@@ -99,14 +100,12 @@
 			}
 		},
 		onShow() {
-			let orderForm = this.orderStore.moreSearchOrder;
-			this.orderForm = orderForm;
-			
+			this.orderForm = this.moreSearchStore.moreSearch;
 		}	
 	} 
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 5px;
 	width: 100%;

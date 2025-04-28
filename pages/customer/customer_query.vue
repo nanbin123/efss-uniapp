@@ -111,8 +111,7 @@
 			}
 		},
 		onShow() {
-			this.customer = this.moreSearchStore.moreSearch;
-			alert(JSON.stringify(this.customer))
+			this.customer = this.moreSearchStore.moreSearch;			
 		}	
 	} 
 </script>

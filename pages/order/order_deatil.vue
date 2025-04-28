@@ -119,7 +119,7 @@
 <script>
 import cPicker from "../../components/c-picker/c-picker.vue"
 import {get,post} from "../../components/utils/request.js"
-import useOrderStore from '@/store/modules/order.js'
+import useProductStore from '@/store/modules/product.js' 
 
 export default {
 	components: {
@@ -145,8 +145,8 @@ export default {
 		}
 	},
 	setup() {
-		const orderStore = useOrderStore();	
-		return { orderStore }
+		const productStore = useProductStore();
+		return { productStore }
 	 },
 	methods: {
 		open(item){
@@ -302,7 +302,7 @@ export default {
 		},
 		addOrderProduct(){
 			let arrProduct = this.orderForm.orderProductList;
-			this.orderStore.addProduct(arrProduct);			
+			this.productStore.addProduct(arrProduct);			
 			if(this.isEditable == false){
 				uni.navigateTo({
 					url:'/pages/order/order_product'
@@ -310,7 +310,7 @@ export default {
 			}
 		},
 		getOrderProduct(){
-			let products = JSON.stringify(this.orderStore.products);
+			let products = JSON.stringify(this.productStore.products);
  			this.orderForm.orderProductList = JSON.parse(products);
 		},
 		getImgUrl(image){
@@ -352,7 +352,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 5px;
 	width: 100%;
