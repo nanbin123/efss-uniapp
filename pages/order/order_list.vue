@@ -51,8 +51,7 @@
 </template>
 
 <script>
-	import {get,post} from "../../components/utils/request.js"	
-	// import useOrderStore from '@/store/modules/order.js'
+	import {get,post} from "../../components/utils/request.js"
 	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 
 	export default {
@@ -106,8 +105,7 @@
 			}
 		},
 		onLoad() {
-			// this.searchOrder.pageNum = this.pageNum;
-			// this.orderQueryList()
+
 		}
 	}
 

@@ -1,71 +1,69 @@
 <template>
-<!-- 头部 -->
-<view class="head">
-	<view class="screen-bar">
-		<view class="screen-bar-item" @tap.stop="itemClick" >
-			<view class="bar-item-text">
-				{{titleText}}
-			</view>
-			<image :src="getImgUrl('static/image/product/arrow.png')"></image>
-		</view>
-		<view class="datestartAndEnd">
-			<view class="dateStart">				
-				<view  @tap="toggle('start_date')">					
-					<text  v-if='dateStart  == ""' style="color: #a0a0a0;">开始时间</text>
-					<text  v-else style="color: #333;">{{dateStart}}</text>					
+	<z-paging ref="paging" v-model="productAnalysisList" @query="queryList">
+		<template #top>
+			<view class="head">
+				<view class="screen-bar">
+					<view class="screen-bar-item" @tap.stop="itemClick" >
+						<view class="bar-item-text">
+							{{titleText}}
+						</view>
+						<image :src="getImgUrl('static/image/product/arrow.png')"></image>
+					</view>
+					<view class="datestartAndEnd">
+						<view class="dateStart">				
+							<view  @tap="toggle('start_date')">					
+								<text  v-if='dateStart  == ""' style="color: #a0a0a0;">开始时间</text>
+								<text  v-else style="color: #333;">{{dateStart}}</text>					
+							</view>
+							<cPicker mode='date' @confirm="dateStartHand" ref="start_date"></cPicker>
+						</view>
+						<view class="dateEnd">				
+							<view  @tap="toggle('end_date')">
+								<text  v-if='dateEnd  == ""' style="color: #a0a0a0;">结束时间</text>
+								<text  v-else style="color: #333;">{{dateEnd}}</text>					
+							</view>
+							<cPicker mode='date' @confirm="dateEndHand" ref="end_date"></cPicker>
+						</view>
+					</view>
+					<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">				
+						<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
+							{{item['text']}}
+						</view>				
+					</view>
 				</view>
-				<cPicker mode='date' @confirm="dateStartHand" ref="start_date"></cPicker>
 			</view>
-			<view class="dateEnd">				
-				<view  @tap="toggle('end_date')">
-					<text  v-if='dateEnd  == ""' style="color: #a0a0a0;">结束时间</text>
-					<text  v-else style="color: #333;">{{dateEnd}}</text>					
+		</template>
+		<!-- 产品列表 -->
+		<view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+			<view class="right">
+				<view>
+					<text class="info">品名：{{item.productName}}</text>
+					<text class="info">型号：{{item.type}}</text>					
 				</view>
-				<cPicker mode='date' @confirm="dateEndHand" ref="end_date"></cPicker>
-			</view>
+				<view>
+					<text class="info">尺寸：1400*800*500</text>
+					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>					
+				</view>
+				<view>
+					<text class="info" >材质：{{item.texture}}</text>
+					<text class="info" >颜色：{{item.color}}</text>					
+				</view>
+				<view>
+					<view class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></view>
+					<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
+					<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
+				</view>
+			</view>	
 		</view>
-		<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">				
-			<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
-				{{item['text']}}
-			</view>				
-		</view>
-	</view>
-</view>
-<!-- 头部遮罩层 -->
-<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
-<!-- 产品列表 -->
-<view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
-	<view class="left">			
-		<image class="left-img" :src="getImgUrl('static/image/red_add.png')"></image>
-		<view class="left-text">点击添加图片</view>
-	</view>
-	<view class="right">
-		<view>
-			<text class="info">品名：{{item.productName}}</text>
-			<text class="info">型号：{{item.type}}</text>
-			<text class="info">尺寸：1400*800*500</text>
-		</view>
-		<view>
-			<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-			<text class="info">类别：{{item.productType}}</text>
-			<text class="info" >颜色：{{item.color}}</text>
-		</view>
-		<view>
-			<text class="info" >材质：{{item.texture}}</text>					
-			<view class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></view>					
-			<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
-		</view>
-		<view>
-			<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
-		</view>
-	</view>	
-</view>
+	</z-paging>
+	<!-- 头部遮罩层 -->
+	<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
 </template>
 
 <script>
 import {get,post} from "../../components/utils/request.js"	
 import cPicker from "../../components/c-picker/c-picker.vue"
-
 
 	export default {
 		components: {
@@ -90,19 +88,19 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 					}
 				],
 				dateStart:'',
-				dateEnd:'',
-				pageNum: 1, // 分页当前页
-				status: 'more',
-				contentText: {
-					contentdown: '上拉加载更多~',				
-					contentrefresh: '正在加载更多~',				
-					contentnomore: '我是有底线的~'
-				},
-				iconType: 'auto'    // 图标样式 
+				dateEnd:''
 			}
 		},
 	
 		methods: {
+			refreshOrderList(pageNo){
+				post("statistics/selectListProductAnalysis",{"pageNum":pageNo,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue}).then(res =>{
+					this.$refs.paging.complete(res.rows);
+				})
+			},
+			queryList(pageNo, pageSize) {
+				this.refreshOrderList(pageNo);
+			},
 			//显示下拉框
 			itemClick() {
 				this.show = !this.show				
@@ -133,56 +131,18 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 				this.dateEnd = value.result;
 				this.getProductAnalysisList();
 			},
-			getProductAnalysisList(){
-				post("statistics/selectListProductAnalysis",{
-					"pageNum":this.pageNum,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue}).then(res =>{
-					 this.totalCount = res.total
-					 if(this.totalCount >=0){
-						this.productAnalysisList = res.rows
-						uni.hideLoading();
-					 }
-					 if(this.totalCount == this.productAnalysisList.length){					 
-						 this.status = "noMore"
-					 }
-				})
-			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
-		},
-		onReachBottom() {
-			if (this.totalCount > this.productAnalysisList.length) {
-				this.pageNum++;
-				post("statistics/selectListProductAnalysis", {"pageNum":this.pageNum,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue}).then(res => {
-					this.productAnalysisList = this.productAnalysisList.concat(res.rows)					
-					uni.hideLoading();
-				})
-			} else if (this.totalCount == this.productAnalysisList.length) {
-				this.status = "noMore"
-			}
-		},
-		onLoad(){			
-			post("statistics/selectListProductAnalysis",{
-				"pageNum":this.pageNum,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue}).then(res =>{
-				 this.totalCount = res.total
-				 if(this.totalCount >0){
-					this.productAnalysisList = res.rows
-					uni.hideLoading();
-				 }
-				 if(this.totalCount == this.productAnalysisList.length){					 
-					 this.status = "noMore"
-				 } 
-			})
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	.head{
 		height: 52px;
 	}
 	.screen-bar {
-		position: fixed;
 		border-top: 8px solid #efeef3ff;
 		width: 100%;
 		height: 50px;
@@ -276,25 +236,10 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
-	.product .left{
-		width: 120px;
-		height: 80px;
-		background-color: #f2f2f2ff; 
+	.product .img{
+		width: 80px;
+		height: 80px;	
 	}
-	.product .left-img {
-		display: block;
-	    width: 20px;
-	    height: 20px;
-		padding-top: 30rpx;
-		margin: 0 auto;
-	}
-	.product .left-text{
-		font-size: 5rpx;	
-		text-align: center;
-		margin-top: 10rpx;
-		color: #a3a3a1ff;
-	}
-	
 	.product .right {
 	    margin-left: 10px;
 		width: 100%;
