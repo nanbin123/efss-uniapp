@@ -33,32 +33,36 @@
 				</view>
 			</view>
 		</template>
+		<!-- 头部遮罩层 -->
+		<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
 		<!-- 产品列表 -->
 		<view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
 			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="right">
-				<view>
+			<view class="product-content">
+				<view  class="grid">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>					
 				</view>
-				<view>
+				<view class="grid">
 					<text class="info">尺寸：1400*800*500</text>
 					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>					
 				</view>
-				<view>
+				<view class="grid">
 					<text class="info" >材质：{{item.texture}}</text>
-					<text class="info" >颜色：{{item.color}}</text>					
-				</view>
-				<view>
+					<text class="info" >颜色：{{item.color}}</text>
 					<view class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></view>
+					
+				</view>
+				<view class="grid">
+					<text class="info">时间：{{item.orderCreateTime}}</text>
 					<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
 					<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
 				</view>
 			</view>	
 		</view>
+		
 	</z-paging>
-	<!-- 头部遮罩层 -->
-	<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
+
 </template>
 
 <script>
@@ -105,12 +109,12 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 			itemClick() {
 				this.show = !this.show				
 			},
-			//替换标题
+			//按销量或者按销售额度
 			subItemClick(index) {
 				this.titleText =  this.itemArr[index]['text'];
 				this.titleValue = this.itemArr[index]['value'];
 				this.show = false;
-				this.getProductAnalysisList();
+				this.$refs.paging.reload();
 			},			
 			//关闭
 			maskClose() {
@@ -123,13 +127,15 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 			toggle(val) {//开始时间和结束时间
 				this.$refs[val].show();
 			},
+			// 开始时间
 			dateStartHand(value) {
 				this.dateStart = value.result;
-				this.getProductAnalysisList();
+				this.$refs.paging.reload();
 			},
+			// 结束时间
 			dateEndHand(value){
 				this.dateEnd = value.result;
-				this.getProductAnalysisList();
+				this.$refs.paging.reload();
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
@@ -140,18 +146,18 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 
 <style scoped>
 	.head{
-		height: 52px;
+		border-top: 5px solid #efeef3ff;
+		height: 50px;
 	}
 	.screen-bar {
-		border-top: 8px solid #efeef3ff;
 		width: 100%;
-		height: 50px;
-		padding: 0 20px;
+		height: 40px;
+		padding: 0 10px;
 		background-color: #fff;		
 		display: flex;
 		z-index: 99;
-		border-bottom: 2rpx solid #efeef3ff;
-		box-shadow: 0 2rpx 10rpx #efeef3ff;
+		border-bottom: 1px solid #efeef3ff;
+		box-shadow: 0 1px 10rpx #efeef3ff;
 	}
 	.screen-bar-item {		
 		height: 100%;		
@@ -176,15 +182,14 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		transition: all .3s;
 		flex-shrink: 0;
 	}
-	.dropdown-box {		
+	.dropdown-box {
 		background-color: #fff;
 		height: 210rpx;
-		bottom: -210rpx;
 		width: 100%;
 		padding-left: 30rpx;
 		position: absolute;
 		left: 0;
-		top: 62rpx;
+		top: 50px;
 		z-index: 99;
 		overflow: hidden;
 	}
@@ -203,7 +208,7 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 	}
 	.bg-mask {		
 		position: absolute;
-		top: 8px;
+		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
@@ -231,25 +236,36 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		padding-left: 100rpx;
 	}
 	.product{
+		position: relative;
 		display: flex;
+		align-items: center;
+		background-color: #fff;
 		border-bottom: 1px solid #cbcbcbff;
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-bottom: 5px;
+		margin-bottom: 5px;
 	}
 	.product .img{
-		width: 80px;
-		height: 80px;	
+		width: 70px;
+		height: 75px;	
 	}
-	.product .right {
-	    margin-left: 10px;
-		width: 100%;
-		height: 80rpx;		
+	.product .product-content {
+	   flex: 1;
+	   margin-left: 2px;	
+	}
+	.grid {
+	 	display: flex;
+	 	line-height: 20px;
 	}
 	.info {
-	   display: inline-block;
-	   width: 33%;
-	   color: #030303ff;
-	   font-size: 11px;
+	  width: 50%;
+	  color: #030303ff;
+	  font-size: 13px;
+	  color: #333;
+	  white-space: nowrap;  
+	  overflow: hidden; /* 超出部分隐藏 */
+	  text-overflow: ellipsis; /* 显示省略号 */
+	  text-rendering: optimizeLegibility;
 	}
+	
 
 </style>

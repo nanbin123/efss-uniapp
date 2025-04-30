@@ -428,12 +428,12 @@ export default {
 	margin-bottom: 5px;
 }
 .product .img{
-	width: 80px;
-	height: 80px;	
+	width: 70px;
+	height: 75px;	
 }
 .product-content{
 	flex: 1;
-	margin-left: 5px;
+	margin-left: 2px;
 }
 .grid {	
  	display: flex;
@@ -442,7 +442,7 @@ export default {
 .info {
   width: 50%;
   color: #030303ff;
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
   white-space: nowrap;  
   overflow: hidden; /* 超出部分隐藏 */
