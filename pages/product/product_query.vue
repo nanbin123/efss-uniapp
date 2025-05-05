@@ -47,8 +47,6 @@
 		<input  v-model="productForm.retailPrice"  type="text" placeholder-class="input-placeholder" placeholder="请输入零售价">
 	</view>
 
-
-
 	<view class="bottom-bar">
 		<view class="clear-btn" @click="clearFilters">清空所有筛选条件</view>
 		<view class="search-btn" @click="search">查询</view>
@@ -112,7 +110,7 @@
 			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}
-</script>
+</script scoped>
 
 <style>
 	.head {

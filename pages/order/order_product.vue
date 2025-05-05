@@ -67,13 +67,11 @@ import useProductStore from '@/store/modules/product.js'
 export default {
 	data() {
 		return {
-			productList: [],				
-			pageNum: 1, // 当前页
-			pageSize: 10, // 每页条数
-			totalCount:0,				
+			productList: [],
 			searchVal: "",
 			totalMoney: 0,
-			totalNumber:0
+			totalNumber:0,
+			searchProduct:{}
 		}
 	},
 	setup() {
@@ -81,8 +79,9 @@ export default {
 		return { productStore }
 	 },
 	methods: {
-		refreshData(pageNo, pageSize){			
-			post("order/selectListOrderProduct", {"pageNum":pageNo}).then(res => {									
+		refreshData(pageNo, pageSize){
+			this.searchProduct.pageNum = pageNo;
+			post("order/selectListOrderProduct", this.searchProduct).then(res => {									
 				if (res.code == 200) {
 					var productData = res.rows;
 					var products = this.productStore.products;
@@ -96,7 +95,7 @@ export default {
 						}
 					}					
 					this.$refs.paging.complete(productData);
-					this.totalCount = res.total; 
+				
 				}
 			})
 		},
@@ -116,21 +115,23 @@ export default {
 				this.subtraction(item);
 			}
 		},
-		subtraction(item) {
+		subtraction(item) {			
 			item.number=0;
 			this.totalNumber--;
-			/* this.totalMoney = parseFloat(this.totalMoney)-parseFloat(retailPrice); */
+			this.totalMoney = parseFloat(this.totalMoney)-parseFloat(item.retailPrice);
+			this.productStore.subtraction(item.productId)
 		},
 		add(item) {
 			item.number++;
 			this.totalNumber++;
-			/*this.totalMoney = parseFloat(this.totalMoney) + parseFloat(retailPrice); */
+			this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);
+			this.productStore.add(item);
 		},
 		confirm(){			
-			var productChooseArray = this.productList.filter(function(item){
-				return item.selected == true;
-			});
-			this.productStore.addProduct(productChooseArray);
+			// var productChooseArray = this.productList.filter(function(item){
+			// 	return item.selected == true;
+			// });
+			// this.productStore.addProduct(productChooseArray);
 			let pages = getCurrentPages();
 			if(pages.length >1){
 				uni.navigateBack({
@@ -146,27 +147,21 @@ export default {
 		},
 	},		
 	watch: {
-/* 			searchVal(val) {
-			this.pageNum = 1;
-			post("order/selectListOrderProduct",{"pageNum": this.pageNum,"productNameOrType": val,"customerId":this.customerId
-			}).then(res => {
-				this.totalCount = res.total
-				this.productList = res.rows;					
-				if (this.totalCount == this.productList.length) {
-					this.status = "noMore"
-				}
-			})
-		} */
+		searchVal(newVal, oldVal) {
+			this.searchProduct.productNameOrType = newVal;
+			this.$refs.paging.reload();
+			
+		}
 	},
 	onShow(option){
 		let products = this.productStore.products;
 		//计算总条数
 		this.totalNumber = products.reduce((accumulator, currentObject) => {
-		   return accumulator + currentObject.number;
+		   return Number(accumulator) + Number(currentObject.number);
 		}, 0);		
 		//计算总金额
 		this.totalMoney = products.reduce((accumulator, currentObject) => {
-		   return accumulator + currentObject.retailPrice * currentObject.number;
+		   return Number(accumulator) + Number(currentObject.retailPrice) * Number(currentObject.number);
 		}, 0); 
 	}
 }

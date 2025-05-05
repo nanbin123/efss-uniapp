@@ -679,26 +679,26 @@
 	line-height: 25px;	
 }
 /*适用于 微信小程序*/
-.gender .wx-radio-input {	
+/deep/ .gender .wx-radio-input {	
 	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
 	border-color: #38c1b9 !important;
 }
-.gender .radio-group .radio1 .wx-radio-input {	
+/deep/ .gender .radio-group .radio1 .wx-radio-input {	
 	border-right: 0 !important;
 	border-top-left-radius: 8% !important;
 	border-bottom-left-radius:8% !important;
 }
-.gender .radio-group .radio2 .wx-radio-input {	
+/deep/ .gender .radio-group .radio2 .wx-radio-input {	
 	border-top-right-radius: 8% !important;
 	border-bottom-right-radius:8% !important;
 }
-.gender .wx-radio-input-disabled{
+/deep/ .gender .wx-radio-input-disabled{
 	background-color: transparent !important;
 }
-.gender .wx-radio-input.wx-radio-input-checked::before{
+/deep/ .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }
 

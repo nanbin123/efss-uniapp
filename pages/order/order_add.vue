@@ -331,7 +331,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .head{
 	height: 5px;
@@ -375,7 +375,7 @@ export default {
 	border-bottom: 5px solid #efeef4ff;
 }
 .item .input-placeholder{
-	font-size: 15px;
+	font-size: 13px;
 	text-align: right;
 	color: #aaa;
 	text-rendering: optimizeLegibility;
@@ -406,12 +406,12 @@ export default {
 }
 
 .product .img {
-	width: 80px;
+	width: 75px;
 	height: 80px;
 }
 .product-content{	
 	flex: 1;
-	margin-left: 5px;
+	margin-left: 2px;
 }
 .grid {
  	display: flex;	
@@ -420,7 +420,7 @@ export default {
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 14px;
+   font-size: 13px;
    color: #333;
    white-space: nowrap;  
    overflow: hidden; /* 超出部分隐藏 */
@@ -473,24 +473,24 @@ export default {
 	line-height: 25px;	
 }
 /*适用于 微信小程序*/
-.gender .wx-radio-input {
+/deep/ .gender .wx-radio-input {
 	border-radius: 0 !important;
 	width: 50px !important;
 	height: 25px !important;
 	margin-right:0 !important;
 	border-color: #00a7e2ff !important;
 }
-.gender .radio-group .radio1 .wx-radio-input {	
+/deep/ .gender .radio-group .radio1 .wx-radio-input {	
 	border-right: 0 !important;
 	border-top-left-radius: 8% !important;
 	border-bottom-left-radius:8% !important;
 }
-.gender .radio-group .radio2  .wx-radio-input {	
+/deep/ .gender .radio-group .radio2  .wx-radio-input {	
 	border-top-right-radius: 8% !important;
 	border-bottom-right-radius:8% !important;
 }
 
-.gender .wx-radio-input.wx-radio-input-checked::before{
+/deep/ .gender .wx-radio-input.wx-radio-input-checked::before{
  font-size:0; /* 对勾大小 */
 }
 

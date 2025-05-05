@@ -50,11 +50,13 @@
 				<view class="grid">
 					<text class="info" >材质：{{item.texture}}</text>
 					<text class="info" >颜色：{{item.color}}</text>
-					<view class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></view>
 					
 				</view>
 				<view class="grid">
-					<text class="info">时间：{{item.orderCreateTime}}</text>
+					<view class="info">零售价：<text style="color: #d6a950ff; ">￥{{item.retailPrice}}</text></view>
+					<text class="info">时间：{{item.orderCreateTime}}</text>	
+				</view>
+				<view class="grid">
 					<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
 					<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
 				</view>
@@ -245,8 +247,8 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		margin-bottom: 5px;
 	}
 	.product .img{
-		width: 70px;
-		height: 75px;	
+		width: 75px;
+		height: 80px;	
 	}
 	.product .product-content {
 	   flex: 1;
@@ -254,7 +256,7 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 	}
 	.grid {
 	 	display: flex;
-	 	line-height: 20px;
+	 	line-height: 16px;
 	}
 	.info {
 	  width: 50%;
