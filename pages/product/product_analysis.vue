@@ -9,7 +9,7 @@
 						</view>
 						<image :src="getImgUrl('static/image/product/arrow.png')"></image>
 					</view>
-					<view class="datestartAndEnd">
+ 					<view class="datestartAndEnd">
 						<view class="dateStart">				
 							<view  @tap="toggle('start_date')">					
 								<text  v-if='dateStart  == ""' style="color: #a0a0a0;">开始时间</text>
@@ -39,24 +39,24 @@
 		<view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
 			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 			<view class="product-content">
-				<view  class="grid">
+				<view  class="item">
 					<text class="info">品名：{{item.productName}}</text>
 					<text class="info">型号：{{item.type}}</text>					
 				</view>
-				<view class="grid">
+				<view class="item">
 					<text class="info">尺寸：1400*800*500</text>
 					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>					
 				</view>
-				<view class="grid">
+				<view class="item">
 					<text class="info" >材质：{{item.texture}}</text>
 					<text class="info" >颜色：{{item.color}}</text>
 					
 				</view>
-				<view class="grid">
+				<view class="item">
 					<view class="info">零售价：<text style="color: #d6a950ff; ">￥{{item.retailPrice}}</text></view>
 					<text class="info">时间：{{item.orderCreateTime}}</text>	
 				</view>
-				<view class="grid">
+				<view class="item">
 					<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
 					<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
 				</view>
@@ -149,41 +149,53 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 <style scoped>
 	.head{
 		border-top: 5px solid #efeef3ff;
-		height: 50px;
-	}
-	.screen-bar {
-		width: 100%;
-		height: 40px;
-		padding: 0 10px;
-		background-color: #fff;		
-		display: flex;
-		z-index: 99;
 		border-bottom: 1px solid #efeef3ff;
-		box-shadow: 0 1px 10rpx #efeef3ff;
+		line-height: 39px;
+		width: 100%;
 	}
-	.screen-bar-item {		
-		height: 100%;		
+	.head .screen-bar {
+		background-color: black;
+		display: flex;		
+		background-color: #fff;	
+		
+	}
+	.head .screen-bar .screen-bar-item {		
+		height: 100%;
+		width: 30%;
 		display: flex;
-		align-items: center;
-		justify-content: center;
+		align-items: center;		
 	}
-	.bar-item-text {
-		max-width: 120rpx;
-		font-size: 26rpx;
+	.head .screen-bar .screen-bar-item .bar-item-text {
+		font-size: 15px;
+		padding-left: 10px;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		white-space: nowrap;
 	}
-	.screen-bar-item image {
-		width: 24rpx;
-		height: 24rpx;
-		padding-top: 2rpx;
-		padding-left: 30rpx;
+	.head .screen-bar .screen-bar-item image {
+		width: 15px;
+		height: 15px;
+		padding-top: 2px;
+		padding-left: 7px;
 		display: block;
-		margin-left: 12rpx;
 		transition: all .3s;
 		flex-shrink: 0;
+	}	
+	.head .screen-bar .datestartAndEnd{		
+		width: 50%;
+		display: flex;	
+		width: 50%;		
+		align-items: center;		
+		font-size: 15px;
+		color: #acacacff;
 	}
+	.head .screen-bar .datestartAndEnd .dateStart{
+		
+	}
+	.head .screen-bar .datestartAndEnd .dateEnd{
+		padding-left: 30px;
+	}
+	
 	.dropdown-box {
 		background-color: #fff;
 		height: 210rpx;
@@ -191,7 +203,7 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		padding-left: 30rpx;
 		position: absolute;
 		left: 0;
-		top: 50px;
+		top: 46px;
 		z-index: 99;
 		overflow: hidden;
 	}
@@ -224,44 +236,31 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		visibility: visible;
 		opacity: 0.8;
 	}
-	.datestartAndEnd{
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-left:100rpx;
-		font-size: 26rpx;
-		color: #acacacff;
-		padding-right: 100rpx;
-		margin-top: 2rpx;
-	}
-	.dateEnd{
-		padding-left: 100rpx;
-	}
-	.product{
-		position: relative;
+	
+	.product{ 		
 		display: flex;
 		align-items: center;
-		background-color: #fff;
+		background-color: #fff; 
 		border-bottom: 1px solid #cbcbcbff;
-		padding-bottom: 5px;
-		margin-bottom: 5px;
+		padding: 5px 5px 0 0;
 	}
 	.product .img{
-		width: 75px;
+		width: 70px;
 		height: 80px;	
 	}
 	.product .product-content {
 	   flex: 1;
-	   margin-left: 2px;	
+	   margin-left: 1px;
 	}
-	.grid {
+	.product .product-content .item {
 	 	display: flex;
-	 	line-height: 16px;
+	 	line-height: 14px;
+	 	padding-bottom: 3px;
 	}
-	.info {
+	.product .product-content .info {
 	  width: 50%;
 	  color: #030303ff;
-	  font-size: 13px;
+	  font-size: 14px;
 	  color: #333;
 	  white-space: nowrap;  
 	  overflow: hidden; /* 超出部分隐藏 */

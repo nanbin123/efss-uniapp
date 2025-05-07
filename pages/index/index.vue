@@ -18,14 +18,6 @@
 				<view class="grid-text">意向客户</view>
 			</view>
 		</view>
-		<!-- <view class="u-grid-item" @click="navTo('/pages/cusomer/cusomer_add')">
-			<view class="u-grid-item-box">
-				<view class="home color11">
-					  <image :src="getImgUrl('static/image/index/add_cusomer.png')"></image>
-				</view>
-				<view class="grid-text">添加客户</view>
-			</view>
-		</view> -->
  		<view v-show="hasPermi(['order:list'])"  class="u-grid-item">
 			<view class="u-grid-item-box" @click="navTo('/pages/order/order_list')">
 				<view class="home color02">
@@ -33,15 +25,7 @@
 				</view>
 				<view class="grid-text">销售订单</view>
 			</view>
-		</view>
-		<!-- <view class="u-grid-item">
-			<view class="u-grid-item-box" @click="navTo('/pages/order/order_add')">
-				<view class="home color02">
-					 <image :src="getImgUrl('static/image/index/sales_order.png')"></image>
-				</view>
-				<view class="grid-text">新增订单</view>
-			</view>
-		</view> -->
+		</view>		
 		<view v-show="hasPermi(['product:price:list'])" class="u-grid-item"  @click="navTo('/pages/product/price_list')">
 			<view class="u-grid-item-box">
 				<view class="home color03">

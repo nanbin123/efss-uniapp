@@ -308,15 +308,12 @@ export default {
 			return discount*100
 		}
 	},
-	onLoad() {
-		
-	},
 	onShow() {
-		let pages = getCurrentPages();
-		if(pages.length >1){			
+		let pages = getCurrentPages();	
+		if(pages.length >1){
 			 let previousPage = pages[pages.length -2]
-			 //转订单操作
-			 if("pages/customer/customer_detail" ==previousPage.$page.route){
+			 // 转订单操作
+			 if("pages/customer/customer_detail" == previousPage.route){
 				 let customer = this.transferOrderStore.customer;
 				 this.orderForm.customerName = customer.customerName;
 				 this.orderForm.sex = customer.sex;
@@ -348,13 +345,13 @@ export default {
 	background-color: #fff;
 }
 .item .img{
-	padding-left: 2px;
+	padding-left: 1px;
 	width: 20px;
 	height: 20px;	
 }
 .item .title{
 	margin-left: 1px;
-	font-size: 12px;
+	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
@@ -367,8 +364,11 @@ export default {
 .item input{
 	flex-grow: 1;
 	padding-right: 12px;
-	text-align: right;	
+	text-align: right;
+	margin-left: 20px;
 	text-rendering: optimizeLegibility;
+	font-size: 15px;
+	color: #333;
 }
 
 .cusomer_address{

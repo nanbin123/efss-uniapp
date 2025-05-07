@@ -167,13 +167,13 @@
 }
 .item{
 	display: flex;
-	line-height: 13px;
+	line-height: 14px;
 	padding-bottom: 10px;
 }
 .info {
     width: 50%;
     color: #030303ff;
-    font-size: 13px; 
+    font-size: 14px; 
 	white-space: nowrap; /* 文字不换行 */
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 以省略号形式显示 */

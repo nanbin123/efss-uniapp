@@ -127,11 +127,7 @@ export default {
 			this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);
 			this.productStore.add(item);
 		},
-		confirm(){			
-			// var productChooseArray = this.productList.filter(function(item){
-			// 	return item.selected == true;
-			// });
-			// this.productStore.addProduct(productChooseArray);
+		confirm(){
 			let pages = getCurrentPages();
 			if(pages.length >1){
 				uni.navigateBack({
