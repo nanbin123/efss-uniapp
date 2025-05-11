@@ -183,8 +183,8 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 	}	
 	.head .screen-bar .datestartAndEnd{		
 		width: 50%;
-		display: flex;	
-		width: 50%;		
+		display: flex;
+		width: 50%;
 		align-items: center;		
 		font-size: 15px;
 		color: #acacacff;
