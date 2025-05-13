@@ -54,6 +54,7 @@
 	export default {
 		data() {
 			return {
+				searchVal:'',
 				nowIndex: 0,
 				completionStatusList:['新单据','未完成','已完成'],
 				warehousingEntryList:[],
@@ -69,13 +70,26 @@
 			},
 			queryList(pageNo, pageSize) {
 				this.searchWarehousing.pageNum = pageNo;
-				this.refreshWarehousingList();
+				this.searchWarehousing.productNames = this.searchVal;
+				this.searchWarehousing.completionStatus = this.nowIndex;
+				this.refreshWarehousingList();index
+			},
+			getWarehousingEntryList(){//高级查询
+				let warehousing = this.moreSearchStore.moreSearch;				
+				this.searchWarehousing =  warehousing;
+				this.$refs.paging.reload();
 			},
 			changeCompletionStatus(index){
-				this.nowIndex = index
+				this.nowIndex = index;
+				this.$refs.paging.reload()
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
+			}
+		},
+		watch:{
+			searchVal(val){
+				this.$refs.paging.reload()
 			}
 		}
 	}
