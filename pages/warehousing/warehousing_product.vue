@@ -1,5 +1,5 @@
 <template>
-<z-paging  ref="paging" v-model="productList" @query="refreshData">
+<z-paging  ref="paging" v-model="productList" @query="queryList">
 
 	<template #top>
 		<view class="head">
@@ -69,12 +69,12 @@ import useProductStore from '@/store/modules/product.js'
 export default {
 	data() {
 		return {
+			searchVal:'',
 			productList: [],
 			totalMoney: 0,
 			totalNumber:0,
 			evenatChannel:null,
-			warehousingEntryId:""
-			
+			searchWarehousingProduct:{}
 		}
 	},
 	setup() {
@@ -82,9 +82,8 @@ export default {
 		return { productStore } 
 	 },
 	methods: {
-		refreshData(pageNo, pageSize){
-			post("warehousing/selectListWarehousingEntryProduct", {
-				"pageNum": pageNo,"warehousingEntryId":this.warehousingEntryId}).then(res => {
+		refreshWarehousingProductList(){
+			post("warehousing/selectListWarehousingEntryProduct", this.searchWarehousingProduct).then(res => {
 				if (res.code == 200) {
 					let productData = res.data;
 					var products = this.productStore.products;
@@ -98,8 +97,13 @@ export default {
 						}
 					} 
 					this.$refs.paging.complete(productData);					
-				}				
+				}
 			})
+		},
+		queryList(pageNo, pageSize) {
+			this.searchWarehousingProduct.pageNum = pageNo;
+			this.searchWarehousingProduct.productNameOrType = this.searchVal;
+			this.refreshWarehousingProductList();
 		},
 		selectProduct(item){
 			item.selected = !item.selected;
@@ -121,17 +125,15 @@ export default {
 			item.inventoryQuantity=0;
 			this.totalNumber--;
 			this.totalMoney = parseFloat(this.totalMoney)-parseFloat(item.retailPrice);
+			this.productStore.subtraction(item.productId)
 		},
 		add(item) {
 			item.inventoryQuantity++;
-			this.totalNumber++;	
+			this.totalNumber++;
 			this.totalMoney = parseFloat(this.totalMoney) + parseFloat(item.retailPrice);
+			this.productStore.add(item);
 		},
 		confirm(){
-			var productChooseArray = this.productList.filter(function(item){
-				return item.selected == true;
-			});
-			this.productStore.addProduct(productChooseArray);
 			let pages = getCurrentPages();
 			if(pages.length >1){
 				uni.navigateBack({
@@ -147,31 +149,19 @@ export default {
 		}
 	},
 	watch: {
-/* 		searchVal(val) {
-			this.pageNum = 1;
-			post("warehousing/selectListWarehousingEntryProduct",{"pageNum": this.pageNum,"productNameOrType": val,"warehousingEntryId":this.warehousingEntryId
-			}).then(res => {
-				this.totalCount =  res.data.total
-				this.productList = res.data.products;
-				uni.hideLoading();
-				if (this.totalCount == this.productList.length) {
-					this.status = "noMore"
-				}
-			})
-		} */
-	},
-	onLoad(option) {
-		this.warehousingEntryId = (!option.warehousingEntryId) ?'':option.warehousingEntryId
+ 		searchVal(val) {
+			this.$refs.paging.reload()
+		}
 	},
 	onShow(option){
 		let products = this.productStore.products;
 		//计算总条数
 		this.totalNumber = products.reduce((accumulator, currentObject) => {
-		   return accumulator + currentObject.inventoryQuantity;
+		   return Number(accumulator) + Number(currentObject.inventoryQuantity);
 		}, 0);
 		//计算总金额
 		this.totalMoney = products.reduce((accumulator, currentObject) => {
-		   return accumulator + currentObject.retailPrice * currentObject.inventoryQuantity;
+		   return Number(accumulator) + Number(currentObject.retailPrice) * Number(currentObject.inventoryQuantity);
 		}, 0); 
 	}
 }
@@ -214,7 +204,7 @@ export default {
 	border-radius: 3px;
 	text-align: center;
 	line-height: 39px;
-	background-color: #00a7e2ff;
+	background-color: #00b6aaff;
 	margin-left: 5px;
 	margin-right: 7px;
 }
@@ -283,7 +273,7 @@ export default {
 	position: relative;
 }
 .iconfont{
-	color: #02a5e6ff;
+	color: #00b6aaff;
 	font-size: 35px;
 }
 
@@ -316,13 +306,13 @@ export default {
 
 .total-amount-money {
 	margin-left: 10px;
-	color: rgb(26, 161, 207);
+	color: #00b6aaff;
 }
 
 .confirm {
 	height: 45px;
 	width: 100px;
-	background-color: rgb(26, 161, 207);
+	background-color: #00b6aaff;
 	color: #fff;
 	line-height: 45px;
 	text-align: center;

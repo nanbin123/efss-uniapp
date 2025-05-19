@@ -162,7 +162,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .head{
 	height: 5px;
 	width: 100%;
@@ -177,27 +177,27 @@ export default {
 	background-color: #fff;
 }
 .item .img{
-	padding-left: 2px;
+	padding-left: 1px;
 	width: 19px;
 	height: 19px;	
 }
 .item .title{
 	margin-left: 1px;
-	font-size: 12px;
+	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
 }
 .item input{
 	flex-grow: 1;
-	padding-right: 12px;
+	padding-right: 13px;
 	text-align: right;	
 	text-rendering: optimizeLegibility;
 }
 .item .time{
 	margin-left: auto;
 	text-align: right;
-	padding-right: 12px;
+	padding-right: 13px;
 }
 .content{
 	white-space: nowrap;

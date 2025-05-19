@@ -62,9 +62,10 @@
 			},
 			clearFilters(){
 				let _this = this;
-				Object.keys(this.customer).forEach(function(key){					
-					_this.customer[key]="";
+				Object.keys(this.warehousingEntry).forEach(function(key){					
+					_this.warehousingEntry[key]="";
 				})
+				this.moreSearchStore.clearMoreSearchStore();
 			},
 			toggle(val) {
 				this.$refs[val].show();
@@ -79,8 +80,8 @@
 				return typeof str === 'undefined' || '' === str;
 			}
 		},
-		onLoad() {			
-
+		onShow() {
+			this.warehousingEntry = this.moreSearchStore.moreSearch;				
 		}	
 	}
 </script>

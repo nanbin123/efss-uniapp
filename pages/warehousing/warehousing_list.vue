@@ -51,6 +51,7 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
@@ -62,21 +63,28 @@
 				
 			}
 		},
+		setup() {
+			const moreSearchStore = useMoreSearchStore();
+			return {
+				moreSearchStore
+			}
+		 },
 		methods: {
 			refreshWarehousingList(){
 				post("warehousing/selectListWarehousingEntry",this.searchWarehousing).then(res =>{
+					console.log(res.rows)
 					this.$refs.paging.complete(res.rows);
 				})
 			},
 			queryList(pageNo, pageSize) {
+				let warehousing = this.moreSearchStore.moreSearch;
+				this.searchWarehousing =  warehousing;
 				this.searchWarehousing.pageNum = pageNo;
 				this.searchWarehousing.productNames = this.searchVal;
 				this.searchWarehousing.completionStatus = this.nowIndex;
-				this.refreshWarehousingList();index
+				this.refreshWarehousingList();
 			},
-			getWarehousingEntryList(){//高级查询
-				let warehousing = this.moreSearchStore.moreSearch;				
-				this.searchWarehousing =  warehousing;
+			getWarehousingEntryList(){//高级查询				
 				this.$refs.paging.reload();
 			},
 			changeCompletionStatus(index){
@@ -153,7 +161,7 @@
 	margin-left: 5px; 
 	margin-right: 7px;
 }
-.iconfont{
+.more_search .iconfont{
 	color: #ffffff;	
 	font-size: 18px;
 }
