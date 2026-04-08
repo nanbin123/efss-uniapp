@@ -125,15 +125,18 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	import useUserStore from '@/store/modules/user.js'
+
 	export default {
 		data() {
 			return {
 
 			}
 		},
-		onLoad() {
-			
-		},
+		setup() {
+			const userStore= useUserStore();
+			return {userStore}
+		 },
 		methods: {
 			navTo(url) {
 				uni.navigateTo({
@@ -144,11 +147,11 @@
 			   return this.BASEURL+image;
 			}
 		},
-		computed: {
-			
-		},
+
 		onLoad(){
-			
+			post("getPermissions").then(res =>{				
+				this.userStore.addPermissions(res.permissions);
+			})
 		}
 	}
 </script>
