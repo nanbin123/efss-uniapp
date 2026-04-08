@@ -13,7 +13,7 @@ function hasPermi(binding) {
   if (!value || !Array.isArray(value) || value.length === 0) {
     throw new Error(`请设置操作权限标签值（必须是数组）`)
   }
-
+ 
   const permissionFlag = value
   
   let a = permissions.some(
