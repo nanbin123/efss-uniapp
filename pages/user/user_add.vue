@@ -108,7 +108,6 @@
 					});
 					return
 				}
-				
 				//左侧菜单
 			    let leftCheckedKeys = this.$refs.menuRefLeft.getCheckedKeys();
 				//右侧菜单

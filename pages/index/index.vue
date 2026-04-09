@@ -10,7 +10,7 @@
 	</view>		
 	<view class="workbench-title">常用应用</view>		
 	<view class="u-grid">
-		<view v-show="hasPermi(['cusomer:list'])" class="u-grid-item" @click="navTo('/pages/customer/customer_list')">
+		<view v-show="hasPermi(['cusomer:list','cusomer:query'])" class="u-grid-item" @click="navTo('/pages/customer/customer_list')">
 			<view class="u-grid-item-box">
 				<view class="home color01">
 					<image :src="getImgUrl('static/image/index/query_cusomer.png')"></image>
@@ -18,14 +18,14 @@
 				<view class="grid-text">意向客户</view>
 			</view>
 		</view>
- 		<view v-show="hasPermi(['order:list'])"  class="u-grid-item">
+ 		<view v-show="hasPermi(['order:list','order:query'])"  class="u-grid-item">
 			<view class="u-grid-item-box" @click="navTo('/pages/order/order_list')">
 				<view class="home color02">
 					 <image :src="getImgUrl('static/image/index/order_list.png')"></image>
 				</view>
 				<view class="grid-text">销售订单</view>
 			</view>
-		</view>		
+		</view>
 		<view v-show="hasPermi(['product:price:list'])" class="u-grid-item"  @click="navTo('/pages/product/price_list')">
 			<view class="u-grid-item-box">
 				<view class="home color03">
@@ -50,7 +50,7 @@
 				<view class="grid-text">销售看板</view>
 			</view>
 		</view>				
-		<view v-show="hasPermi(['warehousing:list'])" class="u-grid-item"  @click="navTo('/pages/warehousing/warehousing_list')">
+		<view v-show="hasPermi(['warehousing:list','warehousing:query'])" class="u-grid-item"  @click="navTo('/pages/warehousing/warehousing_list')">
 			<view class="u-grid-item-box">
 				<view class="home color07">
 					 <image :src="getImgUrl('static/image/index/warehousing.png')"></image>
@@ -58,7 +58,7 @@
 				<view class="grid-text">入库单</view>
 			</view>
 		</view>		
-		<view v-show="hasPermi(['outbound:list'])" class="u-grid-item" @click="navTo('/pages/outbound/outbound_list')">
+		<view v-show="hasPermi(['outbound:list','outbound:query'])" class="u-grid-item" @click="navTo('/pages/outbound/outbound_list')">
 			<view class="u-grid-item-box">
 				<view class="home color07">
 					 <image :src="getImgUrl('static/image/index/receipt_doc.png')"></image>
@@ -69,7 +69,7 @@
 	</view>
 	<view class="workbench-title">日常办公</view>
 	<view class="u-grid">
-		<view v-show="hasPermi(['product:list'])"  class="u-grid-item"  @click="navTo('/pages/product/product_list')">
+		<view v-show="hasPermi(['product:list','product:query'])"  class="u-grid-item"  @click="navTo('/pages/product/product_list')">
  			<view class="u-grid-item-box">
  				<view class="home color06">
  					 <image :src="getImgUrl('static/image/index/product_query.png')"></image>
@@ -77,15 +77,7 @@
  				<view class="grid-text">产品管理</view>
  			</view>
  		</view>
-<!-- 		 <view class="u-grid-item"  @click="navTo('/pages/product/product_add')">
-			<view class="u-grid-item-box">
-				<view class="home color10">
-					 <image :src="getImgUrl('static/image/index/product_add.png')"></image>
-				</view>
-				<view class="grid-text">添加产品</view>
-			</view>
-		</view> -->
-		<view v-show="hasPermi(['receipt:list'])" class="u-grid-item" @click="navTo('/pages/receipt/receipt_list')">
+		<view v-show="hasPermi(['receipt:list','receipt:query'])" class="u-grid-item" @click="navTo('/pages/receipt/receipt_list')">
 			<view class="u-grid-item-box">
 				<view class="home color08">
 					  <image :src="getImgUrl('static/image/index/receipt.png')"></image>
@@ -93,14 +85,6 @@
 				<view class="grid-text">销售收款</view>
 			</view>
 		</view>
-		<!-- <view class="u-grid-item" @click="navTo('/pages/receipt/receipt_add')">
-			<view class="u-grid-item-box">
-				<view class="home color08">
-					  <image :src="getImgUrl('static/image/index/receipt.png')" ></image>
-				</view>
-				<view class="grid-text">添加销售收款</view>
-			</view>
-		</view> -->
 		<view v-show="hasPermi(['profitloss:list'])" class="u-grid-item" @click="navTo('/pages/profitLoss/index')">
 			<view class="u-grid-item-box">
 				<view class="home color10">
@@ -109,9 +93,9 @@
 				<view class="grid-text">盈亏表</view>
 			</view>
 		</view>
-		<view v-show="hasPermi(['personnel:list'])" class="u-grid-item" @click="navTo('/pages/user/user_list')">
+		<view v-show="hasPermi(['personnel:list','personnel:query'])" class="u-grid-item" @click="navTo('/pages/user/user_list')">
 			<view class="u-grid-item-box">
-				<view class="home color08">					 
+				<view class="home color08">
 					  <image :src="getImgUrl('static/image/index/user.png')" ></image>
 				</view>
 				<view class="grid-text">员工管理</view>
