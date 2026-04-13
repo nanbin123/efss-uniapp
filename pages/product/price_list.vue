@@ -13,11 +13,12 @@
 		</view>
 	</template>
 
-	<view class="content"  v-for="(item,index) in productList" :key="index">
-		<view class="left">
+	<view class="product"  v-for="(item,index) in productList" :key="index">
+		<!-- <view class="left">
 			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
 			<view class="left_text">点击添加图片</view>			
-		</view>
+		</view> -->
+		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 		<view class="right"> 
 			<view class="grid">
 				<text class="info">品名：{{item.productName}}</text>
@@ -87,9 +88,6 @@
 </script>
 
 <style scoped>
-/* ::-webkit-scrollbar {
-   display: none;
-} */
 
 .head {
 	height: 60px;
@@ -137,13 +135,16 @@
 	font-size: 18px;
 }
 
-.content{
+.product{
 	display: flex;
 	align-items: center;
-	background-color: #fff;
+	background-color: #fff; 
 	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+	padding: 2px 2px 2px 2px; 
+}
+.product .img{
+	width: 70px;
+	height: 80px;	
 }
 .left{
 	width: 20%;
