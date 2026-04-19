@@ -4,7 +4,7 @@
 		<view class="head">
 			<view class="search">
 				 <view class="same_search">
-					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
+					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
 				</view>
 				<navigator  class="more_search" url="">
 					<i class="iconfont">&#xe69b;</i>
@@ -56,30 +56,28 @@
 				productList:[],
 				pageNum: 1, // 当前页
 				pageSize: 10, // 每页条数				
-				 searchVal:""
+				searchVal:"",
+				searchProduct:{},
 			}
 		},
 		methods: {
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			},
-			queryList(pageNo, pageSize) {				
-				post("product/selectListProduct",{"pageNum":pageNo}).then(res =>{					
-					 this.$refs.paging.complete(res.rows);
+			refreshProductList(){
+				post("product/selectListProduct",this.searchProduct).then(res =>{
+					this.$refs.paging.complete(res.rows);
 				})
-			}
+			},
+			queryList(pageNo, pageSize) {
+				this.searchProduct.pageNum = pageNo;
+				this.refreshProductList();
+			},
 		},
 		watch:{
-			searchVal(val){
-				post("product/selectListProductPrice",{"pageNum":this.pageNum,"productNameOrType":val}).then(res =>{
-					this.totalCount = res.total
-					this.productList = res.rows
-					uni.hideLoading();
-					 if(this.totalCount == this.productList.length){					 
-					
-						
-					 }
-				})
+			searchVal(newVal, oldVal){
+				this.searchProduct.productNameOrType = newVal;
+				this.$refs.paging.reload();
 			}
 		},
 		onLoad(){
