@@ -76,7 +76,7 @@
 					this.productList = res.rows
 					uni.hideLoading();
 					 if(this.totalCount == this.productList.length){					 
-						 this.status = "noMore"
+					
 						
 					 }
 				})
