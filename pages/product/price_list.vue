@@ -12,32 +12,33 @@
 			</view>
 		</view>
 	</template>
-
-	<view class="product"  v-for="(item,index) in productList" :key="index">
-		<!-- <view class="left">
-			<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
-			<view class="left_text">点击添加图片</view>			
-		</view> -->
-		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-		<view class="right"> 
-			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
+	
+	<navigator class="content" v-for="(item,index) in productList" :url="'/pages/product/price_detail?id='+item.id">
+		<view class="product">
+			<!-- <view class="left">
+				<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
+				<view class="left_text">点击添加图片</view>			
+			</view> -->
+			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+			<view class="right"> 
+				<view class="grid">
+					<text class="info">品名：{{item.productName}}</text>
+					<text class="info">型号：{{item.type}}</text>
+				</view>
+				<view class="grid">
+					<text class="info" >尺寸：{{item.size}}</text>
+					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+				</view>
+				<view class="grid">				
+					<text class="info">颜色：{{item.color}}</text>
+					<text class="info">材质：{{item.texture}}</text>	
+				</view>
+				<view class="grid">
+					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 15px;">￥{{item.retailPrice}}</text></text>
+				</view>	
 			</view>
-			<view class="grid">
-				<text class="info" >尺寸：{{item.size}}</text>
-				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-			</view>
-			<view class="grid">
-				<text class="info">类别：{{item.productType}}</text>
-				<text class="info">颜色：{{item.color}}</text>				
-			</view>
-			<view class="grid">
-				<text class="info">材质：{{item.texture}}</text>			
-			    <text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-			</view>	
 		</view>
-	</view>
+	</navigator>
 
 </z-paging>
 
@@ -73,7 +74,7 @@
 				post("product/selectListProductPrice",{"pageNum":this.pageNum,"productNameOrType":val}).then(res =>{
 					this.totalCount = res.total
 					this.productList = res.rows
-					uni.hideLoading();				
+					uni.hideLoading();
 					 if(this.totalCount == this.productList.length){					 
 						 this.status = "noMore"
 						
@@ -166,16 +167,16 @@
 }
 .right{
 	width: 80%;
-	margin-left: 5px;
+	margin-left: 2px;
 }
 .grid {	
  	display: flex;	
-	line-height: 17px;
+	line-height: 20px;
 }
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 13px;
+   font-size: 15px;
    white-space: nowrap; /* 文字不换行 */
    overflow: hidden; /* 超出部分隐藏 */
    text-overflow: ellipsis; /* 以省略号形式显示 */
