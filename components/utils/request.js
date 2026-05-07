@@ -38,6 +38,7 @@ function uploadImg(url, files, formData) {
 				'Authorization': uni.getStorageSync("token"),
 				"Accept": "application/json"
 			},
+			formData: formData,
 			success(res) {
 				if (res.data) {
 					let resData = JSON.parse(res.data)
