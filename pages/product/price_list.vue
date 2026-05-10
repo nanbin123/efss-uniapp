@@ -91,7 +91,7 @@
 			}
 		},
 		onLoad(){
-
+			this.moreSearchStore.clearMoreSearchStore();
 		},
 	}
 </script>
