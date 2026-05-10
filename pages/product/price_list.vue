@@ -6,9 +6,9 @@
 				 <view class="same_search">
 					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="搜索品名或型号"/>
 				</view>
-				<navigator  class="more_search" url="">
+				<view class="more_search" @click="moreSearch()">
 					<i class="iconfont">&#xe69b;</i>
-				</navigator>
+				</view>
 			</view>
 		</view>
 	</template>
@@ -39,17 +39,13 @@
 			</view>
 		</view>
 	</navigator>
-
 </z-paging>
-
-
-
-
 
 </template>
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
@@ -60,9 +56,15 @@
 				searchProduct:{},
 			}
 		},
+		setup() {
+			const moreSearchStore= useMoreSearchStore();
+			return {moreSearchStore}
+		},
 		methods: {
-			getImgUrl(image){
-			   return this.BASEURL+image;
+			getProductList(){//高级查询
+				let product = this.moreSearchStore.moreSearch;				
+				this.searchProduct =  product;
+				this.$refs.paging.reload();
 			},
 			refreshProductList(){
 				post("product/selectListProduct",this.searchProduct).then(res =>{
@@ -72,6 +74,14 @@
 			queryList(pageNo, pageSize) {
 				this.searchProduct.pageNum = pageNo;
 				this.refreshProductList();
+			},
+			getImgUrl(image){
+			   return this.BASEURL+image;
+			},
+			moreSearch(){
+				uni.navigateTo({
+					url:'/pages/product/price_query'
+				}) 
 			},
 		},
 		watch:{

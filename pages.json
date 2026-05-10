@@ -269,7 +269,15 @@
 		        "navigationBarTitleText": "价格表",
 		        "enablePullDownRefresh": false
 		    }		    
-		} ,
+		},
+		{
+			"path" : "pages/product/price_query",
+			"style" :
+			{
+				"navigationBarTitleText": "产品筛选",
+				"enablePullDownRefresh": false
+			}			
+		},
 		{
 		    "path" : "pages/product/price_detail",
 		    "style" :                                                                                    
@@ -277,7 +285,7 @@
 		        "navigationBarTitleText": "价格表详情",
 		        "enablePullDownRefresh": false
 		    }		    
-		} ,
+		},
 		{
 		    "path" : "pages/product/product_add",
 		    "style" :                                                                                    

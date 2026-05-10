@@ -110,9 +110,9 @@
 			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}
-</script scoped>
+</script>
 
-<style>
+<style scoped>
 	.head {
 		height: 5px;
 		width: 100%;
