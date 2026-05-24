@@ -130,7 +130,7 @@
 							uni.showToast({
 								title: '出库成功',
 								icon: 'none',
-								duration: 20000
+								duration: 2000
 							})
 						}
 					})

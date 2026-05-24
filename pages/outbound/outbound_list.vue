@@ -5,8 +5,8 @@
 				<view class="status-search">	
 					<view class="completion-status">
 						<view  v-for="(item,index) in completionStatusList" 
-							class="normal-class" :class="{'active-class': nowIndex == index}" 
-							@click="changeCompletionStatus(index)">{{item}}
+							class="normal-class" :class="{'active-class': completionStatus == item}" 
+							@click="changeCompletionStatus(item)">{{item}}
 						</view>
 					</view>
 					<view class="search">
@@ -55,7 +55,7 @@
 	export default {
 		data() {
 			return {
-				nowIndex: 0,
+				completionStatus: '新单据',
 				completionStatusList:['新单据','未完成','已完成'],
 				outboundList:[],
 				searchOutbound:{},
@@ -63,8 +63,9 @@
 			}
 		},
 		methods: {
-			changeCompletionStatus(index){
-				this.nowIndex = index
+			changeCompletionStatus(completionStatus){
+				this.completionStatus = completionStatus;
+				this.$refs.paging.reload();
 			},
 			refreshOutboundList(){
 				post("outbound/selectOutbound",this.searchOutbound).then(res =>{
@@ -73,6 +74,7 @@
 			},
 			queryList(pageNo, pageSize) {
 				this.searchOutbound.pageNum = pageNo;
+				this.searchOutbound.completionStatus= this.completionStatus;
 				this.refreshOutboundList();
 			},
 			getImgUrl(image) {

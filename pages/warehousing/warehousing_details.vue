@@ -77,7 +77,7 @@ export default {
 	options: {styleIsolation: 'shared'},
 	data() {
 		return {
-			isEditable: true,
+			isEditable:true,
 			warehousingEntry:{warehousingEntryProductList:[]}
 		}
 	},
@@ -174,6 +174,7 @@ export default {
 				this.warehousingEntry.remark = res.data.remark;
 				let dataProduct = res.data.warehousingEntryProductList;
 				for (var i = 0; i < dataProduct.length; i++) {
+					// 已入库单产品数量
 					let receivedQuantity = dataProduct[i].receivedQuantity;
 					for (var j = 0; j < receivedQuantity; j++) {
 						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
@@ -181,6 +182,7 @@ export default {
 						warehousingEntryProduct.isEdit = true;
 						this.warehousingEntry.warehousingEntryProductList.push(warehousingEntryProduct)
 					}
+					// 未入库单产品数量
 					let unInventoryQuantity = dataProduct[i].inventoryQuantity - receivedQuantity;
 					for (var k = 0; k < unInventoryQuantity; k++) {
 						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
