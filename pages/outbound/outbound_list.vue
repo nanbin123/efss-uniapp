@@ -14,9 +14,9 @@
 							<input class="search_input" :style="'background-image:url('+getImgUrl('static/image/search.png')+')'"
 							v-model="searchVal" confirm-type="search" type="text" placeholder="搜索客户姓名或手机号"/>
 						</view>
-						<navigator  class="more_search" url="">
+						<view  class="more_search" @click="moreSearch()">
 							<i class="iconfont">&#xe69b;</i>
-						</navigator>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -32,12 +32,7 @@
 					<view class="info">记录日期:&nbsp;{{item.recordDate}}</view>
 					<view class="info">操&nbsp作&nbsp人&nbsp:&nbsp;{{item.handledBy}}</view>					
 				</view>
-				<view class="item">订&nbsp单&nbsp号&nbsp:&nbsp;{{item.orderNumber}}</view>
-				
-				<view class="personal-name">
-					
-				</view>
-			</view>		
+				<view class="item">订&nbsp单&nbsp号&nbsp:&nbsp;{{item.orderNumber}}</view>			</view>		
 		</navigator>
 		
 		<template #bottom>
@@ -52,6 +47,7 @@
 
 <script>
 	import {get,post} from "../../components/utils/request.js"
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
@@ -62,6 +58,12 @@
 				searchVal:''
 			}
 		},
+		setup() {
+			const moreSearchStore = useMoreSearchStore();
+			return {
+				moreSearchStore
+			}
+		 },
 		methods: {
 			changeCompletionStatus(completionStatus){
 				this.completionStatus = completionStatus;
@@ -73,9 +75,20 @@
 				})
 			},
 			queryList(pageNo, pageSize) {
+				let outbound = this.moreSearchStore.moreSearch;				
+				this.searchOutbound =  outbound;
 				this.searchOutbound.pageNum = pageNo;
+				this.searchOutbound.customerNameOrPhone = this.searchVal;
 				this.searchOutbound.completionStatus= this.completionStatus;
 				this.refreshOutboundList();
+			},
+			getOutbountList(){//高级查询
+				this.$refs.paging.reload();
+			},
+			moreSearch(){
+				uni.navigateTo({
+					url:'/pages/outbound/outbound_query'
+				})
 			},
 			getImgUrl(image) {
 				return this.BASEURL + image;
