@@ -113,8 +113,7 @@
 							}else{
 								_this.product[key]="";
 							} 
-						})
-						alert(JSON.stringify(this.product))
+						})	
 						uni.showToast({
 							title: '添加产品成功',
 							icon: 'none',

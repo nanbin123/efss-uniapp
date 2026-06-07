@@ -36,7 +36,7 @@
 			</view>
 			<view class="product_number">
 				<checkbox-group  @change="onCheckchange($event,item)">
-					<checkbox value="selected" :checked="item.selected"/>
+					<checkbox value="selected" @click.stop :checked="item.selected"/>
 				</checkbox-group>
 			</view>
 		</view>

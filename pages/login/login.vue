@@ -72,8 +72,7 @@
 						});
 					}
 				},
-				fail(res) {
-					console.log(JSON.stringify(res))
+				fail(res) {					
 					uni.showToast({
 						title: '请求超时，请重试',
 						icon: 'none'

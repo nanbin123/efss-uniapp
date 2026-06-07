@@ -150,9 +150,9 @@ export default {
 						if (res.tempFiles.length > 0) {
 							let tempFilePaths = [];
 							for (var i = 0; i < res.tempFilePaths.length; i++) {
-								uploadFiles("product/insertImage",res.tempFiles[i].path).then(res =>{
+								uploadFiles("product/insertImage",res.tempFiles[i].path,{productId:this.product.id}).then(res =>{
 									if(200 == res.code){
-										let that = this;											
+										let that = this;
 										that.product.productImages = that.product.productImages.concat(res.data);
 										uni.hideLoading();
 									}
@@ -278,7 +278,7 @@ export default {
 .product-image-add{
 	width: 80px;
 	height: 80px;
-	margin-top: 10px;
+	margin-top: 23px;
 	margin-left: 20px;
 }
 .product-image-item{
@@ -287,11 +287,11 @@ export default {
 	margin-right:15px;
 	flex: 0 calc(33.3% - 15px);	
 }
-.product-image-item{
+/* .product-image-item{
 	display: block;
 	width: 100%;
 	height: 100px;
-}
+} */
 .product-image-remove{
 	background-color: #D1372C;
 	color: #fff;
