@@ -34,13 +34,13 @@
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
 			<text class="title">客户电话</text>
 			<text class="iconfont">&#xe639;</text>
-			<input :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.phone" :disabled="isEditable"  confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户电话' ">
+			<input :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.customerPhone" :disabled="isEditable"  confirm-type="next" type="text" placeholder-class="input-placeholder"  :placeholder="isEditable ? '' : '请输入客户电话' ">
 		</view>
 		<view class="item cusomer_address">
 			<image class="img" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
 			<text class="title">客户地址</text>
 			<text class="iconfont">&#xe639;</text>
-			<input  :focus='addressFocus'  @blur='addressFocus = false'  v-model="orderForm.address" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请客户输入地址' ">
+			<input  :focus='addressFocus'  @blur='addressFocus = false'  v-model="orderForm.customerAddress" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" :placeholder="isEditable ? '' : '请客户输入地址' ">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
@@ -176,10 +176,10 @@ export default {
 		},
 		// 校验电话号码
 		checkPhone() {
-			if("" !=this.orderForm.phone && undefined != this.orderForm.phone){
+			if("" !=this.orderForm.customerPhone && undefined != this.orderForm.customerPhone){
 				this.phoneFocus = false
 				const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
-				this.phoneError = !reg.test(this.orderForm.phone);		  
+				this.phoneError = !reg.test(this.orderForm.customerPhone);		  
 				if (this.phoneError) {
 					uni.showToast({
 					  title: '请输入有效的电话号码',
@@ -209,7 +209,7 @@ export default {
 					});
 					return
 				}			
-				if(!this.orderForm.phone){
+				if(!this.orderForm.customerPhone){
 					 this.$nextTick(() => {
 						   this.phoneFocus = true
 					 })				
@@ -225,7 +225,7 @@ export default {
 					});
 					return;
 				}
-				if(!this.orderForm.address){
+				if(!this.orderForm.customerAddress){
 					 this.$nextTick(() => {
 						   this.addressFocus = true
 					 })

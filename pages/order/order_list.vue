@@ -105,7 +105,7 @@
 			}
 		},
 		onLoad() {
-
+			this.moreSearchStore.clearMoreSearchStore();
 		}
 	}
 

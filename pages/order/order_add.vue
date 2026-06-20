@@ -28,13 +28,13 @@
 			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
 			<text class="title">客户电话</text>
 			<text class="iconfont">&#xe639;</text>
-			<input  :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.phone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
+			<input  :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.customerPhone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
 		</view>
 		<view class="item cusomer_address">
 			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
 			<text class="title">客户地址</text>
 			<text class="iconfont">&#xe639;</text>
-			<input :focus='addressFocus'  @blur='addressFocus = false' v-model="orderForm.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
+			<input :focus='addressFocus'  @blur='addressFocus = false' v-model="orderForm.customerAddress" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
 		</view>
 		<view class="item">
 			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
@@ -178,10 +178,10 @@ export default {
 		},
 		// 校验电话号码
 		checkPhone() {
-		  if("" !=this.orderForm.phone && undefined != this.orderForm.phone){
+		  if("" !=this.orderForm.customerPhone && undefined != this.orderForm.customerPhone){
 			  this.phoneFocus = false
 			  const reg = /^(1[3-9]\d{9})|(0\d{2,3}-?\d{7,8})$/;
-			  this.phoneError = !reg.test(this.orderForm.phone);		  
+			  this.phoneError = !reg.test(this.orderForm.customerPhone);		  
 			  if (this.phoneError) {
 			  			uni.showToast({
 			  			  title: '请输入有效的电话号码',
@@ -210,7 +210,7 @@ export default {
 				});
 				return
 			}			
-			if(!this.orderForm.phone){
+			if(!this.orderForm.customerPhone){
 				 this.$nextTick(() => {
 				       this.phoneFocus = true
 				 })				
@@ -226,7 +226,7 @@ export default {
 				});
 				return;
 		  }
-			if(!this.orderForm.address){
+			if(!this.orderForm.customerAddress){
 				 this.$nextTick(() => {
 				       this.addressFocus = true
 				 })
@@ -259,7 +259,7 @@ export default {
 			})
 			orderForm.orderProductList = productInfo;
 			post("order/insertOrderForm",JSON.stringify(orderForm),'application/json').then(res =>{
-				if(200 == res.code){					 
+				if(200 == res.code){
 					 uni.showToast({
 						title: '添加销售订单成功',
 						icon: 'none',
@@ -317,8 +317,8 @@ export default {
 				 let customer = this.transferOrderStore.customer;
 				 this.orderForm.customerName = customer.customerName;
 				 this.orderForm.sex = customer.sex;
-				 this.orderForm.phone = customer.phone;
-			     this.orderForm.address = customer.address;
+				 this.orderForm.customerPhone = customer.phone;
+			     this.orderForm.customerAddress = customer.address;
 				 this.orderForm.customerId = customer.id;
 				 this.orderForm.orderProductList = customer.customerProducts;
 			 }
