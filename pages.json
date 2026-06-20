@@ -7,7 +7,6 @@
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
         },
 		{
 			"path": "pages/index/index",
@@ -22,7 +21,6 @@
 		        "navigationBarTitleText": "产品分析",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/order/order_add",
@@ -41,7 +39,6 @@
 		        "navigationBarTitleText": "订单列表",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/order/order_query",
@@ -90,7 +87,7 @@
 		},
 		{
 		    "path" : "pages/customer/customer_product",
-		    "style" :                                                                                    
+		    "style" : 
 		    {
 		        "navigationBarTitleText": "选择预购产品",
 		        "enablePullDownRefresh": false
@@ -98,8 +95,17 @@
 		    
 		},	
 		{
+		    "path" : "pages/customer/customer_product_query",
+		    "style" : 
+		    {
+		        "navigationBarTitleText": "产品筛选",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "pages/customer/customer_query",
-		    "style" :                                                                                    
+		    "style" :  
 		    {
 		        "navigationBarTitleText": "意向客户筛选",
 		        "enablePullDownRefresh": false
@@ -108,7 +114,7 @@
 		},	
 		{
 		    "path" : "pages/customer/customer_add",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "添加客户",
 		        "enablePullDownRefresh": false
@@ -181,78 +187,69 @@
 		        "navigationBarTitleText": "添加销售出货",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/outbound/import_order",
-		    "style" :                                                                                    
+		    "style" : 
 		    {
 		        "navigationBarTitleText": "导入订单",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/outbound/outbound_query",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "销售出货查询",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/warehousing/warehousing_list",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "入库单",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/warehousing/warehousing_details",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "入库单明细",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/warehousing/warehousing_add",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "添加入库单",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/warehousing/warehousing_product",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "选择产品",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/warehousing/warehousing_query",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "入库单筛选",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 			"path" : "pages/product/product_list",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "产品查询",
 				"enablePullDownRefresh": false
-				
 			}
 		},
 		{
@@ -261,7 +258,7 @@
 			{
 				"navigationBarTitleText": "产品筛选",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 			"path" : "pages/product/product_detail",
@@ -269,15 +266,15 @@
 			{
 				"navigationBarTitleText": "产品详情",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 		    "path" : "pages/product/price_list",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "价格表",
 		        "enablePullDownRefresh": false
-		    }		    
+		    }
 		},
 		{
 			"path" : "pages/product/price_query",
@@ -285,73 +282,71 @@
 			{
 				"navigationBarTitleText": "产品筛选",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 		    "path" : "pages/product/price_detail",
-		    "style" :                                                                                    
+		    "style" :               
 		    {
 		        "navigationBarTitleText": "价格表详情",
 		        "enablePullDownRefresh": false
-		    }		    
+		    }
 		},
 		{
 		    "path" : "pages/product/product_add",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "添加产品",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
             "path" : "pages/product/category",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "产品类别",
                 "enablePullDownRefresh": false
             }
-            
         },
 		{
 			"path" : "pages/user/user_list",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "员工管理",
 				"enablePullDownRefresh": false
-			}			
+			}	
 		},
 		{
 			"path" : "pages/user/user_add",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "新增员工",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 			"path" : "pages/user/user_detail",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "员工明细",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 			"path" : "pages/user/user_query",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "员工筛选",
 				"enablePullDownRefresh": false
-			}			
+			}
 		},
 		{
 			"path" : "pages/test/test",
-			"style" :                                                                                    
+			"style" :
 			{
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
-			}			
+			}
 		}      
     ],
 	"globalStyle": {

@@ -1,14 +1,14 @@
 <template>
-<z-paging  ref="paging" v-model="productList" @query="refreshData">
+<z-paging  ref="paging" v-model="productList" @query="queryList">
 	<template #top>
 		<view class="head">
 			<view class="search">
 				 <view class="same_search">
 					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
 				</view>
-				<navigator  class="more_search" url="">
+				<view class="more_search" @click="moreSearch()">
 					<i class="iconfont">&#xe69b;</i>
-				</navigator>
+				</view>
 			</view>
 		</view>
 	</template>
@@ -64,10 +64,12 @@
 <script>
 	import {get,post} from "../../components/utils/request.js"
 	import useProductStore from '@/store/modules/product.js' 
+	import useMoreSearchStore from '@/store/modules/moreSearch.js'
 	export default {
 		data() {
 			return {
 				productList: [],
+				searchProduct:{},
 				searchVal: "",
 				totalMoney: 0,
 				totalNumber:0,
@@ -76,17 +78,23 @@
 		},
 		setup() {
 			const productStore = useProductStore();
-			return {productStore }
+			const moreSearchStore= useMoreSearchStore();
+			return {productStore,moreSearchStore}
 		 },
 		methods: {
-			refreshData(pageNo, pageSize){
-				post("customer/selectListCustomerProduct", {"pageNum": pageNo}).then(res => {
+			getProductList(){//高级查询
+				let product = this.moreSearchStore.moreSearch;				
+				this.searchProduct =  product;
+				this.$refs.paging.reload();
+			},
+			refreshProductList(){
+				post("customer/selectListCustomerProduct", this.searchProduct).then(res => {
 					if (res.code == 200) {
 						let productData = res.rows;
 						var products = this.productStore.products;
 						for (var i = 0; i < productData.length; i++) {
 							let productId = productData[i].productId;
-							let newProducts = products.filter(item => item.productId === productId);
+							let newProducts = products.filter(item => productId && item.productId === productId);
 							let isSelected = newProducts.length>0?true:false
 							productData[i].selected = isSelected;
 							if(isSelected){
@@ -96,6 +104,10 @@
 						this.$refs.paging.complete(res.rows);				
 					}
 				})
+			},
+			queryList(pageNo, pageSize) {
+				this.searchProduct.pageNum = pageNo;
+				this.refreshProductList();
 			},
 			selectProduct(item){
 				item.selected = !item.selected;
@@ -138,36 +150,20 @@
 					})
 				}
 			},
+			moreSearch(){
+				uni.navigateTo({
+					url:'/pages/customer/customer_product_query'
+				}) 
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
-			},
-			onReachBottom() {
-				if (this.totalCount > this.productList.length) {
-					this.pageNum++;
-					post("customer/selectListCustomerProduct", {"pageNum": this.pageNum}).then(res => {
-						this.productList = this.productList.concat(res.rows)
-					})
-				} else if (this.totalCount == this.productList.length) {
-					uni.showToast({
-					   title: '没有更多数据了',
-					   duration: 3000,
-					   icon: 'none'
-					});
-				}
-			},
+			}
 		},
 
 		watch: {
-			searchVal(val) {
-				this.pageNum = 1;
-				post("product/selectListCustomerProduct",{"pageNum": this.pageNum,"productNameOrType": val}).then(res => {
-					this.totalCount =  res.data.total
-					this.productList = res.data.products;
-					uni.hideLoading();
-					if (this.totalCount == this.productList.length) {
-						this.status = "noMore"
-					}
-				})
+			searchVal(newVal, oldVal){
+				this.searchProduct.productName = newVal;
+				this.$refs.paging.reload();
 			}
 		},
 		onShow() {

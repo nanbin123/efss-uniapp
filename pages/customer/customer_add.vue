@@ -146,7 +146,7 @@
 				})
 			},
 			getCustomerProduct(){
-				let products = JSON.stringify(this.productStore.products);
+				let products = JSON.stringify(this.productStore.products);				
 				this.customer.customerProducts = JSON.parse(products);
 			},
 			addCustomerProduct(){
