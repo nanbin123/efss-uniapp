@@ -160,7 +160,6 @@ export default {
 		searchVal(newVal, oldVal) {
 			this.searchProduct.productName = newVal;
 			this.$refs.paging.reload();
-			
 		}
 	},
 	onShow(option){

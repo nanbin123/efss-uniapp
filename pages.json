@@ -233,6 +233,14 @@
 		    }
 		},
 		{
+		    "path" : "pages/warehousing/warehousing_product_query",
+		    "style" :
+		    {
+		        "navigationBarTitleText": "产品筛选",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
 		    "path" : "pages/warehousing/warehousing_query",
 		    "style" :
 		    {

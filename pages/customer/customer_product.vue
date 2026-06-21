@@ -176,6 +176,9 @@
 			this.totalMoney = products.reduce((accumulator, currentObject) => {
 			   return accumulator + currentObject.retailPrice * currentObject.number;
 			}, 0);
+		},
+		onLoad() {
+			this.moreSearchStore.clearMoreSearchStore();
 		}
 	}
 </script>

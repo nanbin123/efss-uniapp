@@ -7,9 +7,9 @@
 				 <view class="same_search">
 					<input class="search_input" :style="'backgroundImage:url('+getImgUrl('static/image/search.png')+')'"  v-model="searchVal" confirm-type="search" type="text" placeholder="输入货品名称查找"/>
 				</view>
-				<navigator  class="more_search" url="">
+				<view  class="more_search" @click="moreSearch()">
 					<i class="iconfont">&#xe69b;</i>
-				</navigator>
+				</view>
 			</view>
 		</view>
 	 </template>
@@ -65,7 +65,8 @@
 
 <script>
 import {get,post} from "../../components/utils/request.js"
-import useProductStore from '@/store/modules/product.js' 
+import useProductStore from '@/store/modules/product.js'
+import useMoreSearchStore from '@/store/modules/moreSearch.js'
 export default {
 	data() {
 		return {
@@ -78,10 +79,16 @@ export default {
 		}
 	},
 	setup() {
-		const productStore = useProductStore();				
-		return { productStore } 
+		const productStore = useProductStore();
+		const moreSearchStore= useMoreSearchStore();
+		return { productStore,moreSearchStore} 
 	 },
 	methods: {
+		getProductList(){//高级查询
+			let product = this.moreSearchStore.moreSearch;				
+			this.searchWarehousingProduct = product;
+			this.$refs.paging.reload();
+		},
 		refreshWarehousingProductList(){
 			post("warehousing/selectListWarehousingEntryProduct", this.searchWarehousingProduct).then(res => {
 				if (res.code == 200) {
@@ -102,7 +109,6 @@ export default {
 		},
 		queryList(pageNo, pageSize) {
 			this.searchWarehousingProduct.pageNum = pageNo;
-			this.searchWarehousingProduct.productNameOrType = this.searchVal;
 			this.refreshWarehousingProductList();
 		},
 		selectProduct(item){
@@ -119,7 +125,7 @@ export default {
 				this.add(item);
 			 }else if(item.selected === false){
 				this.subtraction(item);
-			 } 
+			} 
 		},
 		subtraction(item) {
 			item.inventoryQuantity=0;
@@ -144,12 +150,18 @@ export default {
 				})
 			}
 		},
+		moreSearch(){
+			uni.navigateTo({
+				url:'/pages/warehousing/warehousing_product_query'
+			}) 
+		},
 		getImgUrl(image){
 		   return this.BASEURL+image;
 		}
 	},
 	watch: {
- 		searchVal(val) {
+ 		searchVal(newVal, oldVal) {
+			this.searchWarehousingProduct.productName = newVal;
 			this.$refs.paging.reload()
 		}
 	},
@@ -163,6 +175,9 @@ export default {
 		this.totalMoney = products.reduce((accumulator, currentObject) => {
 		   return Number(accumulator) + Number(currentObject.retailPrice) * Number(currentObject.inventoryQuantity);
 		}, 0); 
+	},
+	onLoad() {
+		this.moreSearchStore.clearMoreSearchStore();
 	}
 }
 </script>

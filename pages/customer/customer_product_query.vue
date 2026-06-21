@@ -47,19 +47,7 @@
 	export default {
 		data() {
 			return {
-				productForm: {
-					productName: "",
-					type: "",
-					size: "",
-					production: "",
-					productType: "",
-					color: "",
-					texture: "",
-					stock: "",
-					retailPrice: "",
-					purchasePrice: "",
-					productNameOrType: ""
-				}
+				productForm: {}
 			}
 		},
 		setup() {
@@ -95,7 +83,7 @@
 				return typeof str === 'undefined' || '' === str;
 			}
 		},
-		onShow() {			
+		onLoad() {
 			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}

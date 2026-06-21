@@ -83,8 +83,7 @@
 				return typeof str === 'undefined' || '' === str;
 			}
 		},
-		onLoad() {
-			alert(JSON.stringify(this.moreSearchStore.moreSearch))
+		onLoad() {			
 			this.productForm = this.moreSearchStore.moreSearch;
 		}
 	}
