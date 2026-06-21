@@ -2,7 +2,7 @@
 	"pages": [
 		{
             "path" : "pages/login/login",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
@@ -16,7 +16,7 @@
 		},
 		{
 		    "path" : "pages/product/product_analysis",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "产品分析",
 		        "enablePullDownRefresh": false
@@ -24,17 +24,16 @@
 		},
 		{
 		    "path" : "pages/order/order_add",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "销售订单",
 		        "enablePullDownRefresh": false,
 				"onReachBottomDistance": 200
 		    }
-		    
 		},
 		{
 		    "path" : "pages/order/order_list",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "订单列表",
 		        "enablePullDownRefresh": false
@@ -42,75 +41,75 @@
 		},
 		{
 		    "path" : "pages/order/order_query",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "销售订单筛选",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/order/order_deatil",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "订单详情",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 		    "path" : "pages/order/order_product",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "选择产品",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
-		    "path" : "pages/customer/customer_detail",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "客户详情",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},	
-		{
-		    "path" : "pages/customer/customer_list",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "客户列表",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},
-		{
-		    "path" : "pages/customer/customer_product",
-		    "style" : 
-		    {
-		        "navigationBarTitleText": "选择预购产品",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		},	
-		{
-		    "path" : "pages/customer/customer_product_query",
+		    "path" : "pages/order/order_product_query",
 		    "style" : 
 		    {
 		        "navigationBarTitleText": "产品筛选",
 		        "enablePullDownRefresh": false
 		    }
-		    
+		},
+		{
+		    "path" : "pages/customer/customer_detail",
+		    "style" :
+		    {
+		        "navigationBarTitleText": "客户详情",
+		        "enablePullDownRefresh": false
+		    }
+		},	
+		{
+		    "path" : "pages/customer/customer_list",
+		    "style" :
+		    {
+		        "navigationBarTitleText": "客户列表",
+		        "enablePullDownRefresh": false
+		    }
+		},
+		{
+		    "path" : "pages/customer/customer_product",
+		    "style" :
+		    {
+		        "navigationBarTitleText": "选择预购产品",
+		        "enablePullDownRefresh": false
+		    }
+		},	
+		{
+		    "path" : "pages/customer/customer_product_query",
+		    "style" :
+		    {
+		        "navigationBarTitleText": "产品筛选",
+		        "enablePullDownRefresh": false
+		    }
 		},
 		{
 		    "path" : "pages/customer/customer_query",
-		    "style" :  
+		    "style" :
 		    {
 		        "navigationBarTitleText": "意向客户筛选",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},	
 		{
 		    "path" : "pages/customer/customer_add",
@@ -119,24 +118,22 @@
 		        "navigationBarTitleText": "添加客户",
 		        "enablePullDownRefresh": false
 		    }
-		    
-		},		
+		},
 		{
 		    "path" : "pages/profitLoss/index",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "盈亏表",
 		        "enablePullDownRefresh": false
-		    }		    
-		} ,
+		    }
+		},
 		{
 		    "path" : "pages/salesKanban/sales_kanban_list",
-		    "style" :                                                                                    
+		    "style" :
 		    {
 		        "navigationBarTitleText": "销售看板",
 		        "enablePullDownRefresh": false
 		    }
-		    
 		},
 		{
 			"path": "pages/receipt/receipt_add",
@@ -164,16 +161,15 @@
 		},
         {
             "path" : "pages/outbound/outbound_list",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "销售出货",
                 "enablePullDownRefresh": false
             }
-            
         }
         ,{
             "path" : "pages/outbound/outbound_details",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "销售出货明细",
                 "enablePullDownRefresh": false
