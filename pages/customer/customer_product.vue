@@ -15,7 +15,9 @@
 	
 
 	<view class="product" v-for="(item,index) in productList" :key="index">
-		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
+		<!-- <image class="img" :src="getImgUrl('static/image/茶几.png')"></image> -->
+		<image class="img" :src="getProductImg(item)" mode="aspectFill" 
+			@click="previewImage(item)"></image>
 		<view class="right" @click="selectProduct(item)">
 			<view class="grid">
 				<text class="info">品名：{{item.productName}}</text>
@@ -82,6 +84,31 @@
 			return {productStore,moreSearchStore}
 		 },
 		methods: {
+			//获取商品第一张图片（空数组时显示默认图）
+			getProductImg(item) {
+			  if (item.productImages && item.productImages.length > 0) {
+			    let url = item.productImages[0].productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  }
+			  return this.getImgUrl('static/image/茶几.png')
+			},
+			// 点击放大预览，支持左右滑动切换所有图片
+			previewImage(item) {
+			  if (!item.productImages || item.productImages.length === 0) {
+			    uni.showToast({ title: '暂无更多图片', icon: 'none' })
+			    return
+			  }
+			  const urls = item.productImages.map(img => {
+			    let url = img.productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  })
+			    uni.previewImage({
+			      current: 0,        // 从第一张开始
+			      urls: urls,        // 所有图片地址
+			      indicator: 'number', // 显示 1/3 数字指示器
+			      loop: true         // 循环切换
+			    })
+			  },
 			getProductList(){//高级查询
 				let product = this.moreSearchStore.moreSearch;				
 				this.searchProduct =  product;

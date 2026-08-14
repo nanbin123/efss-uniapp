@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-easyinput": "../../uni_modules/uni-easyinput_1.1.9/components/uni-easyinput/uni-easyinput"
+  }
+}

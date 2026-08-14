@@ -1,0 +1,177 @@
+
+.head.data-v-7f77e776{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+}
+.item.data-v-7f77e776{
+	display: flex;	
+	padding: 8px 0;
+	border-bottom: 1px solid #f1f1f1ff;	
+	align-items: center;
+	background-color: #fff;
+}
+.item .img.data-v-7f77e776{
+	margin-left: 2px;
+	width: 20px;
+	height: 20px;
+}
+.item .title.data-v-7f77e776{
+	margin-left: 1px;
+	font-size: 15px;
+	color: #333;
+	white-space: nowrap;
+	text-rendering: optimizeLegibility;
+}
+.item .iconfont.data-v-7f77e776{
+	color: red;	
+	font-size: 12px;
+	margin-left: -5px;
+}
+.item input.data-v-7f77e776{
+	flex-grow: 1;
+	padding-right: 12px;
+	text-align: right;	
+	text-rendering: optimizeLegibility;
+}
+.item .input-placeholder.data-v-7f77e776{
+	font-size: 15px;
+	text-align: right;
+	color: #aaa;
+	text-rendering: optimizeLegibility;
+}
+
+/* 客户性别 */
+.gender.data-v-7f77e776{
+	margin-left: auto;
+	padding-right: 15px;
+}
+.data-v-7f77e776 .gender .radio-group svg {
+	display: none  !important;
+}
+.data-v-7f77e776 .gender .uni-radio-input {
+	border-radius: 0 !important;
+	width: 50px !important;
+	height: 25px !important;
+	margin-right:0 !important;
+	border-color: #38c1b9 !important;
+}
+.data-v-7f77e776 .gender .radio-group .radio1,.radio2.data-v-7f77e776{
+	position: relative !important;
+}
+.data-v-7f77e776 .gender .radio-group .radio1 .uni-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+.data-v-7f77e776 .gender .radio-group .radio2  .uni-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
+}
+.radio-text.data-v-7f77e776{
+	position: absolute;
+	left: 20px;
+	top: 2px;
+	font-size: 12px;	
+	line-height: 25px;
+}
+/*适用于 微信小程序*/
+.data-v-7f77e776 .gender .wx-radio-input {
+	border-radius: 0 !important;
+	width: 50px !important;
+	height: 25px !important;
+	margin-right:0 !important;
+	border-color: #38c1b9 !important;
+}
+.data-v-7f77e776 .gender .radio-group .radio1 .wx-radio-input {	
+	border-right: 0 !important;
+	border-top-left-radius: 8% !important;
+	border-bottom-left-radius:8% !important;
+}
+.data-v-7f77e776 .gender .radio-group .radio2  .wx-radio-input {	
+	border-top-right-radius: 8% !important;
+	border-bottom-right-radius:8% !important;
+}
+.data-v-7f77e776 .gender .wx-radio-input.wx-radio-input-checked::before{
+ font-size:0; /* 对勾大小 */
+}
+.starLen.data-v-7f77e776{
+	display: flex;
+	margin-left: auto;
+}
+.star.data-v-7f77e776{
+	width: 17px;
+	height: 17px;
+	padding: 0 17px;
+}
+.product-count.data-v-7f77e776{
+	display: flex;
+	justify-content: space-between;
+	font-size: 15px;
+	padding: 10px 20px;
+	border-bottom: 2px solid #efeef3ff;
+	margin-bottom: 5px;
+}
+.product.data-v-7f77e776{
+	display: flex;	
+	align-items: center;
+	background-color: #fff;
+	border-bottom: 1px solid #cbcbcbff;
+	padding-bottom: 10rpx;
+	margin-bottom: 15rpx;
+}
+.product .img.data-v-7f77e776{
+	width: 80px;
+	height: 80px;
+}
+.product-content.data-v-7f77e776{
+	flex: 1;
+	margin-left: 5px;
+}
+.grid.data-v-7f77e776 {	
+ 	display: flex;
+ 	line-height: 20px;
+}
+.info.data-v-7f77e776 {
+   width: 50%;
+   color: #030303ff;
+   font-size: 14px;
+   color: #333;
+   white-space: nowrap;  
+   overflow: hidden; /* 超出部分隐藏 */
+   text-overflow: ellipsis; /* 显示省略号 */
+   text-rendering: optimizeLegibility;
+}
+.delete.data-v-7f77e776{
+	position: absolute;
+	right: 10px;
+}
+.delete .iconfont.data-v-7f77e776{
+	color: #02a5e6ff;	
+	font-size: 20px;
+}
+.add_img.data-v-7f77e776 {
+	position: relative;
+    border: 1px solid #CCCCCC;    
+    width: 40px;
+	height: 40px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: 20px;
+}
+.add_img image.data-v-7f77e776 {
+    width: 35px;
+    height: 35px;
+	margin-top: 3px;
+}
+.footer.data-v-7f77e776{
+	height: 30px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 30px;
+	background-color: #38c1b9;	
+	color: #daf2fbff;
+	width: 100%;
+}
+
+

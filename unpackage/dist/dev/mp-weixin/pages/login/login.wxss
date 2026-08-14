@@ -1,0 +1,63 @@
+
+.loginBox.data-v-e4e4508d{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-60%);
+    width: 90%;
+    border-radius: 20rpx;
+    padding: 60rpx;
+    box-sizing: border-box;
+}
+.welcome.data-v-e4e4508d{
+    color:rgb(66,157,250);
+	text-align: center;
+    font-size: 25px;
+    letter-spacing: 5px;
+    margin-bottom:35px;
+}
+.ipt.data-v-e4e4508d{
+    height: 86rpx;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 40rpx;
+    background-color: #f5f5f5;
+    border-radius: 10rpx;
+    padding-left: 10rpx;
+}
+.ipt input.data-v-e4e4508d{
+    margin-left: 15px;
+    font-size: 15px;
+}
+.ipt input.data-v-e4e4508d{
+    margin-left: 20rpx;
+}
+.forgetPwd.data-v-e4e4508d{
+    margin-top: 20px;
+    font-size: 15px;
+    color: #b5b5b5;
+    text-align: end;
+    padding:0 10rpx;
+    display: flex;
+    justify-content: space-between;
+}
+.login.data-v-e4e4508d{
+    margin-top: 20px;
+    line-height: 50px;
+    text-align: center;
+    background: rgb(66,157,250);
+    border-radius: 20px;
+    color: #fff;
+    margin-top: 35px;
+}
+.tip.data-v-e4e4508d{
+    text-align: center;
+    font-size: 28rpx;
+    position: fixed;
+    bottom: 50rpx;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #f4f4f4;
+}
+

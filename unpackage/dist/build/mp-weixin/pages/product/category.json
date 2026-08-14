@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "产品类别",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "z-paging": "../../uni_modules/z-paging/components/z-paging/z-paging",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

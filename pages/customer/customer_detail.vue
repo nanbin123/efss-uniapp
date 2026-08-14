@@ -101,7 +101,8 @@
 	</view>
 	
 	<view class="product" v-for="(item, index) in customer.customerProducts">		
-		<image  class="product_img" :src="getImgUrl('static/image/茶几.png')"></image>
+		<image class="product_img" :src="getProductImg(item)" mode="aspectFill"
+			@click="previewImage(item)"></image>
 		<view class="product-content"  @click="openPopupProductNumber(item)">
 			<view class="grid">
 				<view class="info">品名：{{item.productName}}</view>
@@ -256,6 +257,32 @@
 			return { productStore,transferOrderStore } 
 		 },
 		methods: {
+			
+			//获取商品第一张图片（空数组时显示默认图）
+			getProductImg(item) {
+			  if (item.productImages && item.productImages.length > 0) {
+			    let url = item.productImages[0].productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  }
+			  return this.getImgUrl('static/image/茶几.png')
+			},
+			// 点击放大预览，支持左右滑动切换所有图片
+			previewImage(item) {
+			  if (!item.productImages || item.productImages.length === 0) {
+			    uni.showToast({ title: '暂无更多图片', icon: 'none' })
+			    return
+			  }
+			  const urls = item.productImages.map(img => {
+			    let url = img.productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  })
+			    uni.previewImage({
+			      current: 0,        // 从第一张开始
+			      urls: urls,        // 所有图片地址
+			      indicator: 'number', // 显示 1/3 数字指示器
+			      loop: true         // 循环切换
+			    })
+			  },
 			// 校验电话号码
 			checkPhone() {
 			  this.phoneFocus = false
@@ -324,7 +351,7 @@
 					let customerForm=JSON.parse(JSON.stringify(this.customer));
 					let customerProductList = customerForm.customerProducts.map(item =>{
 						return {productId: item.productId,number:item.number}
-					});	
+					});
 					customerForm.customerProducts = customerProductList;					
 					post("customer/updateCustomerById",JSON.stringify(this.customer),'application/json').then(res =>{
 						if(200 == res.code){
@@ -493,6 +520,7 @@
 			},
 			getCustomerProduct(){
 				let products = JSON.stringify(this.productStore.products);
+				console.log(JSON.stringify(products))
 				this.customer.customerProducts = JSON.parse(products);
 			},
 			addCustomerProduct(){
@@ -560,7 +588,7 @@
 			this.customerId = option.id;
 			post("customer/selectCustomerById",{"id":this.customerId}).then(res =>{
 				if(200 == res.code){
-					this.customer = res.data;				
+					this.customer = res.data || {};
 				}
 			}) 
 		},

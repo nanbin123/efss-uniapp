@@ -1,0 +1,139 @@
+
+.swiper-wrap {
+		position: relative;
+		overflow: hidden;
+		transform: translateY(0);
+		padding: 0 10px;
+}
+.swiper {
+		height: 270rpx;
+		background-color: #f3f4f6;
+}
+.swiper-notice{
+		position: absolute;
+		top: 30rpx;
+		left: 45%;		
+		z-index: 999;
+		font-size: 22px;
+		color: #eaf2ffff;
+		font-family: cursive
+}
+.swiper-text{
+		position: absolute;
+		top: 100rpx;
+		left: 5%;
+		right: 5%;
+		z-index: 999;
+		font-size: 20px;
+		line-height: 1.2;
+		color: #eaf2ffff;
+		font-family: cursive
+}
+.swiper-image {
+		width: 100%;
+		will-change: transform;
+		height: 100%;		
+		display: block;		
+		pointer-events: none;
+		border-radius: 12rpx;
+}
+.workbench-title{
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333333;
+	padding: 15px 30rpx;
+}
+.u-grid {
+	width: 100%;	
+	position: relative;
+	box-sizing: border-box;
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.u-grid-item {
+	width: 25%;
+	box-sizing: border-box;
+	background: #fff;	
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	flex-direction: column;
+	position: relative;
+	float: left;
+}
+.u-grid-item-box {
+	padding: 30rpx 0;	
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	display: flex;
+	width: 100%;
+	height: 100%;
+}
+.home {
+ 	width: 48px;
+ 	height: 48px;
+	align-items: center;
+ 	border-radius: 6px;
+ 	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	color:#ffffff;
+	font-size: 26px;
+}
+.home image{
+	 width: 50px;
+	 height: 46px
+}
+.grid-text {
+ 	font-size: 24rpx;
+ 	padding: 15rpx;
+ 	color: #202328;
+}
+.color01{
+ 	 background: #17c295ff;
+ 	 border:1rpx solid #17c295ff;
+}
+.color02{
+ 	 background: #00a7e2ff;
+ 	 border:1rpx solid #00a7e2ff;
+}
+.color03{
+ 	 background: #f86f5cff;
+ 	 border:1rpx solid #f86f5cff;
+}
+.color04{
+ 	 background: #00a7e2ff;
+ 	 border:1rpx solid #00a7e2ff;
+}
+.color05{
+ 	 background: #17c295ff;
+ 	 border:1rpx solid #17c295ff;
+}
+.color06{
+ 	 background: #00a7e2ff;
+ 	 border:1rpx solid #00a7e2ff;
+}
+.color07{
+ 	 background: #f4b75eff;
+ 	 border:1rpx solid #f4b75eff;
+}
+.color08{
+ 	 background: #00a7e2ff;
+ 	 border:1rpx solid #00a7e2ff;
+}
+.color09{
+ 	 background: #f4b75eff;
+ 	 border:1rpx solid #f4b75eff;
+}
+.color10{
+ 	 background: #17c295ff;
+ 	 border:1rpx solid #17c295ff;
+}
+.color11{
+ 	 background: #00a7e2ff;
+ 	 border:1rpx solid #00a7e2ff;
+}
+

@@ -1,0 +1,139 @@
+
+.head.data-v-e68c9f1c {
+	height: 60px;
+}
+.head .search.data-v-e68c9f1c {
+	width: 100%;
+	border-top: 5px solid #efeef3ff;
+	height: 45px;
+	padding: 5px 0;
+	background-color: #ffffff;
+	display: flex;
+}
+.head .search .same_search.data-v-e68c9f1c {
+	flex: 1;
+}
+.head .search .same_search .search_input.data-v-e68c9f1c {
+	height: 41px;
+	background-repeat: no-repeat;
+	background-position: 98%;
+	border: 1px solid #f2f2f2;
+	border-radius: 10px;
+	text-align: left;
+	padding-left: 10px;
+	padding-right: 60px;
+	font-size: 15px;
+	margin-left: 5px;
+}
+.more_search.data-v-e68c9f1c {
+	height: 39px;
+	width: 39px;
+	margin-top: 2px;
+	border-radius: 3px;
+	text-align: center;
+	line-height: 39px;
+	background-color: #00a7e2ff;
+	margin-left: 5px;
+	margin-right: 7px;
+}
+.more_search .iconfont.data-v-e68c9f1c {
+	color: #ffffff;
+	font-size: 18px;
+}
+.product.data-v-e68c9f1c {
+	display: flex;
+	background-color: #fff;
+	border-bottom: 1px solid #cbcbcbff;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.img.data-v-e68c9f1c{
+	width: 60px;
+	height: 65px;
+}
+.right.data-v-e68c9f1c {
+	flex: 1;
+	margin-left: 5px;
+	position: relative;
+}
+.grid.data-v-e68c9f1c {
+	display: flex;
+	line-height: 17px;
+}
+.grid .info.data-v-e68c9f1c {
+	width: 50%;
+	color: #030303ff;
+	font-size: 13px;
+	white-space: nowrap;  
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 显示省略号 */
+	text-rendering: optimizeLegibility;
+}
+.product_number.data-v-e68c9f1c {
+	position: absolute;
+	bottom: 30%;
+	right: 1px;
+}
+.product_number .number.data-v-e68c9f1c {
+	font-size: 15px;
+	width: 20px;
+	text-align: center;
+}
+.bottom.data-v-e68c9f1c {
+		background: #fff;
+		border-top: 1px solid #cbcbcbff;
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 45px;
+		display: flex;
+}
+.bottom .liebiao.data-v-e68c9f1c {
+		display: flex;
+		margin-left: 15px;
+		line-height: 45px;
+		position: relative;
+}
+.bottom .liebiao .iconfont.data-v-e68c9f1c{
+		color: #02a5e6ff;
+		font-size: 35px;
+}
+.support-circle.data-v-e68c9f1c {
+		width: 17px;
+		height: 17px;
+		background-color: red;
+		border-radius: 50%;
+		position: absolute;
+		left: 25px;
+		top: 5px;
+}
+.support-num.data-v-e68c9f1c {
+		display: block;
+		font-size: 10px;
+		height: 17px;
+		line-height: 17px;
+		color: #ccc;
+		text-align: center;
+}
+.total-amount.data-v-e68c9f1c {
+		display: flex;
+		margin-left: 20px;
+		line-height: 49px;
+		color: #030303ff;
+		font-size: 16px;
+}
+.total-amount-money.data-v-e68c9f1c {
+		margin-left: 10px;
+		color: rgb(26, 161, 207);
+}
+.confirm.data-v-e68c9f1c {
+		height: 45px;
+		width: 100px;
+		background-color: rgb(26, 161, 207);
+		color: #fff;
+		line-height: 45px;
+		text-align: center;
+		margin-left: auto;
+}

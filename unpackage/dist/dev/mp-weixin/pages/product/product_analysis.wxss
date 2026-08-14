@@ -1,0 +1,119 @@
+
+.head.data-v-9d2bcbee{
+		border-top: 5px solid #efeef3ff;
+		border-bottom: 1px solid #efeef3ff;
+		line-height: 39px;
+		width: 100%;
+}
+.head .screen-bar.data-v-9d2bcbee {
+		background-color: black;
+		display: flex;		
+		background-color: #fff;
+}
+.head .screen-bar .screen-bar-item.data-v-9d2bcbee {		
+		height: 100%;
+		width: 30%;
+		display: flex;
+		align-items: center;
+}
+.head .screen-bar .screen-bar-item .bar-item-text.data-v-9d2bcbee {
+		font-size: 15px;
+		padding-left: 10px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+}
+.head .screen-bar .screen-bar-item image.data-v-9d2bcbee {
+		width: 15px;
+		height: 15px;
+		padding-top: 2px;
+		padding-left: 7px;
+		display: block;
+		transition: all .3s;
+		flex-shrink: 0;
+}
+.head .screen-bar .datestartAndEnd.data-v-9d2bcbee{		
+		width: 50%;
+		display: flex;
+		width: 50%;
+		align-items: center;		
+		font-size: 15px;
+		color: #acacacff;
+}
+.head .screen-bar .datestartAndEnd .dateStart.data-v-9d2bcbee{
+}
+.head .screen-bar .datestartAndEnd .dateEnd.data-v-9d2bcbee{
+		padding-left: 30px;
+}
+.dropdown-box.data-v-9d2bcbee {
+		background-color: #fff;
+		height: 210rpx;
+		width: 100%;
+		padding-left: 30rpx;
+		position: absolute;
+		left: 0;
+		top: 46px;
+		z-index: 99;
+		overflow: hidden;
+}
+.dropdown-item.data-v-9d2bcbee {
+		height: 70rpx;
+		width: 100%;		
+		font-size: 28rpx;
+		color: #666;
+		display: flex;
+		align-items: center;
+		padding: 0 15rpx;
+		box-sizing: border-box;
+		font-size: 28rpx;
+		color: #111111;
+		border-bottom: 1rpx solid #EEEEEE;
+}
+.bg-mask.data-v-9d2bcbee {		
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 98;
+		transition: all 0.3s ease-in-out;
+		opacity: 0;
+		visibility: hidden;
+}
+.bg-mask-show.data-v-9d2bcbee {
+		visibility: visible;
+		opacity: 0.8;
+}
+.product.data-v-9d2bcbee{ 		
+		display: flex;
+		align-items: center;
+		background-color: #fff; 
+		border-bottom: 1px solid #cbcbcbff;
+		padding: 5px 5px 0 0;
+}
+.product .img.data-v-9d2bcbee{
+		width: 70px;
+		height: 80px;
+}
+.product .product-content.data-v-9d2bcbee {
+	   flex: 1;
+	   margin-left: 1px;
+}
+.product .product-content .item.data-v-9d2bcbee {
+	 	display: flex;
+	 	line-height: 14px;
+	 	padding-bottom: 3px;
+}
+.product .product-content .info.data-v-9d2bcbee {
+	  width: 50%;
+	  color: #030303ff;
+	  font-size: 14px;
+	  color: #333;
+	  white-space: nowrap;  
+	  overflow: hidden; /* 超出部分隐藏 */
+	  text-overflow: ellipsis; /* 显示省略号 */
+	  text-rendering: optimizeLegibility;
+}
+	
+

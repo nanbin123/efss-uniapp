@@ -1,0 +1,1 @@
+"use strict";const r=require("../../common/vendor.js").defineStore("transferOrderStore",{state:()=>({data:{customer:{customerProducts:[]}}}),actions:{addCustomer(r){this.customer=r}}});exports.useTransferOrderStore=r;

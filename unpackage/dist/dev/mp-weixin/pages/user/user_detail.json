@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "员工明细",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "da-tree": "../../components/da-tree/index"
+  }
+}

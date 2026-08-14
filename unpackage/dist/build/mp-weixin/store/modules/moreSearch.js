@@ -1,0 +1,1 @@
+"use strict";const e=require("../../common/vendor.js").defineStore("moreSearchStore",{state:()=>({moreSearch:{}}),actions:{addMoreSearch(e){this.moreSearch=e},clearMoreSearchStore(){let e=this;Object.keys(this.moreSearch).forEach((function(r){e.moreSearch[r]=""}))}}});exports.useMoreSearchStore=e;

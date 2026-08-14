@@ -1,0 +1,75 @@
+
+.wrap{
+		background-color: #fff;
+		border-top: 20rpx solid #EFEEF4;
+		padding-top: 35rpx;
+}
+.sale{
+		width: 90%;
+		height: 120px;
+		margin: 0 auto;		
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+}
+.sale-left{
+		width: 50%;
+		height: 70%;
+		font-size: 37rpx;
+		line-height: 30px;
+		text-align: center;
+		color: #FFFFFF;		
+		border-right: 1px solid #FFFFFF;
+}
+.sale-right{
+		width: 50%;
+		height: 70%;
+		font-size: 37rpx;
+		line-height: 30px;
+		text-align: center;
+		color: #FFFFFF;
+}
+.sales-volume{
+		margin-top: 25rpx;
+}
+.profit-margin{
+		margin-top: 25rpx;
+}
+.date-query{
+		display: flex;
+		justify-content: space-between;
+		padding: 20rpx 50rpx;
+		font-size: 35rpx;
+		border-bottom: 7px solid #EFEEF4;
+}
+.list-content{
+		display: flex;
+		justify-content: space-between;
+		padding: 20rpx 50rpx;
+		font-size: 30rpx;
+		border-bottom: 1px solid #EFEEF4;
+}
+.content_left{
+		display: flex;
+		width: 50%;
+}
+.content_right{
+		display: flex;
+		width: 50%;
+}
+.amount-money{
+		padding: 0 10px;
+		margin-top: 1px;
+}
+.btn{
+		position: relative;
+		top: 100rpx;
+		width: 70%;
+		margin:0 auto;
+}
+.btn button{
+		background-color: #F7912C;
+		border: 0;
+		color: #f4f7ffff;
+}
+

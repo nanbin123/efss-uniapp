@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "产品分析",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "c-picker": "../../components/c-picker/c-picker",
+    "z-paging": "../../uni_modules/z-paging/components/z-paging/z-paging"
+  }
+}

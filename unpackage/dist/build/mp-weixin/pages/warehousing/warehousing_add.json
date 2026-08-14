@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "添加入库单",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "c-picker": "../../components/c-picker/c-picker",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

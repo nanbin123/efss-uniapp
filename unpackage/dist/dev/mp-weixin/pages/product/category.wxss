@@ -1,0 +1,108 @@
+
+.head.data-v-759cc12d{
+	height: 5px;
+	width: 100%;
+	background-color:  #efeef3ff;
+}
+.content.data-v-759cc12d{
+	position: relative;
+	border-bottom: 1px solid #efeef3ff;
+}
+.type.data-v-759cc12d{
+	height: 25px;
+	line-height: 25px;
+	background: #fff;
+	margin: 10px;
+	border-radius: 8px;
+	padding: 0 15px;
+	font-size: 17px;
+}
+.img-edit.data-v-759cc12d{
+	position: absolute;
+	top: 3px;
+	right: 15%;
+	height: 20px;
+	width: 20px;
+}
+.img-delete.data-v-759cc12d{
+	position: absolute;
+	top: 3px;
+	right: 7%;
+	height: 20px;
+	width: 20px;
+}
+.bottom-button.data-v-759cc12d{
+	height: 39px;
+	width: 100%;
+	line-height: 39px;
+	background-color: #fff;
+	 border-top: 1px solid #cbcbcbff;
+	display: flex;
+	justify-content: space-between;
+	color: #02a5e6ff;
+}
+.add.data-v-759cc12d{
+	width: 50%;
+	margin-left: 15px;
+}
+.edit.data-v-759cc12d{
+	width: 50%;
+	margin-right: 15px;
+	text-align: right;
+}
+/* 弹窗 */
+.popup_content.data-v-759cc12d {
+	position: relative;
+	width: 260px;
+	height: 150px;
+	background-color: white;	
+	overflow: auto;
+}
+.popup_title.data-v-759cc12d {
+ 	 font-size: 15px;
+ 	 text-align: center;
+ 	 margin: 5px;
+}
+.add-category.data-v-759cc12d{
+	margin: 0 10px;
+	padding:5px;
+	border:1px solid #f1f1f1ff;
+	border-radius: 5px;
+}
+.add-category textarea.data-v-759cc12d{
+	 height: 60px;
+	 width: 230px;
+}
+.textarea-placeholder.data-v-759cc12d{
+	font-size: 15px;
+	text-align: left;
+	color: #aaa;
+}
+.add-category-foot.data-v-759cc12d {
+	width: 260px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 35px;
+	line-height: 35px;
+	color: #070707ff;
+	font-size: 15px;
+	display: flex;
+	border-top: 1px solid #f1f1f1ff;
+}
+.add-category-foot .cancel.data-v-759cc12d{
+	text-align: center;
+	border-right: 1px solid #f1f1f1ff;
+	width: 50%;
+	background-color:#fff;
+}
+.add-category-foot .determine.data-v-759cc12d{	
+	text-align: center;
+	width: 50%;
+	background-color:#fff;
+}
+.add-category-foot uni-button.data-v-759cc12d:after {
+  content: none; /* 移除内容 */
+}
+
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "入库单明细",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "c-picker": "../../components/c-picker/c-picker"
+  }
+}

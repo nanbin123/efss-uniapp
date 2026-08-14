@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "销售订单",
+  "enablePullDownRefresh": false,
+  "onReachBottomDistance": 200,
+  "usingComponents": {
+    "c-picker": "../../components/c-picker/c-picker",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

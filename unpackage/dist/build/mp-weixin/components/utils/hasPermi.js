@@ -1,0 +1,1 @@
+"use strict";const r=require("../../store/modules/user.js"),e=require("../../common/vendor.js");exports.hasPermi=function(s){const o=e.unref(s.value||s),n=r.useUserStore().permissions||[];if(!o||!Array.isArray(o)||0===o.length)throw new Error("请设置操作权限标签值（必须是数组）");const t=o;return n.some((r=>"*:*:*"===r||t.includes(r)))};

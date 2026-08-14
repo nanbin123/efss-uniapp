@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "盈亏表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "c-picker": "../../components/c-picker/c-picker"
+  }
+}

@@ -1,4 +1,4 @@
-const BASEURL = "http://127.0.0.1:8080/";
+const BASEURL = "https://www.efss.net.cn/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);
@@ -41,7 +41,7 @@ function uploadImg(url, files, formData) {
 			formData: formData,
 			success(res) {
 				if (res.data) {
-					let resData = JSON.parse(res.data)
+					let resData = JSON.parse(res.data)					
 					if (resData.code == 401 || resData.code == 403) {
 						uni.removeStorageSync('token');
 						uni.showToast({
@@ -82,6 +82,7 @@ function request(url, data = {}, method = "GET", contentType) {
 				if (res.data) {
 					if (res.data.code == 401 || res.data.code == 403) {
 						uni.removeStorageSync('token');
+						alert(JSON.stringify(res.data))
 						uni.showToast({
 							title: '登录失效，请重新登录',
 							icon: 'none'
