@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7789ee0-379e-4ae7-9d79-e7ecf616a36f" name="Changes" comment="客户预购产品添加图片">
-      <change beforePath="$PROJECT_DIR$/components/utils/request.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/utils/request.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
-    </list>
+    <list default="true" id="a7789ee0-379e-4ae7-9d79-e7ecf616a36f" name="Changes" comment="提交" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,6 +62,7 @@
       <workItem from="1778417779964" duration="37000" />
       <workItem from="1786691469719" duration="100000" />
       <workItem from="1786691593232" duration="827000" />
+      <workItem from="1790380615999" duration="332000" />
     </task>
     <task id="LOCAL-00001" summary="客户预购产品添加图片">
       <option name="closed" value="true" />
@@ -74,7 +72,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786700959524</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="提交">
+      <option name="closed" value="true" />
+      <created>1790380914663</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1790380914663</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -93,6 +99,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="客户预购产品添加图片" />
-    <option name="LAST_COMMIT_MESSAGE" value="客户预购产品添加图片" />
+    <MESSAGE value="提交" />
+    <option name="LAST_COMMIT_MESSAGE" value="提交" />
   </component>
 </project>
