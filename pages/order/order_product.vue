@@ -14,8 +14,6 @@
 	</template>
 	
 	<view class="product" v-for="(item,index) in productList" :key="item.id">
-		
-		<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
  		<view class="right" @click="selectProduct(item)">
 			<view class="grid">
 				<text class="info">品名：{{item.productName}}</text>
@@ -34,11 +32,33 @@
 				<text class="info">零售价：<text
 						style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
 			</view>
-			<view class="product_number">
-				<checkbox-group  @change="onCheckchange($event,item)">
-					<checkbox value="selected" :checked="item.selected"/>
-				</checkbox-group>
-			</view>	
+		</view>
+		<view class="product-actions">
+			<checkbox-group class="product-select" @change="onCheckchange($event,item)">
+				<label class="select-hit-area">
+					<checkbox class="product-checkbox" value="selected" color="#1687ff" :checked="item.selected" @click.stop />
+				</label>
+			</checkbox-group>
+			<button class="preview-button"
+				:aria-label="getProductImageCount(item) ? '查看产品图片，共' + getProductImageCount(item) + '张' : '暂无产品图片'"
+				:hover-class="getProductImageCount(item) ? 'preview-button-active' : 'none'"
+				@click.stop="previewImage(item)">
+				<template v-if="getProductImageCount(item)">
+					<view class="photo-frame">
+						<view class="photo-sun"></view>
+						<view class="photo-mountain"></view>
+						<view class="photo-mountain photo-mountain-right"></view>
+						<text class="photo-count">{{getProductImageCount(item) > 99 ? '99+' : getProductImageCount(item)}}</text>
+					</view>
+					<text class="preview-label">查看</text>
+				</template>
+				<template v-else>
+					<view class="photo-frame photo-frame-empty">
+						<view class="photo-empty-line"></view>
+					</view>
+					<text class="preview-label">暂无</text>
+				</template>
+			</button>
 		</view>
 	</view>
 		
@@ -81,6 +101,25 @@ export default {
 		return { productStore,moreSearchStore}
 	 },
 	methods: {
+		getProductImageCount(item) {
+				return Array.isArray(item.productImages) ? item.productImages.length : 0;
+			},
+		previewImage(item) {
+			  if (!item.productImages || item.productImages.length === 0) {
+			    uni.showToast({ title: '暂无更多图片', icon: 'none' })
+			    return
+			  }
+			  const urls = item.productImages.map(img => {
+			    let url = img.productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  })
+			    uni.previewImage({
+			      current: 0,        // 从第一张开始
+			      urls: urls,        // 所有图片地址
+			      indicator: 'number', // 显示 1/3 数字指示器
+			      loop: true         // 循环切换
+			    })
+			  },
 		getProductList(){//高级查询
 			let product = this.moreSearchStore.moreSearch;				
 			this.searchProduct =  product;
@@ -177,9 +216,9 @@ export default {
 		this.moreSearchStore.clearMoreSearchStore();
 	}
 }
-</script scoped>
+</script>
 
-<style>
+<style scoped>
 .head {
 	height: 60px;
 }
@@ -228,56 +267,164 @@ export default {
 
 .product {
 	display: flex;
-	align-items: center;
+	align-items: stretch;
+	box-sizing: border-box;
 	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
-	
-/* 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale; */
+	border-bottom: 1px solid #ddd;
+	padding: 5px 8px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
-.product .img{
-	width: 60px;
-	height: 65px;
-}
-
 .right {
 	flex: 1;
-	margin-left: 5px;
-	position: relative;
+	min-width: 0;
 }
-
-.grid {	
- 	display: flex;	
-	line-height: 17px;
+.grid {
+	display: flex;
+	align-items: center;
+	min-height: 21px;
+	line-height: 21px;
 }
-
 .grid .info {
 	width: 50%;
+	min-width: 0;
+	box-sizing: border-box;
+	padding-right: 4px;
 	color: #030303ff;
 	font-size: 13px;
-	white-space: nowrap; /* 文字不换行 */
+	white-space: nowrap;
 	overflow: hidden; /* 超出部分隐藏 */
-	text-overflow: ellipsis; /* 以省略号形式显示 */
+	text-overflow: ellipsis; /* 显示省略号 */
+	text-rendering: optimizeLegibility;
 }
-/* .grid :first-child{
-	width: 40%;
-}
- */
-.product_number {
-	position: absolute;
-	bottom: 30%;
-	right: 1px;
-	/* width: 80px;
-	display: flex;		
+.product-actions {
+	width: 40px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
-	text-align: center; */
+	justify-content: space-around;
 }
-.product_number .number {
-	font-size: 15px;
-	width: 20px;
+.product-select, .select-hit-area {
+	width: 40px;
+	height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.product-checkbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+/* 微信小程序和 H5 的原生勾选框统一为 28px 正方形。 */
+.product-checkbox /deep/ .wx-checkbox-input,
+.product-checkbox /deep/ .uni-checkbox-input {
+	width: 28px;
+	height: 28px;
+	box-sizing: border-box;
+	margin: 0;
+	border: 1px solid #c9cbd0;
+	border-radius: 4px;
+	background: #fff;
+}
+.product-checkbox /deep/ .wx-checkbox-input.wx-checkbox-input-checked::before,
+.product-checkbox /deep/ .uni-checkbox-input.uni-checkbox-input-checked::before {
+	font-size: 20px;
+}
+.preview-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	flex-shrink: 0;
+	width: 40px;
+	height: 42px;
+	min-width: 40px;
+	padding: 6px 0 0;
+	margin: 0;
+	box-sizing: border-box;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: #00a7e2;
+	overflow: visible;
+	line-height: 1;
+}
+.preview-button::after { border: none; }
+.preview-button-active { background: #eafaff; }
+.photo-frame {
+	position: relative;
+	flex-shrink: 0;
+	width: 28px;
+	height: 22px;
+	box-sizing: border-box;
+	border: 1px solid #00a7e2;
+	border-radius: 3px;
+	background: #fff;
+}
+.photo-sun {
+	position: absolute;
+	left: 5px;
+	top: 4px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background: #00a7e2;
+}
+.photo-mountain {
+	position: absolute;
+	left: 4px;
+	top: 11px;
+	width: 10px;
+	height: 10px;
+	box-sizing: border-box;
+	border-top: 1px solid #00a7e2;
+	border-left: 1px solid #00a7e2;
+	transform: rotate(45deg);
+}
+.photo-mountain-right {
+	left: 14px;
+	top: 10px;
+	width: 8px;
+	height: 8px;
+}
+.photo-count {
+	position: absolute;
+	right: -6px;
+	top: -7px;
+	min-width: 16px;
+	height: 16px;
+	padding: 0 3px;
+	box-sizing: border-box;
+	border-radius: 8px;
+	background: #00a7e2;
+	color: #fff;
+	font-size: 10px;
+	line-height: 16px;
 	text-align: center;
+	white-space: nowrap;
+}
+.preview-label {
+	margin-top: 2px;
+	font-size: 10px;
+	line-height: 12px;
+	color: #00a7e2;
+}
+.photo-frame-empty {
+	width: 26px;
+	border-style: dashed;
+	border-color: #45c4f0;
+	background: #f5fcff;
+}
+.photo-empty-line {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 10px;
+	width: 10px;
+	height: 1px;
+	background: #00a7e2;
 }
 
 

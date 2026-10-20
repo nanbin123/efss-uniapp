@@ -673,7 +673,7 @@
 /* 客户性别 */
 .gender{
 	margin-left: auto;
-	padding-right: 15px;
+	padding-right: 0;
 }
  /deep/ .gender .radio-group svg {
 	display: none  !important;

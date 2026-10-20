@@ -4,13 +4,11 @@
 	</view>
 	<scroll-view scroll-y style="height: calc(100vh - 35px);">
 		<view class="item">
-			<image class="img" style="width: 19px;" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
 			<text class="title">客户姓名</text>
 			<text class="iconfont">&#xe639;</text>			
 			<input :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="orderForm.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入姓名">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/cusomer_gender.png')"></image>
 			<view class="title">客户性别</view>
 			<text class="iconfont">&#xe639;</text>
 			<view class="gender">
@@ -25,70 +23,73 @@
 			</view>
 		</view>
 		<view class="item">
-			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_phone.png')"></image>
 			<text class="title">客户电话</text>
 			<text class="iconfont">&#xe639;</text>
 			<input  :focus='phoneFocus' @blur="checkPhone"  v-model="orderForm.customerPhone"  confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入电话">
 		</view>
 		<view class="item cusomer_address">
-			<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/order/cusomer_address.png')"></image>
 			<text class="title">客户地址</text>
 			<text class="iconfont">&#xe639;</text>
 			<input :focus='addressFocus'  @blur='addressFocus = false' v-model="orderForm.customerAddress" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入地址">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
 			<text class="title">实收金额</text>
 			<text class="iconfont">&#xe639;</text>
 			<input :focus='actualmoneyFocus'  @blur='actualmoneyFocus = false' v-model="orderForm.actualmoney" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/delivery_time.png')"></image>
-			<text class="title">送货时间&nbsp:</text>
+			<text class="title">送货时间</text>
 			<view  @tap="toggle('delivery_time')" class="time" :style="{color:isEmpty(orderForm.deliveryTime) ?'#a0a0a0':'#333'}">{{isEmpty(orderForm.deliveryTime)? "请选择":orderForm.deliveryTime}}</view>
 			<cPicker mode='date'  @confirm="deliveryHand" ref="delivery_time"></cPicker>
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')"></image>
-			<text class="title">订单总金额&nbsp:</text>
+			<text class="title">订单总金额</text>
 			<input disabled="disabled" v-model="productRetailPriceTotal">
 		</view>		
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/discount.png')"></image>
-			<text class="title">折&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp扣&nbsp:</text>
+			<text class="title">折扣</text>
 			<input disabled="disabled"  v-model="discount">
 		</view>
 		
 		<view class="item choice_porduct" @click="addOrderProduct()">
-			<image class="img" :src="getImgUrl('static/image/order/choice.png')"></image>
 			<text class="title">选择产品</text>
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
-		<view class="product"  v-for="(item,index) in orderForm.orderProductList">	
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="product-content" @click="open(item)">
-				<view class="grid">
-					<text class="info">品名：{{item.productName}}</text>
-					<text class="info">型号：{{item.type}}</text>
-				</view>
-				<view class="grid">
-					<text class="info" >尺寸：{{item.size}}</text>
-					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-				</view>
-				<view class="grid">					
-					<text class="info">颜色：{{item.color}}</text>
-					<text class="info">材质：{{item.texture}}</text>		
-				</view>
-				<view class="grid">						
-					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-					<text class="info">数量：{{item.number}}</text>	
-				</view>
+	<view class="product" v-for="(item, index) in orderForm.orderProductList" :key="item.productId || index">
+		<view class="product-content" @click="open(item)">
+			<view class="grid">
+				<view class="info">品名：{{item.productName}}</view>
+				<view class="info">型号：{{item.type}}</view>
 			</view>
-		
-			<view class="delete" @click="deleteProduct(item.productId)">
-				<i class="iconfont">&#xe612;</i>
+			<view class="grid">
+				 <view class="info">尺寸：{{item.size}}</view>
+				 <view class="info">产地：{{item.production}}</view>
+			</view>
+			 <view class="grid">
+			    <view class="info">材质：{{item.texture}}</view>
+				<view class="info">颜色：{{item.color}}</view>
+			</view>
+			<view class="grid">
+				<text class="info product-emphasis">数量：<text>{{item.number}}</text></text>
+				<view class="info product-emphasis">零售价：<text>￥{{item.retailPrice}}</text></view>
 			</view>
 		</view>
+		<view class="product-actions">
+			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)">
+				<text class="iconfont">&#xe612;</text>
+				<text class="product-action-label">移除</text>
+			</view>
+			<view class="product-action product-gallery" @click.stop="previewImage(item)">
+				<view class="gallery-icon">
+					<view class="gallery-dot"></view>
+					<view class="gallery-mountain gallery-mountain-left"></view>
+					<view class="gallery-mountain gallery-mountain-right"></view>
+					<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+				</view>
+				<text class="product-action-label">查看</text>
+			</view>
+		</view>
+	</view>
 	</scroll-view>
 	<view class="footer">
 		<view class="btn"  @click="addOrderForm()">保存</view>	
@@ -144,6 +145,20 @@ export default {
 		return { productStore,transferOrderStore }
 	 },
 	methods: {
+		previewImage(item) {
+			const images = Array.isArray(item.productImages) ? item.productImages : [];
+			const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+				.map(img => {
+					const url = img.productUrl.trim();
+					return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+				});
+			if (!urls.length) {
+				uni.showToast({ title: '暂无更多图片', icon: 'none' });
+				return;
+			}
+			uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+		},
+
 		open(item){
 			this.popupProduct.productName = item.productName;
 			this.popupProduct.number = item.number;
@@ -255,7 +270,11 @@ export default {
 			}
 			let orderForm=JSON.parse(JSON.stringify(this.orderForm));
 			let productInfo = orderForm.orderProductList.map(product =>{
-				return {productId:product.productId,number:product.number}
+				return {
+					productId: product.productId,
+					number: product.number,
+					productImages: product.productImages || []
+				}
 			})
 			orderForm.orderProductList = productInfo;
 			post("order/insertOrderForm",JSON.stringify(orderForm),'application/json').then(res =>{
@@ -338,110 +357,199 @@ export default {
 }
 
 .item{
-	display: flex;	
-	padding: 8px 0;
-	border-bottom: 1px solid #f1f1f1ff;	
+	display: flex;
+	min-height: 44px;
+	padding: 8px 12px 8px 8px;
+	box-sizing: border-box;
+	border-bottom: 1px solid #f1f1f1ff;
 	align-items: center;
 	background-color: #fff;
 }
-.item .img{
-	padding-left: 1px;
-	width: 20px;
-	height: 20px;	
-}
+
 .item .title{
-	margin-left: 1px;
+	flex-shrink: 0;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
 }
 .item .iconfont{
-	color: red;	
+	color:red;
 	font-size: 12px;
 	margin-left: -5px;
 }
 .item input{
-	flex-grow: 1;
-	padding-right: 12px;
+	flex: 1;
+	min-width: 0;
 	text-align: right;
-	margin-left: 20px;
+	margin-left: 12px;
 	text-rendering: optimizeLegibility;
 	font-size: 15px;
 	color: #333;
 }
-
-.cusomer_address{
-	border-bottom: 5px solid #efeef4ff;
+.item .time{
+	flex: 1;
+	min-width: 0;
+	margin-left: 12px;
+	text-align: right;
+	font-size: 15px;
+	color: #333;
+	text-rendering: optimizeLegibility;
 }
 .item .input-placeholder{
-	font-size: 13px;
+	font-size: 15px;
 	text-align: right;
 	color: #aaa;
 	text-rendering: optimizeLegibility;
 }
-.item .time{
-	margin-left: auto;
-	text-align: right;
-	padding-right: 12px;
+.cusomer_address{
+	border-bottom: 5px solid #efeef4ff;
 }
 .choice_porduct{
-	position: relative;
-	margin-bottom: 5px;
+	min-height: 40px;
+	padding-bottom: 4px;
 }
 .add_product{
 	width: 25px;
 	height: 25px;
-	position: absolute;
-	right: 20px;
-}
-/* 产品列表 */
-.product{	
-	display: flex;
-	align-items: center;
-	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+	margin-left: auto;
+	flex-shrink: 0;
 }
 
-.product .img {
-	width: 75px;
-	height: 80px;
+.product{
+	display: flex;
+	align-items: stretch;
+	background-color: #fff;
+	border-bottom: 1px solid #e5e5e5;
+	box-sizing: border-box;
 }
-.product-content{	
+.product-content{
 	flex: 1;
-	margin-left: 2px;
+	min-width: 0;
+	padding: 8px 0 8px 8px;
+	box-sizing: border-box;
 }
 .grid {
- 	display: flex;	
+	display: flex;
+	align-items: center;
+	min-height: 24px;
 	line-height: 20px;
 }
 .info {
-   width: 50%;
-   color: #030303ff;
-   font-size: 13px;
-   color: #333;
-   white-space: nowrap;  
-   overflow: hidden; /* 超出部分隐藏 */
-   text-overflow: ellipsis; /* 显示省略号 */
-   text-rendering: optimizeLegibility;
+  width: 50%;
+	min-width: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
-.delete{
+.product-emphasis{
+	color: #e96225ff;
+}
+
+.product-actions{
+	width: 64px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-remove .iconfont{
+	color: #38c1b9;
+	font-size: 22px;
+	line-height: 24px;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #38c1b9;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
 	position: absolute;
-	right: 10px;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
 }
-.delete .iconfont{
-	color: #02a5e6ff;	
-	font-size: 20px;
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
 }
 
-
+/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+@media screen and (max-width: 375px) {
+	.product-content{
+		padding-left: 6px;
+	}
+	.product-actions{
+		width: 58px;
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+	.info{
+		font-size: 13px;
+	}
+}
 
 /* 客户性别 */
 .gender{
 	margin-left: auto;
-	padding-right: 15px;
+	padding-right: 0;
 }
  /deep/ .gender .radio-group svg {
 	display: none  !important;
