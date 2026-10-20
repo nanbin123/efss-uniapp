@@ -1,4 +1,3 @@
-
 .head.data-v-9d2bcbee{
 		border-top: 5px solid #efeef3ff;
 		border-bottom: 1px solid #efeef3ff;
@@ -115,5 +114,3 @@
 	  text-overflow: ellipsis; /* 显示省略号 */
 	  text-rendering: optimizeLegibility;
 }
-	
-

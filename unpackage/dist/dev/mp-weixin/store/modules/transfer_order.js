@@ -13,3 +13,4 @@ const useTransferOrderStore = common_vendor.defineStore("transferOrderStore", {
   }
 });
 exports.useTransferOrderStore = useTransferOrderStore;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/store/modules/transfer_order.js.map

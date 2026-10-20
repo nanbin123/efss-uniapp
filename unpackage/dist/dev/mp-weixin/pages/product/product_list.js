@@ -63,8 +63,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
-    d: common_vendor.o(($event) => $options.moreSearch()),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "6c"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "7e"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.productName),
@@ -81,8 +81,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     f: common_vendor.sr("paging", "75a4ac1f-0"),
-    g: common_vendor.o($options.queryList),
-    h: common_vendor.o(($event) => $data.productList = $event),
+    g: common_vendor.o($options.queryList, "ef"),
+    h: common_vendor.o(($event) => $data.productList = $event, "2c"),
     i: common_vendor.p({
       modelValue: $data.productList
     })
@@ -90,3 +90,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-75a4ac1f"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/product_list.js.map

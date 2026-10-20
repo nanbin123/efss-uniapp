@@ -47,22 +47,23 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.productForm.productName,
-    b: common_vendor.o(($event) => $data.productForm.productName = $event.detail.value),
+    b: common_vendor.o(($event) => $data.productForm.productName = $event.detail.value, "52"),
     c: $data.productForm.type,
-    d: common_vendor.o(($event) => $data.productForm.type = $event.detail.value),
+    d: common_vendor.o(($event) => $data.productForm.type = $event.detail.value, "5b"),
     e: $data.productForm.size,
-    f: common_vendor.o(($event) => $data.productForm.size = $event.detail.value),
+    f: common_vendor.o(($event) => $data.productForm.size = $event.detail.value, "66"),
     g: $data.productForm.production,
-    h: common_vendor.o(($event) => $data.productForm.production = $event.detail.value),
+    h: common_vendor.o(($event) => $data.productForm.production = $event.detail.value, "78"),
     i: $data.productForm.color,
-    j: common_vendor.o(($event) => $data.productForm.color = $event.detail.value),
+    j: common_vendor.o(($event) => $data.productForm.color = $event.detail.value, "44"),
     k: $data.productForm.texture,
-    l: common_vendor.o(($event) => $data.productForm.texture = $event.detail.value),
+    l: common_vendor.o(($event) => $data.productForm.texture = $event.detail.value, "ef"),
     m: $data.productForm.retailPrice,
-    n: common_vendor.o(($event) => $data.productForm.retailPrice = $event.detail.value),
-    o: common_vendor.o((...args) => $options.clearFilters && $options.clearFilters(...args)),
-    p: common_vendor.o((...args) => $options.search && $options.search(...args))
+    n: common_vendor.o(($event) => $data.productForm.retailPrice = $event.detail.value, "cf"),
+    o: common_vendor.o((...args) => $options.clearFilters && $options.clearFilters(...args), "bb"),
+    p: common_vendor.o((...args) => $options.search && $options.search(...args), "d1")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-861c47e9"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/warehousing/warehousing_product_query.js.map

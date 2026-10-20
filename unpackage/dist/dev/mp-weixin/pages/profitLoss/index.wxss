@@ -1,4 +1,3 @@
-
 .wrap{
 		background-color: #fff;
 		border-top: 20rpx solid #EFEEF4;
@@ -72,4 +71,3 @@
 		border: 0;
 		color: #f4f7ffff;
 }
-

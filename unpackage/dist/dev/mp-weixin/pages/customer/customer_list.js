@@ -62,8 +62,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
-    d: common_vendor.o(($event) => $options.moreSearch()),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "e0"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "fe"),
     e: common_vendor.f($data.customerList, (item, index, i0) => {
       return common_vendor.e({
         a: item.isOrder == "ordered"
@@ -90,12 +90,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       });
     }),
     f: common_vendor.sr("paging", "75176b2f-0"),
-    g: common_vendor.o($options.queryList),
-    h: common_vendor.o(($event) => $data.customerList = $event),
+    g: common_vendor.o($options.queryList, "64"),
+    h: common_vendor.o(($event) => $data.customerList = $event, "95"),
     i: common_vendor.p({
+      ["safe-area-inset-bottom"]: true,
+      ["bottom-bg-color"]: "#38c1b9",
       modelValue: $data.customerList
     })
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-75176b2f"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/customer/customer_list.js.map

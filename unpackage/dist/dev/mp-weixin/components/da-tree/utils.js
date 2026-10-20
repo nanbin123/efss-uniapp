@@ -1,4 +1,5 @@
 "use strict";
+const common_vendor = require("../../common/vendor.js");
 const unCheckedStatus = 0;
 const halfCheckedStatus = 1;
 const isCheckedStatus = 2;
@@ -53,7 +54,7 @@ function getAllNodeKeys(list, type, value, packDisabledkey = true) {
   return res.length ? res : null;
 }
 function logError(msg, ...args) {
-  console.error(`DaTree: ${msg}`, ...args);
+  common_vendor.index.__f__("error", "at components/da-tree/utils.ts:89", `DaTree: ${msg}`, ...args);
 }
 const toString = Object.prototype.toString;
 function is(val, type) {
@@ -82,3 +83,4 @@ exports.isNumber = isNumber;
 exports.isString = isString;
 exports.logError = logError;
 exports.unCheckedStatus = unCheckedStatus;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/components/da-tree/utils.js.map

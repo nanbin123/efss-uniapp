@@ -15,9 +15,6 @@
 	
 
 	<view class="product" v-for="(item,index) in productList" :key="index">
-		<!-- <image class="img" :src="getImgUrl('static/image/茶几.png')"></image> -->
-		<image class="img" :src="getProductImg(item)" mode="aspectFill" 
-			@click="previewImage(item)"></image>
 		<view class="right" @click="selectProduct(item)">
 			<view class="grid">
 				<text class="info">品名：{{item.productName}}</text>
@@ -36,11 +33,23 @@
 				<text class="info">零售价：<text
 						style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
 			</view>
-			<view class="product_number">
-				<checkbox-group  @change="onCheckchange($event,item)">
-					<checkbox value="selected" @click.stop :checked="item.selected"/>
-				</checkbox-group>
-			</view>
+		</view>
+		<view class="product-actions">
+			<checkbox-group class="product-select" @change="onCheckchange($event,item)">
+				<label class="select-hit-area">
+					<checkbox class="product-checkbox" value="selected" color="#1687ff" :checked="item.selected" @click.stop />
+				</label>
+			</checkbox-group>
+			<button class="preview-button" aria-label="查看产品图片" hover-class="preview-button-active" @click.stop="previewImage(item)">
+				<view class="preview-icon">
+					<view class="photo-frame">
+						<view class="photo-sun"></view>
+						<view class="photo-mountain"></view>
+					</view>
+					<view class="photo-lens"></view>
+					<view class="photo-handle"></view>
+				</view>
+			</button>
 		</view>
 	</view>
 	
@@ -59,6 +68,7 @@
 				选好了
 			</view>
 		</view>
+		<view class="bottom-safe-area"></view>
 	</template>
 </z-paging>
 </template>
@@ -212,6 +222,13 @@
 
 <style scoped>
 
+/* 由 z-paging 测量整个 bottom 插槽，连同安全区一起预留滚动空间。 */
+.bottom-safe-area {
+	height: constant(safe-area-inset-bottom);
+	height: env(safe-area-inset-bottom);
+	background: #fff;
+}
+
 .head {
 	height: 60px;
 }
@@ -226,6 +243,7 @@
 }
 .head .search .same_search {
 	flex: 1;
+	min-width: 0;
 }
 .head .search .same_search .search_input {
 	height: 41px;
@@ -240,6 +258,7 @@
 	margin-left: 5px;
 }
 .more_search {
+	flex-shrink: 0;
 	height: 39px;
 	width: 39px;
 	margin-top: 2px;
@@ -259,28 +278,29 @@
 	
 .product {
 	display: flex;
+	align-items: stretch;
+	box-sizing: border-box;
 	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+	border-bottom: 1px solid #ddd;
+	padding: 5px 8px;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-.img{
-	width: 60px;
-	height: 65px;
-}
 .right {
 	flex: 1;
-	margin-left: 5px;
-	position: relative;
+	min-width: 0;
 }
 .grid {
 	display: flex;
-	line-height: 17px;
+	align-items: center;
+	min-height: 21px;
+	line-height: 21px;
 }
 .grid .info {
 	width: 50%;
+	min-width: 0;
+	box-sizing: border-box;
+	padding-right: 4px;
 	color: #030303ff;
 	font-size: 13px;
 	white-space: nowrap;  
@@ -288,28 +308,123 @@
 	text-overflow: ellipsis; /* 显示省略号 */
 	text-rendering: optimizeLegibility;
 }
-.product_number {
-	position: absolute;
-	bottom: 30%;
-	right: 1px;
+.product-actions {
+	width: 40px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
 }
-.product_number .number {
-	font-size: 15px;
-	width: 20px;
-	text-align: center;
+.product-select, .select-hit-area {
+	width: 40px;
+	height: 42px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.product-checkbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+/* 微信小程序和 H5 的原生勾选框统一为 32px 正方形。 */
+.product-checkbox /deep/ .wx-checkbox-input,
+.product-checkbox /deep/ .uni-checkbox-input {
+	width: 32px;
+	height: 32px;
+	box-sizing: border-box;
+	margin: 0;
+	border: 1px solid #c9cbd0;
+	border-radius: 4px;
+	background: #fff;
+}
+.product-checkbox /deep/ .wx-checkbox-input.wx-checkbox-input-checked::before,
+.product-checkbox /deep/ .uni-checkbox-input.uni-checkbox-input-checked::before {
+	font-size: 22px;
+}
+.preview-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	padding: 0;
+	margin: 5px 0;
+	box-sizing: border-box;
+	border: 1px solid #8adff2;
+	border-radius: 4px;
+	background: #eafaff;
+	line-height: 1;
+}
+.preview-button::after { border: none; }
+.preview-button-active { background: #d3f3fc; }
+.preview-icon { position: relative; width: 23px; height: 23px; }
+.photo-frame {
+	position: absolute;
+	left: 1px;
+	top: 1px;
+	width: 17px;
+	height: 17px;
+	box-sizing: border-box;
+	border: 2px solid #00a7e2;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.photo-sun {
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background: #00a7e2;
+}
+.photo-mountain {
+	position: absolute;
+	left: 3px;
+	top: 8px;
+	width: 8px;
+	height: 8px;
+	border-top: 1.5px solid #00a7e2;
+	border-left: 1.5px solid #00a7e2;
+	transform: rotate(45deg);
+}
+.photo-lens {
+	position: absolute;
+	left: 11px;
+	top: 11px;
+	width: 10px;
+	height: 10px;
+	box-sizing: border-box;
+	border: 2px solid #00a7e2;
+	border-radius: 50%;
+	background: #eafaff;
+}
+.photo-handle {
+	position: absolute;
+	left: 18px;
+	top: 18px;
+	width: 6px;
+	height: 2px;
+	border-radius: 1px;
+	background: #00a7e2;
+	transform: rotate(45deg);
+	transform-origin: left center;
 }
 
 	.bottom {
 		background: #fff;
 		border-top: 1px solid #cbcbcbff;
-		position: fixed;
-		bottom: 0;
 		width: 100%;
-		height: 45px;
+		min-height: 45px;
 		display: flex;
+		align-items: center;
 	}
 
 	.bottom .liebiao {
+		flex-shrink: 0;
 		display: flex;
 		margin-left: 15px;
 		line-height: 45px;
@@ -342,20 +457,32 @@
 
 	.total-amount {
 		display: flex;
-		margin-left: 20px;
-		line-height: 49px;
+		flex: 1;
+		min-width: 0;
+		flex-wrap: wrap;
+		align-items: center;
+		margin: 0 8px 0 16px;
+		line-height: 22px;
 		color: #030303ff;
 		font-size: 16px;
 	}
 
 	.total-amount-money {
-		margin-left: 10px;
+		margin-left: 5px;
+		overflow-wrap: break-word;
+		word-break: break-all;
+		min-width: 0;
 		color: rgb(26, 161, 207);
 	}
 
 	.confirm {
-		height: 45px;
-		width: 100px;
+		min-height: 45px;
+		align-self: stretch;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 80px;
+		flex-shrink: 0;
 		background-color: rgb(26, 161, 207);
 		color: #fff;
 		line-height: 45px;

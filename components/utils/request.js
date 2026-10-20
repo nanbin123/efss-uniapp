@@ -1,4 +1,5 @@
-const BASEURL = "https://www.efss.net.cn/";
+//const BASEURL = "https://www.efss.net.cn/";
+const BASEURL = "https://127.0.0.1/";
 
 function get(url, data = {}, contentType = 'application/x-www-form-urlencoded;charset=UTF-8') {
 	return request(url, data, 'GET', contentType);

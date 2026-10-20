@@ -52,6 +52,35 @@ const _sfc_main = {
     return { productStore, transferOrderStore };
   },
   methods: {
+    //获取商品第一张图片（空数组时显示默认图）
+    getProductImg(item) {
+      if (item.productImages && item.productImages.length > 0) {
+        let url = item.productImages[0].productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      }
+      return this.getImgUrl("static/image/茶几.png");
+    },
+    // 点击放大预览，支持左右滑动切换所有图片
+    previewImage(item) {
+      if (!item.productImages || item.productImages.length === 0) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      const urls = item.productImages.map((img) => {
+        let url = img.productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      });
+      common_vendor.index.previewImage({
+        current: 0,
+        // 从第一张开始
+        urls,
+        // 所有图片地址
+        indicator: "number",
+        // 显示 1/3 数字指示器
+        loop: true
+        // 循环切换
+      });
+    },
     // 校验电话号码
     checkPhone() {
       this.phoneFocus = false;
@@ -282,6 +311,7 @@ const _sfc_main = {
     },
     getCustomerProduct() {
       let products = JSON.stringify(this.productStore.products);
+      common_vendor.index.__f__("log", "at pages/customer/customer_detail.vue:523", JSON.stringify(products));
       this.customer.customerProducts = JSON.parse(products);
     },
     addCustomerProduct() {
@@ -343,7 +373,7 @@ const _sfc_main = {
     this.customerId = option.id;
     components_utils_request.post("customer/selectCustomerById", { "id": this.customerId }).then((res) => {
       if (200 == res.code) {
-        this.customer = res.data;
+        this.customer = res.data || {};
       }
     });
   },
@@ -360,81 +390,71 @@ if (!Math) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: $options.getImgUrl("static/image/cusomer/cusomer_name.png"),
-    b: $data.customerNameFocus,
-    c: common_vendor.o(($event) => $data.customerNameFocus = false),
-    d: $data.isEditable,
-    e: $data.isEditable ? "" : "请输入客户姓名",
-    f: $data.customer.customerName,
-    g: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value),
-    h: $options.getImgUrl("static/image/cusomer/cusomer_gender.png"),
-    i: $data.customer.sex === "1" ? "#fff" : "#333",
-    j: $data.isEditable,
-    k: $data.customer.sex === "1" ? "#38c1b9" : "#fff",
-    l: $data.customer.sex === "1",
-    m: $data.customer.sex === "2" ? "#fff" : "#333",
-    n: $data.isEditable,
-    o: $data.customer.sex === "2" ? "#38c1b9" : "#fff",
-    p: $data.customer.sex === "2",
-    q: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args)),
-    r: $options.getImgUrl("static/image/cusomer/customer_phone.png"),
-    s: $data.phoneFocus,
-    t: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args)),
+    a: $data.customerNameFocus,
+    b: common_vendor.o(($event) => $data.customerNameFocus = false, "33"),
+    c: $data.isEditable,
+    d: $data.isEditable ? "" : "请输入客户姓名",
+    e: $data.customer.customerName,
+    f: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value, "1a"),
+    g: $data.customer.sex === "1" ? "#fff" : "#333",
+    h: $data.isEditable,
+    i: $data.customer.sex === "1" ? "#38c1b9" : "#fff",
+    j: $data.customer.sex === "1",
+    k: $data.customer.sex === "2" ? "#fff" : "#333",
+    l: $data.isEditable,
+    m: $data.customer.sex === "2" ? "#38c1b9" : "#fff",
+    n: $data.customer.sex === "2",
+    o: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "bb"),
+    p: $data.phoneFocus,
+    q: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args), "f2"),
+    r: $data.isEditable,
+    s: $data.customer.phone,
+    t: common_vendor.o(($event) => $data.customer.phone = $event.detail.value, "5a"),
     v: $data.isEditable,
-    w: $data.customer.phone,
-    x: common_vendor.o(($event) => $data.customer.phone = $event.detail.value),
-    y: $options.getImgUrl("static/image/cusomer/cusomer_address.png"),
-    z: $data.isEditable,
-    A: $data.customer.address,
-    B: common_vendor.o(($event) => $data.customer.address = $event.detail.value),
-    C: $options.getImgUrl("static/image/cusomer/degree.png"),
-    D: common_vendor.o(($event) => $options.changeStar(1)),
-    E: $data.customer.grade > 0 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    F: common_vendor.o(($event) => $options.changeStar(2)),
-    G: $data.customer.grade > 1 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    H: common_vendor.o(($event) => $options.changeStar(3)),
-    I: $data.customer.grade > 2 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    J: $options.getImgUrl("static/image/cusomer/quoted_price.png"),
-    K: $data.isEditable,
-    L: $data.customer.quotation,
-    M: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value),
-    N: $options.getImgUrl("static/image/cusomer/remark.png"),
-    O: $data.isEditable,
-    P: $data.customer.remark,
-    Q: common_vendor.o(($event) => $data.customer.remark = $event.detail.value),
-    R: $options.getImgUrl("static/image/cusomer/arrive.png"),
-    S: $options.getImgUrl("static/image/add.png"),
-    T: common_vendor.o(($event) => $options.arriveAdd()),
-    U: common_vendor.f($data.customer.listCustomerArrival, (item, index, i0) => {
+    w: $data.customer.address,
+    x: common_vendor.o(($event) => $data.customer.address = $event.detail.value, "9d"),
+    y: common_vendor.o(($event) => $options.changeStar(1), "e9"),
+    z: $data.customer.grade > 0 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    A: common_vendor.o(($event) => $options.changeStar(2), "85"),
+    B: $data.customer.grade > 1 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    C: common_vendor.o(($event) => $options.changeStar(3), "0d"),
+    D: $data.customer.grade > 2 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    E: $data.isEditable,
+    F: $data.customer.quotation,
+    G: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value, "09"),
+    H: $data.isEditable,
+    I: $data.customer.remark,
+    J: common_vendor.o(($event) => $data.customer.remark = $event.detail.value, "7b"),
+    K: $options.getImgUrl("static/image/add.png"),
+    L: common_vendor.o(($event) => $options.arriveAdd(), "25"),
+    M: common_vendor.f($data.customer.listCustomerArrival, (item, index, i0) => {
       return {
         a: common_vendor.t(item.arrivalTime),
         b: common_vendor.t(item.arrivalLength),
-        c: common_vendor.o(($event) => $options.editCustomerArrival(item)),
+        c: common_vendor.o(($event) => $options.editCustomerArrival(item), "7c"),
         d: common_vendor.t(item.arrivalRecord),
-        e: common_vendor.o(($event) => $options.deleteCustomerArrival(item.id)),
+        e: common_vendor.o(($event) => $options.deleteCustomerArrival(item.id), "56"),
         f: item.id
       };
     }),
-    V: !$data.isEditable,
-    W: $options.getImgUrl("static/image/cusomer/track.png"),
-    X: $options.getImgUrl("static/image/add.png"),
-    Y: common_vendor.o(($event) => $options.trackAdd()),
-    Z: common_vendor.f($data.customer.listCustomerTailAfter, (item, index, i0) => {
+    N: !$data.isEditable,
+    O: $options.getImgUrl("static/image/add.png"),
+    P: common_vendor.o(($event) => $options.trackAdd(), "df"),
+    Q: common_vendor.f($data.customer.listCustomerTailAfter, (item, index, i0) => {
       return {
         a: common_vendor.t(item.arrivalTime),
         b: common_vendor.t(item.arrivalLength),
         c: common_vendor.t(item.arrivalRecord),
-        d: common_vendor.o(($event) => $options.deleteCustomerTailAfter(item.id)),
-        e: common_vendor.o(($event) => $options.editCustomerTailAfter(item)),
+        d: common_vendor.o(($event) => $options.deleteCustomerTailAfter(item.id), "82"),
+        e: common_vendor.o(($event) => $options.editCustomerTailAfter(item), "de"),
         f: item.id
       };
     }),
-    aa: !$data.isEditable,
-    ab: $options.getImgUrl("static/image/cusomer/customer_product.png"),
-    ac: $options.getImgUrl("static/image/add.png"),
-    ad: common_vendor.o(($event) => $options.addCustomerProduct()),
-    ae: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
-      return {
+    R: !$data.isEditable,
+    S: $options.getImgUrl("static/image/add.png"),
+    T: common_vendor.o(($event) => $options.addCustomerProduct(), "2e"),
+    U: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.size),
@@ -443,67 +463,72 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.color),
         g: common_vendor.t(item.number),
         h: common_vendor.t(item.retailPrice),
-        i: common_vendor.o(($event) => $options.openPopupProductNumber(item)),
-        j: common_vendor.o(($event) => $options.deleteProduct(item.productId))
-      };
+        i: common_vendor.o(($event) => $options.openPopupProductNumber(item), item.productId || index),
+        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index),
+        k: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        l: common_vendor.t(item.productImages.length)
+      } : {}, {
+        m: common_vendor.o(($event) => $options.previewImage(item), item.productId || index),
+        n: item.productId || index
+      });
     }),
-    af: $options.getImgUrl("static/image/茶几.png"),
-    ag: !$data.isEditable,
-    ah: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    ai: common_vendor.o(($event) => $options.deleteCustomerForm()),
-    aj: $data.isEditable == true
+    V: !$data.isEditable,
+    W: common_vendor.t($data.isEditable ? "删除" : "取消"),
+    X: common_vendor.o(($event) => $options.deleteCustomerForm(), "ae"),
+    Y: $data.isEditable == true
   }, $data.isEditable == true ? {
-    ak: common_vendor.o(($event) => $options.transferOrder())
+    Z: common_vendor.o(($event) => $options.transferOrder(), "d1")
   } : {}, {
-    al: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    am: common_vendor.o(($event) => $options.editCustomerForm()),
-    an: common_vendor.t($data.addOrEditArrival),
-    ao: common_vendor.t($data.arrivalFormData.arrivalTime),
-    ap: common_vendor.o(($event) => $options.toggle("arrival_date")),
-    aq: $data.arrivalFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
-    ar: common_vendor.sr("arrival_date", "50fb23cd-1,50fb23cd-0"),
-    as: common_vendor.o($options.arrivalTimeHand),
-    at: common_vendor.p({
+    aa: common_vendor.t($data.isEditable ? "编辑" : "保存"),
+    ab: common_vendor.o(($event) => $options.editCustomerForm(), "42"),
+    ac: common_vendor.t($data.addOrEditArrival),
+    ad: common_vendor.t($data.arrivalFormData.arrivalTime),
+    ae: common_vendor.o(($event) => $options.toggle("arrival_date"), "b0"),
+    af: $data.arrivalFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
+    ag: common_vendor.sr("arrival_date", "50fb23cd-1,50fb23cd-0"),
+    ah: common_vendor.o($options.arrivalTimeHand, "49"),
+    ai: common_vendor.p({
       mode: "date"
     }),
-    av: $data.arrivalFormData.arrivalLength,
-    aw: common_vendor.o(($event) => $data.arrivalFormData.arrivalLength = $event.detail.value),
-    ax: $data.arrivalFormData.arrivalRecord,
-    ay: common_vendor.o(($event) => $data.arrivalFormData.arrivalRecord = $event.detail.value),
-    az: common_vendor.o(($event) => $options.cancelArrival()),
-    aA: common_vendor.o(($event) => $options.submitArrival()),
-    aB: common_vendor.sr("arrival_popup", "50fb23cd-0"),
-    aC: common_vendor.p({
+    aj: $data.arrivalFormData.arrivalLength,
+    ak: common_vendor.o(($event) => $data.arrivalFormData.arrivalLength = $event.detail.value, "fa"),
+    al: $data.arrivalFormData.arrivalRecord,
+    am: common_vendor.o(($event) => $data.arrivalFormData.arrivalRecord = $event.detail.value, "90"),
+    an: common_vendor.o(($event) => $options.cancelArrival(), "d8"),
+    ao: common_vendor.o(($event) => $options.submitArrival(), "20"),
+    ap: common_vendor.sr("arrival_popup", "50fb23cd-0"),
+    aq: common_vendor.p({
       type: "bottom",
       ["border-radius"]: "10px 10px 0 0"
     }),
-    aD: common_vendor.t($data.addOrEditArrival),
-    aE: common_vendor.t($data.tailAfterFormData.arrivalTime),
-    aF: common_vendor.o(($event) => $options.tailAfterToggle("tail_after_date")),
-    aG: $data.tailAfterFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
-    aH: common_vendor.sr("tail_after_date", "50fb23cd-3,50fb23cd-2"),
-    aI: common_vendor.o($options.tailAfterTimeHand),
-    aJ: common_vendor.p({
+    ar: common_vendor.t($data.addOrEditArrival),
+    as: common_vendor.t($data.tailAfterFormData.arrivalTime),
+    at: common_vendor.o(($event) => $options.tailAfterToggle("tail_after_date"), "62"),
+    av: $data.tailAfterFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
+    aw: common_vendor.sr("tail_after_date", "50fb23cd-3,50fb23cd-2"),
+    ax: common_vendor.o($options.tailAfterTimeHand, "b4"),
+    ay: common_vendor.p({
       mode: "date"
     }),
-    aK: $data.tailAfterFormData.arrivalLength,
-    aL: common_vendor.o(($event) => $data.tailAfterFormData.arrivalLength = $event.detail.value),
-    aM: $data.tailAfterFormData.arrivalRecord,
-    aN: common_vendor.o(($event) => $data.tailAfterFormData.arrivalRecord = $event.detail.value),
-    aO: common_vendor.o(($event) => $options.cancelTrack()),
-    aP: common_vendor.o(($event) => $options.submitTrack()),
-    aQ: common_vendor.sr("tailafter_popup", "50fb23cd-2"),
-    aR: common_vendor.p({
+    az: $data.tailAfterFormData.arrivalLength,
+    aA: common_vendor.o(($event) => $data.tailAfterFormData.arrivalLength = $event.detail.value, "02"),
+    aB: $data.tailAfterFormData.arrivalRecord,
+    aC: common_vendor.o(($event) => $data.tailAfterFormData.arrivalRecord = $event.detail.value, "19"),
+    aD: common_vendor.o(($event) => $options.cancelTrack(), "2a"),
+    aE: common_vendor.o(($event) => $options.submitTrack(), "a6"),
+    aF: common_vendor.sr("tailafter_popup", "50fb23cd-2"),
+    aG: common_vendor.p({
       type: "bottom",
       ["border-radius"]: "10px 10px 0 0"
     }),
-    aS: common_vendor.t($data.popupProduct.productName),
-    aT: $data.popupProduct.number,
-    aU: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value),
-    aV: common_vendor.o(($event) => $options.cancelProductNumber()),
-    aW: common_vendor.o(($event) => $options.submitProductNumber()),
-    aX: common_vendor.sr("popup_product_number", "50fb23cd-4"),
-    aY: common_vendor.p({
+    aH: common_vendor.t($data.popupProduct.productName),
+    aI: $data.popupProduct.number,
+    aJ: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "7a"),
+    aK: common_vendor.o(($event) => $options.cancelProductNumber(), "58"),
+    aL: common_vendor.o(($event) => $options.submitProductNumber(), "c5"),
+    aM: common_vendor.sr("popup_product_number", "50fb23cd-4"),
+    aN: common_vendor.p({
       type: "bottom",
       ["border-radius"]: "10px 10px 0 0"
     })
@@ -511,3 +536,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-50fb23cd"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/customer/customer_detail.js.map

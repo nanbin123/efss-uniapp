@@ -109,8 +109,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     I: $options.c.unit === "rpx" ? 1 : "",
     J: $options.c.unit === "px" ? 1 : "",
     K: common_vendor.s($options.c.customStyle),
-    L: common_vendor.o((...args) => $options.doClick && $options.doClick(...args))
+    L: common_vendor.o((...args) => $options.doClick && $options.doClick(...args), "5a")
   });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8cc5c400"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/components/z-paging-load-more.js.map

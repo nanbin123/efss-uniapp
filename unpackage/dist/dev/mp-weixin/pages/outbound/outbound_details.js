@@ -85,7 +85,7 @@ const _sfc_main = {
         if (200 == res.code) {
           this.outbound = { outboundProductList: [] };
           let resData = res.data;
-          console.log("resData", JSON.stringify(resData));
+          common_vendor.index.__f__("log", "at pages/outbound/outbound_details.vue:170", "resData", JSON.stringify(resData));
           this.outbound.id = resData.id;
           this.outbound.orderNumber = resData.orderNumber;
           this.outbound.customerName = resData.customerName;
@@ -96,7 +96,7 @@ const _sfc_main = {
           let dataProduct = res.data.outboundProductList;
           for (var i = 0; i < dataProduct.length; i++) {
             let outboundNumber = dataProduct[i].outboundNumber;
-            console.log("outboundNumber", outboundNumber);
+            common_vendor.index.__f__("log", "at pages/outbound/outbound_details.vue:182", "outboundNumber", outboundNumber);
             for (var j = 0; j < outboundNumber; j++) {
               let outboundProduct = JSON.parse(JSON.stringify(dataProduct[i]));
               outboundProduct.isOutbound = true;
@@ -147,22 +147,23 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.t(item.production),
         e: common_vendor.t(item.color),
         f: common_vendor.t(item.texture),
-        g: common_vendor.o(($event) => $options.checkOutboundProduct(item)),
+        g: common_vendor.o(($event) => $options.checkOutboundProduct(item), "8c"),
         h: common_vendor.t(item.orderProductNumber),
         i: common_vendor.t(item.isOutbound == true ? "已出库" : "未出库"),
-        j: common_vendor.o(($event) => _ctx.open(item)),
+        j: common_vendor.o(($event) => _ctx.open(item), "43"),
         k: item.isOutbound,
         l: $options.isDisabled(item.isEdit),
-        m: common_vendor.o(($event) => $options.onCheckchange($event, item))
+        m: common_vendor.o(($event) => $options.onCheckchange($event, item), "c3")
       };
     }),
     o: $options.getImgUrl("static/image/茶几.png"),
-    p: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args)),
+    p: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args), "ee"),
     q: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    r: common_vendor.o(($event) => $options.deleteOutbound()),
+    r: common_vendor.o(($event) => $options.deleteOutbound(), "61"),
     s: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    t: common_vendor.o(($event) => $options.editOutbound())
+    t: common_vendor.o(($event) => $options.editOutbound(), "b0")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b3cf1138"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/outbound/outbound_details.js.map

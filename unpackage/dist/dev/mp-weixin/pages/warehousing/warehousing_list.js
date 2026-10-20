@@ -63,12 +63,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       return {
         a: common_vendor.t(item),
         b: $data.completionStatus == item ? 1 : "",
-        c: common_vendor.o(($event) => $options.changeCompletionStatus(item))
+        c: common_vendor.o(($event) => $options.changeCompletionStatus(item), "33")
       };
     }),
     b: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     c: $data.searchVal,
-    d: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
+    d: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "4b"),
     e: common_vendor.f($data.warehousingEntryList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.handledBy),
@@ -81,8 +81,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     f: common_vendor.sr("paging", "44b24dac-0"),
-    g: common_vendor.o($options.queryList),
-    h: common_vendor.o(($event) => $data.warehousingEntryList = $event),
+    g: common_vendor.o($options.queryList, "4f"),
+    h: common_vendor.o(($event) => $data.warehousingEntryList = $event, "eb"),
     i: common_vendor.p({
       modelValue: $data.warehousingEntryList
     })
@@ -90,3 +90,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-44b24dac"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/warehousing/warehousing_list.js.map

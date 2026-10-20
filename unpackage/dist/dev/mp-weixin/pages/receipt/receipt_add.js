@@ -117,7 +117,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $options.getImgUrl("static/image/receipt/import-order.png"),
     b: $options.getImgUrl("static/image/receipt/add.png"),
-    c: common_vendor.o(($event) => $options.importOrder()),
+    c: common_vendor.o(($event) => $options.importOrder(), "1a"),
     d: $options.getImgUrl("static/image/order/order_number.png"),
     e: common_vendor.t($data.receipt.orderNumber),
     f: $options.getImgUrl("static/image/order/cusomer_name_add.png"),
@@ -126,7 +126,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     i: common_vendor.t($data.receipt.totalAmount),
     j: $options.getImgUrl("static/image/receipt/price_after_discount.png"),
     k: $options.discount,
-    l: common_vendor.o(($event) => $options.discount = $event.detail.value),
+    l: common_vendor.o(($event) => $options.discount = $event.detail.value, "6f"),
     m: $options.getImgUrl("static/image/order/order_actual_amount.png"),
     n: common_vendor.t($data.receipt.actualmoney),
     o: $options.getImgUrl("static/image/order/order_actual_amount.png"),
@@ -135,22 +135,23 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     r: common_vendor.t($data.receipt.tobeReceived),
     s: $options.getImgUrl("static/image/receipt/amount_collected.png"),
     t: $data.receipt.amountCollected,
-    v: common_vendor.o(($event) => $data.receipt.amountCollected = $event.detail.value),
+    v: common_vendor.o(($event) => $data.receipt.amountCollected = $event.detail.value, "cd"),
     w: common_vendor.f($data.receipt.voucherList, (item, index, i0) => {
       return {
-        a: common_vendor.o(($event) => $options.onPreviewImage(index)),
+        a: common_vendor.o(($event) => $options.onPreviewImage(index), "24"),
         b: $options.getVoucherUrl(item.voucherUrl),
-        c: common_vendor.o(($event) => $options.onDeleteThis(index))
+        c: common_vendor.o(($event) => $options.onDeleteThis(index), "60")
       };
     }),
-    x: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args)),
+    x: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args), "73"),
     y: $options.getImgUrl("static/image/receipt/upload-voucher.png"),
-    z: common_vendor.o([($event) => $data.receipt.remark = $event.detail.value, (...args) => $options.handInput && $options.handInput(...args)]),
+    z: common_vendor.o([($event) => $data.receipt.remark = $event.detail.value, (...args) => $options.handInput && $options.handInput(...args)], "b1"),
     A: $data.receipt.remark,
     B: common_vendor.t($data.textateaL),
     C: common_vendor.t($data.maxlength),
-    D: common_vendor.o(($event) => $options.addReceiptForm())
+    D: common_vendor.o(($event) => $options.addReceiptForm(), "f8")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-5d9c084a"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/receipt/receipt_add.js.map

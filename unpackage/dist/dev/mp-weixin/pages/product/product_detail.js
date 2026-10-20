@@ -138,55 +138,56 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.productNameFocus,
-    b: common_vendor.o(($event) => $data.productNameFocus = false),
+    b: common_vendor.o(($event) => $data.productNameFocus = false, "d1"),
     c: $data.isEditable,
     d: $data.product.productName,
-    e: common_vendor.o(($event) => $data.product.productName = $event.detail.value),
+    e: common_vendor.o(($event) => $data.product.productName = $event.detail.value, "35"),
     f: $data.isEditable,
     g: $data.product.type,
-    h: common_vendor.o(($event) => $data.product.type = $event.detail.value),
+    h: common_vendor.o(($event) => $data.product.type = $event.detail.value, "32"),
     i: $data.isEditable,
     j: $data.product.size,
-    k: common_vendor.o(($event) => $data.product.size = $event.detail.value),
+    k: common_vendor.o(($event) => $data.product.size = $event.detail.value, "d7"),
     l: $data.isEditable,
     m: $data.product.production,
-    n: common_vendor.o(($event) => $data.product.production = $event.detail.value),
+    n: common_vendor.o(($event) => $data.product.production = $event.detail.value, "53"),
     o: $data.isEditable,
     p: $data.product.color,
-    q: common_vendor.o(($event) => $data.product.color = $event.detail.value),
+    q: common_vendor.o(($event) => $data.product.color = $event.detail.value, "75"),
     r: $data.isEditable,
     s: $data.product.texture,
-    t: common_vendor.o(($event) => $data.product.texture = $event.detail.value),
+    t: common_vendor.o(($event) => $data.product.texture = $event.detail.value, "ee"),
     v: $data.isEditable,
     w: $data.product.stock,
-    x: common_vendor.o(($event) => $data.product.stock = $event.detail.value),
+    x: common_vendor.o(($event) => $data.product.stock = $event.detail.value, "4a"),
     y: $data.isEditable,
     z: $data.product.purchasePrice,
-    A: common_vendor.o(($event) => $data.product.purchasePrice = $event.detail.value),
+    A: common_vendor.o(($event) => $data.product.purchasePrice = $event.detail.value, "2d"),
     B: $data.isEditable,
     C: $data.product.retailPrice,
-    D: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value),
-    E: common_vendor.o(($event) => $options.chooseCategory()),
+    D: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value, "1d"),
+    E: common_vendor.o(($event) => $options.chooseCategory(), "7b"),
     F: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/common/right.png") + ")"),
     G: $data.isEditable,
     H: $data.product.productCategoryName,
-    I: common_vendor.o(($event) => $data.product.productCategoryName = $event.detail.value),
+    I: common_vendor.o(($event) => $data.product.productCategoryName = $event.detail.value, "37"),
     J: common_vendor.f($data.product.productImages, (item, index, i0) => {
       return common_vendor.e({
-        a: common_vendor.o(($event) => $options.onPreviewImage(index)),
+        a: common_vendor.o(($event) => $options.onPreviewImage(index), "28"),
         b: $options.getProductImgUrl(item.productUrl)
       }, !$data.isEditable ? {
-        c: common_vendor.o(($event) => $options.onDeleteThis(index))
+        c: common_vendor.o(($event) => $options.onDeleteThis(index), "c2")
       } : {});
     }),
     K: !$data.isEditable,
-    L: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args)),
+    L: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args), "79"),
     M: $options.getImgUrl("static/image/receipt/upload-voucher.png"),
     N: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    O: common_vendor.o(($event) => $options.deleteProduct()),
+    O: common_vendor.o(($event) => $options.deleteProduct(), "7a"),
     P: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    Q: common_vendor.o(($event) => $options.editProduct())
+    Q: common_vendor.o(($event) => $options.editProduct(), "fa")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-0591f1f7"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/product_detail.js.map

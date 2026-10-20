@@ -91,3 +91,4 @@ const loadingModule = {
   }
 };
 exports.loadingModule = loadingModule;
+//# sourceMappingURL=../../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/js/modules/loading.js.map

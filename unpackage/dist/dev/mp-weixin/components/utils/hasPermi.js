@@ -16,3 +16,4 @@ function hasPermi(binding) {
   return a;
 }
 exports.hasPermi = hasPermi;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/components/utils/hasPermi.js.map

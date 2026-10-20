@@ -398,3 +398,4 @@ const scrollerModule = {
   }
 };
 exports.scrollerModule = scrollerModule;
+//# sourceMappingURL=../../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/js/modules/scroller.js.map

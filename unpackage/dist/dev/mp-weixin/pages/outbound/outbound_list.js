@@ -73,13 +73,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       return {
         a: common_vendor.t(item),
         b: $data.completionStatus == item ? 1 : "",
-        c: common_vendor.o(($event) => $options.changeCompletionStatus(item))
+        c: common_vendor.o(($event) => $options.changeCompletionStatus(item), "ff")
       };
     }),
     b: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     c: $data.searchVal,
-    d: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
-    e: common_vendor.o(($event) => $options.moreSearch()),
+    d: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "eb"),
+    e: common_vendor.o(($event) => $options.moreSearch(), "85"),
     f: common_vendor.f($data.outboundList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.customerName),
@@ -91,8 +91,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     g: common_vendor.sr("paging", "888efe3f-0"),
-    h: common_vendor.o($options.queryList),
-    i: common_vendor.o(($event) => $data.outboundList = $event),
+    h: common_vendor.o($options.queryList, "64"),
+    i: common_vendor.o(($event) => $data.outboundList = $event, "38"),
     j: common_vendor.p({
       modelValue: $data.outboundList
     })
@@ -100,3 +100,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-888efe3f"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/outbound/outbound_list.js.map

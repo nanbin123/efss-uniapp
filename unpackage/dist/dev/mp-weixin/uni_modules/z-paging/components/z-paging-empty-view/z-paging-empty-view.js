@@ -120,12 +120,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     p: $props.unit === "rpx" ? 1 : "",
     q: $props.unit === "px" ? 1 : "",
     r: common_vendor.s($props.emptyViewReloadStyle),
-    s: common_vendor.o((...args) => $options.reloadClick && $options.reloadClick(...args))
+    s: common_vendor.o((...args) => $options.reloadClick && $options.reloadClick(...args), "00")
   } : {}, {
     t: $props.emptyViewFixed ? 1 : "",
     v: common_vendor.s($options.finalEmptyViewStyle),
-    w: common_vendor.o((...args) => $options.emptyViewClick && $options.emptyViewClick(...args))
+    w: common_vendor.o((...args) => $options.emptyViewClick && $options.emptyViewClick(...args), "07")
   });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b7999e14"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging-empty-view/z-paging-empty-view.js.map

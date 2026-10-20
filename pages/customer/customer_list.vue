@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="paging" v-model="customerList" @query="queryList">
+	<z-paging ref="paging" v-model="customerList" @query="queryList" :safe-area-inset-bottom="true" bottom-bg-color="#38c1b9">
 		<template #top>
 			<view class="head">
 				<view class="search">
@@ -206,12 +206,24 @@
 }
 .customer_footer{	
 	font-size: 16px;
+	font-weight: 500;
 	text-align: center;
-	height: 30px;
-	line-height: 30px;
+	height: 80rpx;
 	background-color: #38c1b9;
 	color: #ffffff;	
-	/* position: relative; */
+}
+.customer_footer navigator{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 矮屏手机进一步压缩底栏，为客户列表保留更多可视空间 */
+@media screen and (max-height: 700px) {
+	.customer_footer{
+		height: 72rpx;
+	}
 }
 
 </style>

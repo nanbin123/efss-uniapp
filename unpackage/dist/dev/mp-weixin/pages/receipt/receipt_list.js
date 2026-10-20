@@ -54,7 +54,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("backgroundImage:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "58"),
     d: common_vendor.f($data.receiptList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.orderNumber),
@@ -72,8 +72,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     e: common_vendor.sr("paging", "eb4910b4-0"),
-    f: common_vendor.o($options.queryList),
-    g: common_vendor.o(($event) => $data.receiptList = $event),
+    f: common_vendor.o($options.queryList, "57"),
+    g: common_vendor.o(($event) => $data.receiptList = $event, "87"),
     h: common_vendor.p({
       modelValue: $data.receiptList
     })
@@ -81,3 +81,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-eb4910b4"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/receipt/receipt_list.js.map

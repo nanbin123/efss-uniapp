@@ -90,14 +90,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.t($data.titleText),
     b: $options.getImgUrl("static/image/product/arrow.png"),
-    c: common_vendor.o((...args) => $options.itemClick && $options.itemClick(...args)),
+    c: common_vendor.o((...args) => $options.itemClick && $options.itemClick(...args), "c1"),
     d: $data.dateStart == ""
   }, $data.dateStart == "" ? {} : {
     e: common_vendor.t($data.dateStart)
   }, {
-    f: common_vendor.o(($event) => $options.toggle("start_date")),
+    f: common_vendor.o(($event) => $options.toggle("start_date"), "df"),
     g: common_vendor.sr("start_date", "9d2bcbee-1,9d2bcbee-0"),
-    h: common_vendor.o($options.dateStartHand),
+    h: common_vendor.o($options.dateStartHand, "52"),
     i: common_vendor.p({
       mode: "date"
     }),
@@ -105,9 +105,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.dateEnd == "" ? {} : {
     k: common_vendor.t($data.dateEnd)
   }, {
-    l: common_vendor.o(($event) => $options.toggle("end_date")),
+    l: common_vendor.o(($event) => $options.toggle("end_date"), "ae"),
     m: common_vendor.sr("end_date", "9d2bcbee-2,9d2bcbee-0"),
-    n: common_vendor.o($options.dateEndHand),
+    n: common_vendor.o($options.dateEndHand, "1d"),
     o: common_vendor.p({
       mode: "date"
     }),
@@ -121,8 +121,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     q: $data.show ? "1" : "0",
     r: $data.show ? "block" : "none",
     s: common_vendor.n($data.show ? "bg-mask-show" : ""),
-    t: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args)),
-    v: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args)),
+    t: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args), "e9"),
+    v: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args), "90"),
     w: common_vendor.f($data.productAnalysisList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.productName),
@@ -139,8 +139,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     x: $options.getImgUrl("static/image/茶几.png"),
     y: common_vendor.sr("paging", "9d2bcbee-0"),
-    z: common_vendor.o($options.queryList),
-    A: common_vendor.o(($event) => $data.productAnalysisList = $event),
+    z: common_vendor.o($options.queryList, "23"),
+    A: common_vendor.o(($event) => $data.productAnalysisList = $event, "7e"),
     B: common_vendor.p({
       modelValue: $data.productAnalysisList
     })
@@ -148,3 +148,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9d2bcbee"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/product_analysis.js.map

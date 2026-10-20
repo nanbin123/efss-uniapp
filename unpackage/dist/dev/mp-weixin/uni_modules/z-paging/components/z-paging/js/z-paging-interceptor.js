@@ -66,3 +66,4 @@ const interceptor = {
   _handleLanguage2Local
 };
 exports.interceptor = interceptor;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/js/z-paging-interceptor.js.map

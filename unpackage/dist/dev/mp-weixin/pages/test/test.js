@@ -173,7 +173,7 @@ const _sfc_main = {
   },
   methods: {
     onClickItem(e) {
-      console.log(e);
+      common_vendor.index.__f__("log", "at pages/test/test.vue:181", e);
       this.current = e.currentIndex;
     },
     add() {
@@ -192,14 +192,14 @@ const _sfc_main = {
       this.dynamicLists.splice(index, 1);
     },
     submit(ref) {
-      console.log(this.baseFormData);
+      common_vendor.index.__f__("log", "at pages/test/test.vue:200", this.baseFormData);
       this.$refs[ref].validate().then((res) => {
-        console.log("success", res);
+        common_vendor.index.__f__("log", "at pages/test/test.vue:202", "success", res);
         common_vendor.index.showToast({
           title: `校验通过`
         });
       }).catch((err) => {
-        console.log("err", err);
+        common_vendor.index.__f__("log", "at pages/test/test.vue:207", "err", err);
       });
     }
   }
@@ -216,7 +216,7 @@ if (!Math) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o(($event) => $data.baseFormData.name = $event),
+    a: common_vendor.o(($event) => $data.baseFormData.name = $event, "00"),
     b: common_vendor.p({
       placeholder: "请输入姓名",
       modelValue: $data.baseFormData.name
@@ -225,7 +225,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       label: "姓名",
       required: true
     }),
-    d: common_vendor.sr("baseForm", "72034071-0"),
+    d: common_vendor.sr("baseForm", "2e9e086a-0"),
     e: common_vendor.p({
       model: $data.baseFormData,
       labelWidth: "80px"
@@ -234,3 +234,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/test/test.js.map

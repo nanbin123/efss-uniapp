@@ -28,3 +28,4 @@ const useProductStore = common_vendor.defineStore("productStore", {
   }
 });
 exports.useProductStore = useProductStore;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/store/modules/product.js.map

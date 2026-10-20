@@ -80,7 +80,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $options.getImgUrl("static/image/outbound/import_order.png"),
     b: $options.getImgUrl("static/image/receipt/add.png"),
-    c: common_vendor.o(($event) => $options.importOrder()),
+    c: common_vendor.o(($event) => $options.importOrder(), "28"),
     d: $options.getImgUrl("static/image/outbound/order_number.png"),
     e: common_vendor.t($data.outbound.orderNumber),
     f: $options.getImgUrl("static/image/cusomer/cusomer_name.png"),
@@ -102,19 +102,19 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.t(item.production),
         e: common_vendor.t(item.color),
         f: common_vendor.t(item.texture),
-        g: common_vendor.o(($event) => $options.open(item)),
+        g: common_vendor.o(($event) => $options.open(item), "ed"),
         h: common_vendor.t(item.toBeShippedOutNumber),
         i: common_vendor.t(item.outboundNumber),
-        j: common_vendor.o(($event) => $options.open(item))
+        j: common_vendor.o(($event) => $options.open(item), "67")
       };
     }),
     r: $options.getImgUrl("static/image/茶几.png"),
-    s: common_vendor.o(($event) => $options.confirm()),
+    s: common_vendor.o(($event) => $options.confirm(), "d3"),
     t: common_vendor.t($data.popupProduct.productName),
     v: $data.popupProduct.outboundNumber,
-    w: common_vendor.o(($event) => $data.popupProduct.outboundNumber = $event.detail.value),
-    x: common_vendor.o(($event) => $options.cancelTrack()),
-    y: common_vendor.o(($event) => $options.submitTrack()),
+    w: common_vendor.o(($event) => $data.popupProduct.outboundNumber = $event.detail.value, "4e"),
+    x: common_vendor.o(($event) => $options.cancelTrack(), "24"),
+    y: common_vendor.o(($event) => $options.submitTrack(), "68"),
     z: common_vendor.sr("popup", "8ab6731b-0"),
     A: common_vendor.p({
       type: "bottom",
@@ -124,3 +124,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8ab6731b"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/outbound/outbound_add.js.map

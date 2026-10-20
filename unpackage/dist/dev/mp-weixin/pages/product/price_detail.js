@@ -83,40 +83,41 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.productNameFocus,
-    b: common_vendor.o(($event) => $data.productNameFocus = false),
+    b: common_vendor.o(($event) => $data.productNameFocus = false, "25"),
     c: $data.isEditable,
     d: $data.product.productName,
-    e: common_vendor.o(($event) => $data.product.productName = $event.detail.value),
+    e: common_vendor.o(($event) => $data.product.productName = $event.detail.value, "69"),
     f: $data.isEditable,
     g: $data.product.type,
-    h: common_vendor.o(($event) => $data.product.type = $event.detail.value),
+    h: common_vendor.o(($event) => $data.product.type = $event.detail.value, "5f"),
     i: $data.isEditable,
     j: $data.product.size,
-    k: common_vendor.o(($event) => $data.product.size = $event.detail.value),
+    k: common_vendor.o(($event) => $data.product.size = $event.detail.value, "05"),
     l: $data.isEditable,
     m: $data.product.production,
-    n: common_vendor.o(($event) => $data.product.production = $event.detail.value),
+    n: common_vendor.o(($event) => $data.product.production = $event.detail.value, "d3"),
     o: $data.isEditable,
     p: $data.product.color,
-    q: common_vendor.o(($event) => $data.product.color = $event.detail.value),
+    q: common_vendor.o(($event) => $data.product.color = $event.detail.value, "3a"),
     r: $data.isEditable,
     s: $data.product.texture,
-    t: common_vendor.o(($event) => $data.product.texture = $event.detail.value),
+    t: common_vendor.o(($event) => $data.product.texture = $event.detail.value, "7a"),
     v: $data.isEditable,
     w: $data.product.retailPrice,
-    x: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value),
+    x: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value, "88"),
     y: common_vendor.f($data.product.productImages, (item, index, i0) => {
       return common_vendor.e({
-        a: common_vendor.o(($event) => $options.onPreviewImage(index)),
+        a: common_vendor.o(($event) => $options.onPreviewImage(index), "58"),
         b: $options.getProductImgUrl(item.productUrl)
       }, !$data.isEditImg ? {
-        c: common_vendor.o(($event) => $options.onDeleteThis(item, index))
+        c: common_vendor.o(($event) => $options.onDeleteThis(item, index), "98")
       } : {});
     }),
     z: !$data.isEditImg,
-    A: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args)),
+    A: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args), "1e"),
     B: $options.getImgUrl("static/image/receipt/upload-voucher.png")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-436b0c2f"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/price_detail.js.map

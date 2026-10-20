@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const BASEURL = "http://127.0.0.1:8080/";
+const BASEURL = "https://www.efss.net.cn/";
 function get(url, data = {}, contentType = "application/x-www-form-urlencoded;charset=UTF-8") {
   return request(url, data, "GET", contentType);
 }
@@ -11,7 +11,7 @@ function uploadFiles(url, files, formData = {}) {
   return uploadImg(url, files, formData);
 }
 function uploadImg(url, files, formData) {
-  console.log("files", files);
+  common_vendor.index.__f__("log", "at components/utils/request.js:28", "files", files);
   return new Promise(function(resolve, reject) {
     common_vendor.index.showLoading({
       title: "上传中"
@@ -67,6 +67,7 @@ function request(url, data = {}, method = "GET", contentType) {
         if (res.data) {
           if (res.data.code == 401 || res.data.code == 403) {
             common_vendor.index.removeStorageSync("token");
+            alert(JSON.stringify(res.data));
             common_vendor.index.showToast({
               title: "登录失效，请重新登录",
               icon: "none"
@@ -102,3 +103,4 @@ function request(url, data = {}, method = "GET", contentType) {
 exports.get = get;
 exports.post = post;
 exports.uploadFiles = uploadFiles;
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/components/utils/request.js.map

@@ -170,7 +170,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     f: common_vendor.t($data.receipt.totalAmount),
     g: $options.getImgUrl("static/image/receipt/price_after_discount.png"),
     h: $options.discount,
-    i: common_vendor.o(($event) => $options.discount = $event.detail.value),
+    i: common_vendor.o(($event) => $options.discount = $event.detail.value, "d6"),
     j: $options.getImgUrl("static/image/order/order_actual_amount.png"),
     k: common_vendor.t($data.receipt.actualmoney),
     l: $options.getImgUrl("static/image/order/order_actual_amount.png"),
@@ -179,31 +179,32 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     o: common_vendor.t($data.receipt.tobeReceived),
     p: $options.getImgUrl("static/image/receipt/amount_collected.png"),
     q: $data.amountCollectedFocus,
-    r: common_vendor.o(($event) => $data.amountCollectedFocus = false),
+    r: common_vendor.o(($event) => $data.amountCollectedFocus = false, "ee"),
     s: $data.isEditable,
     t: $data.receipt.amountCollected,
-    v: common_vendor.o(($event) => $data.receipt.amountCollected = $event.detail.value),
+    v: common_vendor.o(($event) => $data.receipt.amountCollected = $event.detail.value, "83"),
     w: common_vendor.f($data.receipt.voucherList, (item, index, i0) => {
       return common_vendor.e({
-        a: common_vendor.o(($event) => $options.onPreviewImage(index)),
+        a: common_vendor.o(($event) => $options.onPreviewImage(index), "7a"),
         b: $options.getVoucherUrl(item.voucherUrl)
       }, !$data.isEditable ? {
-        c: common_vendor.o(($event) => $options.onDeleteThis(index))
+        c: common_vendor.o(($event) => $options.onDeleteThis(index), "7d")
       } : {});
     }),
     x: !$data.isEditable,
-    y: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args)),
+    y: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args), "9c"),
     z: $options.getImgUrl("static/image/receipt/upload-voucher.png"),
     A: $data.isEditable,
-    B: common_vendor.o([($event) => $data.receipt.remark = $event.detail.value, (...args) => $options.handInput && $options.handInput(...args)]),
+    B: common_vendor.o([($event) => $data.receipt.remark = $event.detail.value, (...args) => $options.handInput && $options.handInput(...args)], "b1"),
     C: $data.receipt.remark,
     D: common_vendor.t($data.textateaL),
     E: common_vendor.t($data.maxlength),
     F: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    G: common_vendor.o(($event) => $options.deleteReceipt()),
+    G: common_vendor.o(($event) => $options.deleteReceipt(), "21"),
     H: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    I: common_vendor.o(($event) => $options.editOrderForm())
+    I: common_vendor.o(($event) => $options.editOrderForm(), "93")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9b0cb02d"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/receipt/receipt_detail.js.map

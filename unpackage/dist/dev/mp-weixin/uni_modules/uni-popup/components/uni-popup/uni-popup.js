@@ -212,7 +212,7 @@ const _sfc_main = {
         direction = this.type;
       }
       if (!this.config[direction]) {
-        console.error("缺少类型：", direction);
+        common_vendor.index.__f__("error", "at uni_modules/uni-popup/components/uni-popup/uni-popup.vue:310", "缺少类型：", direction);
         return;
       }
       this[this.config[direction]]();
@@ -367,7 +367,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.showPopup ? common_vendor.e({
     b: $data.maskShow
   }, $data.maskShow ? {
-    c: common_vendor.o($options.onTap),
+    c: common_vendor.o($options.onTap, "85"),
     d: common_vendor.p({
       name: "mask",
       ["mode-class"]: "fade",
@@ -378,8 +378,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     e: common_vendor.s($options.getStyles),
     f: common_vendor.n($data.popupstyle),
-    g: common_vendor.o((...args) => $options.clear && $options.clear(...args)),
-    h: common_vendor.o($options.onTap),
+    g: common_vendor.o((...args) => $options.clear && $options.clear(...args), "28"),
+    h: common_vendor.o($options.onTap, "f6"),
     i: common_vendor.p({
       ["mode-class"]: $data.ani,
       name: "content",
@@ -387,10 +387,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       duration: $data.duration,
       show: $data.showTrans
     }),
-    j: common_vendor.o((...args) => $options.touchstart && $options.touchstart(...args)),
+    j: common_vendor.o((...args) => $options.touchstart && $options.touchstart(...args), "18"),
     k: common_vendor.n($data.popupstyle),
     l: common_vendor.n($options.isDesktop ? "fixforpc-z-index" : "")
   }) : {});
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/uni-popup/components/uni-popup/uni-popup.js.map

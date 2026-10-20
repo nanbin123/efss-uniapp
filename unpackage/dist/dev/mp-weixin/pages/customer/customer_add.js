@@ -99,32 +99,32 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $options.getImgUrl("static/image/cusomer/cusomer_name.png"),
     b: $data.customerNameFocus,
-    c: common_vendor.o(($event) => $data.customerNameFocus = false),
+    c: common_vendor.o(($event) => $data.customerNameFocus = false, "0a"),
     d: $data.customer.customerName,
-    e: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value),
+    e: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value, "12"),
     f: $options.getImgUrl("static/image/cusomer/cusomer_gender.png"),
     g: $data.customer.sex === "1" ? "#fff" : "#333",
     h: $data.customer.sex === "2" ? "#fff" : "#333",
-    i: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args)),
+    i: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "26"),
     j: $options.getImgUrl("static/image/cusomer/customer_phone.png"),
     k: $data.customer.phone,
-    l: common_vendor.o(($event) => $data.customer.phone = $event.detail.value),
+    l: common_vendor.o(($event) => $data.customer.phone = $event.detail.value, "fb"),
     m: $options.getImgUrl("static/image/cusomer/cusomer_address.png"),
     n: $data.customer.address,
-    o: common_vendor.o(($event) => $data.customer.address = $event.detail.value),
+    o: common_vendor.o(($event) => $data.customer.address = $event.detail.value, "57"),
     p: $options.getImgUrl("static/image/cusomer/degree.png"),
-    q: common_vendor.o(($event) => $options.changeStar(1)),
+    q: common_vendor.o(($event) => $options.changeStar(1), "0d"),
     r: $data.customer.grade > 0 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    s: common_vendor.o(($event) => $options.changeStar(2)),
+    s: common_vendor.o(($event) => $options.changeStar(2), "3f"),
     t: $data.customer.grade > 1 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    v: common_vendor.o(($event) => $options.changeStar(3)),
+    v: common_vendor.o(($event) => $options.changeStar(3), "c0"),
     w: $data.customer.grade > 2 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
     x: $options.getImgUrl("static/image/cusomer/quoted_price.png"),
     y: $data.customer.quotation,
-    z: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value),
+    z: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value, "b1"),
     A: $options.getImgUrl("static/image/cusomer/arrive.png"),
     B: $data.customer.remark,
-    C: common_vendor.o(($event) => $data.customer.remark = $event.detail.value),
+    C: common_vendor.o(($event) => $data.customer.remark = $event.detail.value, "15"),
     D: common_vendor.t($options.productNumberTotal),
     E: common_vendor.t($options.productRetailPriceTotal),
     F: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
@@ -142,9 +142,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     G: $options.getImgUrl("static/image/茶几.png"),
     H: $options.getImgUrl("static/image/red_add.png"),
-    I: common_vendor.o(($event) => $options.addCustomerProduct()),
-    J: common_vendor.o(($event) => $options.addCustomer())
+    I: common_vendor.o(($event) => $options.addCustomerProduct(), "68"),
+    J: common_vendor.o(($event) => $options.addCustomer(), "b7")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-7f77e776"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/customer/customer_add.js.map

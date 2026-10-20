@@ -90,26 +90,26 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $options.getImgUrl("static/image/user/user_name.png"),
     b: $data.userNameFocus,
-    c: common_vendor.o(($event) => $data.userNameFocus = false),
+    c: common_vendor.o(($event) => $data.userNameFocus = false, "9e"),
     d: $data.user.userName,
-    e: common_vendor.o(($event) => $data.user.userName = $event.detail.value),
+    e: common_vendor.o(($event) => $data.user.userName = $event.detail.value, "3c"),
     f: $options.getImgUrl("static/image/user/user_name.png"),
     g: $data.userPasswordFocus,
-    h: common_vendor.o(($event) => $data.userPasswordFocus = false),
+    h: common_vendor.o(($event) => $data.userPasswordFocus = false, "59"),
     i: $data.user.password,
-    j: common_vendor.o(($event) => $data.user.password = $event.detail.value),
+    j: common_vendor.o(($event) => $data.user.password = $event.detail.value, "ab"),
     k: $options.getImgUrl("static/image/user/nick_name.png"),
     l: $data.user.nickName,
-    m: common_vendor.o(($event) => $data.user.nickName = $event.detail.value),
+    m: common_vendor.o(($event) => $data.user.nickName = $event.detail.value, "3a"),
     n: $options.getImgUrl("static/image/order/cusomer_phone.png"),
     o: $data.userPhonenumberFocus,
-    p: common_vendor.o(($event) => $data.userPhonenumberFocus = false),
+    p: common_vendor.o(($event) => $data.userPhonenumberFocus = false, "7f"),
     q: $data.user.phonenumber,
-    r: common_vendor.o(($event) => $data.user.phonenumber = $event.detail.value),
+    r: common_vendor.o(($event) => $data.user.phonenumber = $event.detail.value, "46"),
     s: $options.getImgUrl("static/image/user/permission.png"),
     t: common_vendor.sr("menuRefLeft", "a2c87eef-0"),
-    v: common_vendor.o(_ctx.handleTreeChange),
-    w: common_vendor.o(_ctx.handleExpandChange),
+    v: common_vendor.o(_ctx.handleTreeChange, "ed"),
+    w: common_vendor.o(_ctx.handleExpandChange, "6d"),
     x: common_vendor.p({
       data: $data.roomTreeDataLift,
       labelField: "label",
@@ -118,8 +118,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       showCheckbox: true
     }),
     y: common_vendor.sr("menuRefRight", "a2c87eef-1"),
-    z: common_vendor.o(_ctx.handleTreeChange),
-    A: common_vendor.o(_ctx.handleExpandChange),
+    z: common_vendor.o(_ctx.handleTreeChange, "b8"),
+    A: common_vendor.o(_ctx.handleExpandChange, "99"),
     B: common_vendor.p({
       data: $data.roomTreeDataRight,
       labelField: "label",
@@ -127,8 +127,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       defaultExpandAll: true,
       showCheckbox: true
     }),
-    C: common_vendor.o(($event) => $options.addUserForm())
+    C: common_vendor.o(($event) => $options.addUserForm(), "c5")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-a2c87eef"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/user/user_add.js.map

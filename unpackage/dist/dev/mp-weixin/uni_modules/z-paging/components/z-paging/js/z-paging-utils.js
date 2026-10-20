@@ -56,7 +56,7 @@ function getParent(parent) {
   return getParent(parent.$parent);
 }
 function consoleErr(err) {
-  console.error(`[z-paging]${err}`);
+  common_vendor.index.__f__("error", "at uni_modules/z-paging/components/z-paging/js/z-paging-utils.js:72", `[z-paging]${err}`);
 }
 function delay(callback, ms = uni_modules_zPaging_components_zPaging_js_zPagingConstant.c.delayTime, key) {
   const timeout = setTimeout(callback, ms);
@@ -210,3 +210,4 @@ const u = {
   deepCopy
 };
 exports.u = u;
+//# sourceMappingURL=../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/js/z-paging-utils.js.map

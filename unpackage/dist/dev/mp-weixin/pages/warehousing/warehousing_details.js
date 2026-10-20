@@ -135,10 +135,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.t($data.warehousingEntry.warehousingNumber),
     c: $options.getImgUrl("static/image/warehousing/record_date.png"),
     d: common_vendor.t($options.isEmpty($data.warehousingEntry.recordDate) ? "请选择记录日期" : $data.warehousingEntry.recordDate),
-    e: common_vendor.o(($event) => $options.toggle("record_date")),
+    e: common_vendor.o(($event) => $options.toggle("record_date"), "e5"),
     f: $options.isEmpty($data.warehousingEntry.recordDate) ? "#a0a0a0" : "#333",
     g: common_vendor.sr("record_date", "3a2ab797-0"),
-    h: common_vendor.o($options.deliveryHand),
+    h: common_vendor.o($options.deliveryHand, "93"),
     i: common_vendor.p({
       mode: "date",
       pageData: $data.warehousingEntry.recordDate
@@ -150,7 +150,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     n: $options.getImgUrl("static/image/warehousing/warehousing-number.png"),
     o: $data.isEditable,
     p: $data.warehousingEntry.remark,
-    q: common_vendor.o(($event) => $data.warehousingEntry.remark = $event.detail.value),
+    q: common_vendor.o(($event) => $data.warehousingEntry.remark = $event.detail.value, "ff"),
     r: $options.getImgUrl("static/image/warehousing/choose_product.png"),
     s: common_vendor.f($data.warehousingEntry.warehousingEntryProductList, (item, index, i0) => {
       return {
@@ -163,15 +163,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         g: common_vendor.t(item.isInWarehouse == true ? "已入库" : "未入库"),
         h: item.isInWarehouse,
         i: $options.isDisabled(item.isEdit),
-        j: common_vendor.o(($event) => $options.onCheckchange($event, item))
+        j: common_vendor.o(($event) => $options.onCheckchange($event, item), "69")
       };
     }),
-    t: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args)),
+    t: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args), "ee"),
     v: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    w: common_vendor.o(($event) => $options.deleteWarehousing()),
+    w: common_vendor.o(($event) => $options.deleteWarehousing(), "3e"),
     x: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    y: common_vendor.o(($event) => $options.editWarehousing())
+    y: common_vendor.o(($event) => $options.editWarehousing(), "c3")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-3a2ab797"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/warehousing/warehousing_details.js.map

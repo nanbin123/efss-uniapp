@@ -115,3 +115,4 @@ const i18nModule = {
   }
 };
 exports.i18nModule = i18nModule;
+//# sourceMappingURL=../../../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/js/modules/i18n.js.map

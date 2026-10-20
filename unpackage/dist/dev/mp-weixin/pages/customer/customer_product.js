@@ -20,6 +20,35 @@ const _sfc_main = {
     return { productStore, moreSearchStore };
   },
   methods: {
+    //获取商品第一张图片（空数组时显示默认图）
+    getProductImg(item) {
+      if (item.productImages && item.productImages.length > 0) {
+        let url = item.productImages[0].productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      }
+      return this.getImgUrl("static/image/茶几.png");
+    },
+    // 点击放大预览，支持左右滑动切换所有图片
+    previewImage(item) {
+      if (!item.productImages || item.productImages.length === 0) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      const urls = item.productImages.map((img) => {
+        let url = img.productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      });
+      common_vendor.index.previewImage({
+        current: 0,
+        // 从第一张开始
+        urls,
+        // 所有图片地址
+        indicator: "number",
+        // 显示 1/3 数字指示器
+        loop: true
+        // 循环切换
+      });
+    },
     getProductList() {
       let product = this.moreSearchStore.moreSearch;
       this.searchProduct = product;
@@ -128,37 +157,39 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("backgroundImage:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
-    d: common_vendor.o(($event) => $options.moreSearch()),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "c2"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "ad"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
       return {
-        a: common_vendor.t(item.productName),
-        b: common_vendor.t(item.type),
-        c: common_vendor.t(item.size),
-        d: common_vendor.t(item.production),
-        e: common_vendor.t(item.texture),
-        f: common_vendor.t(item.color),
-        g: common_vendor.t(item.number),
-        h: common_vendor.t(item.retailPrice),
-        i: common_vendor.o(() => {
+        a: $options.getProductImg(item),
+        b: common_vendor.o(($event) => $options.previewImage(item), index),
+        c: common_vendor.t(item.productName),
+        d: common_vendor.t(item.type),
+        e: common_vendor.t(item.size),
+        f: common_vendor.t(item.production),
+        g: common_vendor.t(item.texture),
+        h: common_vendor.t(item.color),
+        i: common_vendor.t(item.number),
+        j: common_vendor.t(item.retailPrice),
+        k: common_vendor.o(() => {
         }, index),
-        j: item.selected,
-        k: common_vendor.o(($event) => $options.onCheckchange($event, item), index),
-        l: common_vendor.o(($event) => $options.selectProduct(item), index),
-        m: index
+        l: item.selected,
+        m: common_vendor.o(($event) => $options.onCheckchange($event, item), index),
+        n: common_vendor.o(($event) => $options.selectProduct(item), index),
+        o: index
       };
     }),
-    f: $options.getImgUrl("static/image/茶几.png"),
-    g: common_vendor.t($data.totalNumber),
-    h: common_vendor.t($data.totalMoney),
-    i: common_vendor.o(($event) => $options.confirm()),
-    j: common_vendor.sr("paging", "e68c9f1c-0"),
-    k: common_vendor.o($options.queryList),
-    l: common_vendor.o(($event) => $data.productList = $event),
-    m: common_vendor.p({
+    f: common_vendor.t($data.totalNumber),
+    g: common_vendor.t($data.totalMoney),
+    h: common_vendor.o(($event) => $options.confirm(), "0c"),
+    i: common_vendor.sr("paging", "e68c9f1c-0"),
+    j: common_vendor.o($options.queryList, "ef"),
+    k: common_vendor.o(($event) => $data.productList = $event, "2c"),
+    l: common_vendor.p({
       modelValue: $data.productList
     })
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e68c9f1c"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/customer/customer_product.js.map

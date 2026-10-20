@@ -126,8 +126,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("backgroundImage:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
-    d: common_vendor.o(($event) => $options.moreSearch()),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "fb"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "8c"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.productName),
@@ -147,10 +147,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     f: $options.getImgUrl("static/image/茶几.png"),
     g: common_vendor.t($data.totalNumber),
     h: common_vendor.t($data.totalMoney),
-    i: common_vendor.o(($event) => $options.confirm()),
-    j: common_vendor.sr("paging", "6fccf6ba-0"),
-    k: common_vendor.o($options.queryList),
-    l: common_vendor.o(($event) => $data.productList = $event),
+    i: common_vendor.o(($event) => $options.confirm(), "90"),
+    j: common_vendor.sr("paging", "c12e3f06-0"),
+    k: common_vendor.o($options.queryList, "ef"),
+    l: common_vendor.o(($event) => $data.productList = $event, "2c"),
     m: common_vendor.p({
       modelValue: $data.productList
     })
@@ -158,3 +158,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/warehousing/warehousing_product.js.map

@@ -120,42 +120,43 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.productNameFocus,
-    b: common_vendor.o(($event) => $data.productNameFocus = false),
+    b: common_vendor.o(($event) => $data.productNameFocus = false, "c3"),
     c: $data.product.productName,
-    d: common_vendor.o(($event) => $data.product.productName = $event.detail.value),
+    d: common_vendor.o(($event) => $data.product.productName = $event.detail.value, "27"),
     e: $data.product.type,
-    f: common_vendor.o(($event) => $data.product.type = $event.detail.value),
+    f: common_vendor.o(($event) => $data.product.type = $event.detail.value, "f2"),
     g: $data.product.size,
-    h: common_vendor.o(($event) => $data.product.size = $event.detail.value),
+    h: common_vendor.o(($event) => $data.product.size = $event.detail.value, "40"),
     i: $data.product.production,
-    j: common_vendor.o(($event) => $data.product.production = $event.detail.value),
+    j: common_vendor.o(($event) => $data.product.production = $event.detail.value, "41"),
     k: $data.product.color,
-    l: common_vendor.o(($event) => $data.product.color = $event.detail.value),
+    l: common_vendor.o(($event) => $data.product.color = $event.detail.value, "0b"),
     m: $data.product.texture,
-    n: common_vendor.o(($event) => $data.product.texture = $event.detail.value),
+    n: common_vendor.o(($event) => $data.product.texture = $event.detail.value, "aa"),
     o: $data.product.stock,
-    p: common_vendor.o(($event) => $data.product.stock = $event.detail.value),
+    p: common_vendor.o(($event) => $data.product.stock = $event.detail.value, "10"),
     q: $data.product.purchasePrice,
-    r: common_vendor.o(($event) => $data.product.purchasePrice = $event.detail.value),
+    r: common_vendor.o(($event) => $data.product.purchasePrice = $event.detail.value, "3d"),
     s: $data.product.retailPrice,
-    t: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value),
+    t: common_vendor.o(($event) => $data.product.retailPrice = $event.detail.value, "d9"),
     v: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/common/right.png") + ")"),
     w: $data.product.productCategoryName,
-    x: common_vendor.o(($event) => $data.product.productCategoryName = $event.detail.value),
-    y: common_vendor.o(($event) => $options.chooseCategory()),
+    x: common_vendor.o(($event) => $data.product.productCategoryName = $event.detail.value, "1c"),
+    y: common_vendor.o(($event) => $options.chooseCategory(), "27"),
     z: common_vendor.f($data.product.productImages, (item, index, i0) => {
       return common_vendor.e({
-        a: common_vendor.o(($event) => $options.onPreviewImage(index)),
+        a: common_vendor.o(($event) => $options.onPreviewImage(index), "e8"),
         b: $options.getProductImgUrl(item.productUrl)
       }, !_ctx.isEditable ? {
-        c: common_vendor.o(($event) => $options.onDeleteThis(index))
+        c: common_vendor.o(($event) => $options.onDeleteThis(index), "67")
       } : {});
     }),
     A: !_ctx.isEditable,
-    B: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args)),
+    B: common_vendor.o((...args) => $options.onChooseImage && $options.onChooseImage(...args), "8a"),
     C: $options.getImgUrl("static/image/receipt/upload-voucher.png"),
-    D: common_vendor.o((...args) => $options.productAdd && $options.productAdd(...args))
+    D: common_vendor.o((...args) => $options.productAdd && $options.productAdd(...args), "64")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-b086a63e"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/product_add.js.map

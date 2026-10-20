@@ -151,13 +151,13 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: $data.showPicker ? 1 : "",
-    b: common_vendor.o((...args) => $options.maskTap && $options.maskTap(...args)),
+    b: common_vendor.o((...args) => $options.maskTap && $options.maskTap(...args), "d7"),
     c: common_vendor.o(() => {
-    }),
-    d: common_vendor.o((...args) => $options.pickerCancel && $options.pickerCancel(...args)),
-    e: common_vendor.o((...args) => $options.pickerConfirm && $options.pickerConfirm(...args)),
+    }, "32"),
+    d: common_vendor.o((...args) => $options.pickerCancel && $options.pickerCancel(...args), "c8"),
+    e: common_vendor.o((...args) => $options.pickerConfirm && $options.pickerConfirm(...args), "f6"),
     f: common_vendor.o(() => {
-    }),
+    }, "23"),
     g: $props.mode == "date"
   }, $props.mode == "date" ? {
     h: common_vendor.f($data.data.years, (item, index, i0) => {
@@ -180,10 +180,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     k: $data.itemHeight,
     l: $data.pickVal,
-    m: common_vendor.o((...args) => $options.bindChange && $options.bindChange(...args))
+    m: common_vendor.o((...args) => $options.bindChange && $options.bindChange(...args), "c5")
   } : {}, {
     n: $data.showPicker ? 1 : ""
   });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/components/c-picker/c-picker.js.map

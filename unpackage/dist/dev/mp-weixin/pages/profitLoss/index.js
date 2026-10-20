@@ -26,10 +26,10 @@ if (!Array) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.t($data.dateQuery),
-    b: common_vendor.o(($event) => $options.toggle("date-query")),
+    b: common_vendor.o(($event) => $options.toggle("date-query"), "d4"),
     c: $data.dateQuery == "选择时间" ? "#a0a0a0" : "#333",
-    d: common_vendor.sr("date-query", "0e62d538-0"),
-    e: common_vendor.o($options.dateQueryHand),
+    d: common_vendor.sr("date-query", "2c06809e-0"),
+    e: common_vendor.o($options.dateQueryHand, "da"),
     f: common_vendor.p({
       mode: "date"
     })
@@ -37,3 +37,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/profitLoss/index.js.map

@@ -140,7 +140,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.t($data.titleText),
     b: $options.getImgUrl("static/image/product/arrow.png"),
-    c: common_vendor.o((...args) => $options.itemClick && $options.itemClick(...args)),
+    c: common_vendor.o((...args) => $options.itemClick && $options.itemClick(...args), "68"),
     d: common_vendor.f($data.itemArr, (item, index, i0) => {
       return {
         a: common_vendor.t(item["text"]),
@@ -151,8 +151,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $data.show ? "1" : "0",
     f: $data.show ? "block" : "none",
     g: common_vendor.n($data.show ? "bg-mask-show" : ""),
-    h: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args)),
-    i: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args)),
+    h: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args), "c3"),
+    i: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args), "ab"),
     j: common_vendor.t($data.beforeTitle),
     k: common_vendor.t($data.nowTitle),
     l: $options.getImgUrl("static/image/salesKanban/sales_increase.png"),
@@ -166,8 +166,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     n: $options.getImgUrl("static/image/salesKanban/sales_increase.png"),
-    o: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args))
+    o: common_vendor.o((...args) => _ctx.onReachBottom && _ctx.onReachBottom(...args), "54")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/salesKanban/sales_kanban_list.js.map

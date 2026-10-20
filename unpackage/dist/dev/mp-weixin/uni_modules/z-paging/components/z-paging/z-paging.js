@@ -25,7 +25,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: _ctx.showF2 && _ctx.showRefresherF2
   }, _ctx.showF2 && _ctx.showRefresherF2 ? {
     c: common_vendor.o(() => {
-    }),
+    }, "17"),
     d: common_vendor.s({
       "transform": _ctx.f2Transform,
       "transition": `transform .2s linear`,
@@ -36,7 +36,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: !_ctx.usePageScroll && _ctx.zSlots.top
   }, !_ctx.usePageScroll && _ctx.zSlots.top ? {} : _ctx.usePageScroll && _ctx.zSlots.top ? {
     g: common_vendor.o(() => {
-    }),
+    }, "ba"),
     h: common_vendor.s({
       "top": `${_ctx.windowTop}px`,
       "z-index": _ctx.topZIndex
@@ -154,7 +154,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       loadingMoreStatus: _ctx.loadingStatus
     })
   } : {
-    M: common_vendor.o(($event) => _ctx._onLoadingMore("click")),
+    M: common_vendor.o(($event) => _ctx._onLoadingMore("click"), "34"),
     N: common_vendor.p({
       zConfig: _ctx.zLoadMoreConfig
     })
@@ -169,7 +169,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     R: _ctx.showLoadingMoreDefault
   }, _ctx.showLoadingMoreDefault ? {} : _ctx.showLoadingMoreLoading ? {} : _ctx.showLoadingMoreNoMore ? {} : _ctx.showLoadingMoreFail ? {} : _ctx.showLoadingMoreCustom ? {
-    W: common_vendor.o(($event) => _ctx._onLoadingMore("click")),
+    W: common_vendor.o(($event) => _ctx._onLoadingMore("click"), "8f"),
     X: common_vendor.p({
       zConfig: _ctx.zLoadMoreConfig
     })
@@ -196,8 +196,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       isLoadFailed: _ctx.isLoadFailed
     })
   } : {
-    af: common_vendor.o(_ctx._emptyViewReload),
-    ag: common_vendor.o(_ctx._emptyViewClick),
+    af: common_vendor.o(_ctx._emptyViewReload, "cc"),
+    ag: common_vendor.o(_ctx._emptyViewClick, "32"),
     ah: common_vendor.p({
       emptyViewImg: _ctx.finalEmptyViewImg,
       emptyViewText: _ctx.finalEmptyViewText,
@@ -261,11 +261,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     aW: _ctx.finalRefresherDefaultStyle,
     aX: _ctx.refresherBackground,
     aY: _ctx.finalRefresherTriggered,
-    aZ: common_vendor.o((...args) => _ctx._scroll && _ctx._scroll(...args)),
-    ba: common_vendor.o((...args) => _ctx._onScrollToLower && _ctx._onScrollToLower(...args)),
-    bb: common_vendor.o((...args) => _ctx._onScrollToUpper && _ctx._onScrollToUpper(...args)),
-    bc: common_vendor.o((...args) => _ctx._onRestore && _ctx._onRestore(...args)),
-    bd: common_vendor.o(($event) => _ctx._onRefresh(true)),
+    aZ: common_vendor.o((...args) => _ctx._scroll && _ctx._scroll(...args), "c1"),
+    ba: common_vendor.o((...args) => _ctx._onScrollToLower && _ctx._onScrollToLower(...args), "43"),
+    bb: common_vendor.o((...args) => _ctx._onScrollToUpper && _ctx._onScrollToUpper(...args), "56"),
+    bc: common_vendor.o((...args) => _ctx._onRestore && _ctx._onRestore(...args), "ef"),
+    bd: common_vendor.o(($event) => _ctx._onRefresh(true), "7c"),
     be: _ctx.finalIsOldWebView ? 1 : "",
     bf: common_vendor.s(_ctx.scrollViewContainerStyle),
     bg: _ctx.zSlots.right
@@ -277,7 +277,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     bk: !_ctx.usePageScroll && _ctx.zSlots.bottom
   }, !_ctx.usePageScroll && _ctx.zSlots.bottom ? {} : _ctx.usePageScroll && _ctx.zSlots.bottom ? {
     bm: common_vendor.o(() => {
-    }),
+    }, "fe"),
     bn: common_vendor.s({
       "bottom": `${_ctx.windowBottom}px`
     })
@@ -301,7 +301,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, {
     bw: common_vendor.n(_ctx.finalBackToTopClass),
     bx: common_vendor.s(_ctx.finalBackToTopStyle),
-    by: common_vendor.o((...args) => _ctx._backToTopClick && _ctx._backToTopClick(...args))
+    by: common_vendor.o((...args) => _ctx._backToTopClick && _ctx._backToTopClick(...args), "ec")
   }) : {}, {
     bz: _ctx.showLoading && _ctx.zSlots.loading && _ctx.loadingFullFixed
   }, _ctx.showLoading && _ctx.zSlots.loading && _ctx.loadingFullFixed ? {} : {}, {
@@ -319,3 +319,4 @@ if (typeof block1 === "function")
   block1(uni_modules_zPaging_components_zPaging_js_zPagingMain._sfc_main);
 const Component = /* @__PURE__ */ common_vendor._export_sfc(uni_modules_zPaging_components_zPaging_js_zPagingMain._sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1aa372d7"]]);
 wx.createComponent(Component);
+//# sourceMappingURL=../../../../../.sourcemap/mp-weixin/uni_modules/z-paging/components/z-paging/z-paging.js.map

@@ -73,7 +73,7 @@ const _sfc_main = {
 function createApp() {
   const app = common_vendor.createSSRApp(_sfc_main);
   app.config.globalProperties.hasPermi = components_utils_hasPermi.hasPermi;
-  app.config.globalProperties.BASEURL = "http://127.0.0.1:8080/";
+  app.config.globalProperties.BASEURL = "https://www.efss.net.cn/";
   app.use(store_index.store);
   return {
     app
@@ -81,3 +81,4 @@ function createApp() {
 }
 createApp().app.mount("#app");
 exports.createApp = createApp;
+//# sourceMappingURL=../.sourcemap/mp-weixin/app.js.map

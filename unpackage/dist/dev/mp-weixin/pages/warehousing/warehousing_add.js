@@ -107,22 +107,22 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $options.getImgUrl("static/image/warehousing/record_date.png"),
     b: common_vendor.t($options.isEmpty($data.warehousingEntry.recordDate) ? "请选择" : $data.warehousingEntry.recordDate),
-    c: common_vendor.o(($event) => $options.toggle("record_date")),
+    c: common_vendor.o(($event) => $options.toggle("record_date"), "45"),
     d: $options.isEmpty($data.warehousingEntry.recordDate) ? "#a0a0a0" : "#333",
     e: common_vendor.sr("record_date", "8e2422c0-0"),
-    f: common_vendor.o($options.recordDateHand),
+    f: common_vendor.o($options.recordDateHand, "4a"),
     g: common_vendor.p({
       mode: "date"
     }),
     h: $options.getImgUrl("static/image/warehousing/supplier.png"),
     i: $data.warehousingEntry.supplier,
-    j: common_vendor.o(($event) => $data.warehousingEntry.supplier = $event.detail.value),
+    j: common_vendor.o(($event) => $data.warehousingEntry.supplier = $event.detail.value, "5c"),
     k: $options.getImgUrl("static/image/warehousing/warehousing-number.png"),
     l: $data.warehousingEntry.remark,
-    m: common_vendor.o(($event) => $data.warehousingEntry.remark = $event.detail.value),
+    m: common_vendor.o(($event) => $data.warehousingEntry.remark = $event.detail.value, "9d"),
     n: $options.getImgUrl("static/image/warehousing/choose_product.png"),
     o: $options.getImgUrl("static/image/add.png"),
-    p: common_vendor.o(($event) => $options.addWarehousingProduct()),
+    p: common_vendor.o(($event) => $options.addWarehousingProduct(), "46"),
     q: common_vendor.f($data.warehousingEntry.warehousingEntryProductList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.productName),
@@ -133,16 +133,16 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.texture),
         g: common_vendor.t(item.retailPrice),
         h: common_vendor.t(item.inventoryQuantity),
-        i: common_vendor.o(($event) => $options.open(item))
+        i: common_vendor.o(($event) => $options.open(item), "35")
       };
     }),
     r: $options.getImgUrl("static/image/茶几.png"),
-    s: common_vendor.o(($event) => $options.addWarehousing()),
+    s: common_vendor.o(($event) => $options.addWarehousing(), "65"),
     t: common_vendor.t($data.popupProduct.productName),
     v: $data.popupProduct.inventoryQuantity,
-    w: common_vendor.o(($event) => $data.popupProduct.inventoryQuantity = $event.detail.value),
-    x: common_vendor.o(($event) => $options.cancelTrack()),
-    y: common_vendor.o(($event) => $options.submitTrack()),
+    w: common_vendor.o(($event) => $data.popupProduct.inventoryQuantity = $event.detail.value, "01"),
+    x: common_vendor.o(($event) => $options.cancelTrack(), "1d"),
+    y: common_vendor.o(($event) => $options.submitTrack(), "e3"),
     z: common_vendor.sr("popup", "8e2422c0-1"),
     A: common_vendor.p({
       type: "bottom",
@@ -152,3 +152,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-8e2422c0"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/warehousing/warehousing_add.js.map

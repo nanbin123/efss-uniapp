@@ -9,10 +9,6 @@
           <input type="passsword" v-model="password" placeholder="请输入密码"/>
         </view>
         <button class="login" @click="login">登录</button>
-        <view class="forgetPwd">
-          <span>联系客服</span>
-          <span>没有账号，去注册</span>
-        </view>
       </view>
     </view>
 
@@ -118,15 +114,6 @@
   }
   .ipt input{
     margin-left: 20rpx;
-  }
-  .forgetPwd{
-    margin-top: 20px;
-    font-size: 15px;
-    color: #b5b5b5;
-    text-align: end;
-    padding:0 10rpx;
-    display: flex;
-    justify-content: space-between;
   }
   .login{
     margin-top: 20px;

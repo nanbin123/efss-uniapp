@@ -64,11 +64,12 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: $data.username,
-    b: common_vendor.o(($event) => $data.username = $event.detail.value),
+    b: common_vendor.o(($event) => $data.username = $event.detail.value, "36"),
     c: $data.password,
-    d: common_vendor.o(($event) => $data.password = $event.detail.value),
-    e: common_vendor.o((...args) => $options.login && $options.login(...args))
+    d: common_vendor.o(($event) => $data.password = $event.detail.value, "1d"),
+    e: common_vendor.o((...args) => $options.login && $options.login(...args), "4f")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e4e4508d"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/login/login.js.map

@@ -1,4 +1,3 @@
-
 .head.data-v-759cc12d{
 	height: 5px;
 	width: 100%;
@@ -104,5 +103,3 @@
 .add-category-foot uni-button.data-v-759cc12d:after {
   content: none; /* 移除内容 */
 }
-
-

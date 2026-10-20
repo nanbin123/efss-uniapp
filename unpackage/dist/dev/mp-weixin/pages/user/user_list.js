@@ -44,7 +44,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "19"),
     d: common_vendor.f($data.userList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.userName),
@@ -56,8 +56,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     e: common_vendor.sr("paging", "9a754c08-0"),
-    f: common_vendor.o($options.queryList),
-    g: common_vendor.o(($event) => $data.userList = $event),
+    f: common_vendor.o($options.queryList, "bc"),
+    g: common_vendor.o(($event) => $data.userList = $event, "dd"),
     h: common_vendor.p({
       modelValue: $data.userList
     })
@@ -65,3 +65,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9a754c08"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/user/user_list.js.map

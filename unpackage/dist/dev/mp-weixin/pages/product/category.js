@@ -152,22 +152,22 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: $options.getImgUrl("../../static/image/product/edit.png"),
     c: $options.getImgUrl("../../static/image/product/delete.png"),
     d: !$data.showEditAndDelete,
-    e: common_vendor.o(($event) => $options.add()),
+    e: common_vendor.o(($event) => $options.add(), "f8"),
     f: common_vendor.t($data.editText),
-    g: common_vendor.o(($event) => $options.edit()),
+    g: common_vendor.o(($event) => $options.edit(), "50"),
     h: common_vendor.sr("paging", "759cc12d-0"),
-    i: common_vendor.o($options.queryList),
-    j: common_vendor.o(($event) => $data.productCategoryList = $event),
+    i: common_vendor.o($options.queryList, "23"),
+    j: common_vendor.o(($event) => $data.productCategoryList = $event, "97"),
     k: common_vendor.p({
       modelValue: $data.productCategoryList
     }),
     l: common_vendor.t($data.addOrEditCateGory),
     m: $data.categoryFocus,
-    n: common_vendor.o(($event) => $data.categoryFocus = false),
+    n: common_vendor.o(($event) => $data.categoryFocus = false, "74"),
     o: $data.formData.category,
-    p: common_vendor.o(($event) => $data.formData.category = $event.detail.value),
-    q: common_vendor.o(($event) => $options.cancelArrival()),
-    r: common_vendor.o(($event) => $options.submit()),
+    p: common_vendor.o(($event) => $data.formData.category = $event.detail.value, "40"),
+    q: common_vendor.o(($event) => $options.cancelArrival(), "63"),
+    r: common_vendor.o(($event) => $options.submit(), "06"),
     s: common_vendor.sr("popup", "759cc12d-1"),
     t: common_vendor.p({
       type: "bottom",
@@ -177,3 +177,4 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-759cc12d"]]);
 wx.createPage(MiniProgramPage);
+//# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/product/category.js.map
