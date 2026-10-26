@@ -171,7 +171,7 @@
             "path" : "pages/outbound/outbound_details",
             "style" :
             {
-                "navigationBarTitleText": "销售出货明细",
+                "navigationBarTitleText": "销售出货详情",
                 "enablePullDownRefresh": false
             }
             
@@ -212,7 +212,7 @@
 		    "path" : "pages/warehousing/warehousing_details",
 		    "style" :
 		    {
-		        "navigationBarTitleText": "入库单明细",
+		        "navigationBarTitleText": "入库单详情",
 		        "enablePullDownRefresh": false
 		    }
 		},

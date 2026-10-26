@@ -3,13 +3,11 @@
 
 <scroll-view scroll-y style="height: calc(100vh - 35px);">
 	<view class="item">
-		<image class="img" style="width: 19px;" :src="getImgUrl('static/image/cusomer/cusomer_name.png')"></image>
 		<view class="title">客户姓名</view>	
 		<text class="iconfont">&#xe639;</text>
 		<input  :focus='customerNameFocus'  @blur='customerNameFocus = false'  v-model="customer.customerName" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户姓名">
 	</view>
 	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_gender.png')"></image>
 		<view class="title">客户性别</view>
 		<text class="iconfont">&#xe639;</text>
 		<view class="gender">			
@@ -24,17 +22,14 @@
 		</view>
 	</view>
 	<view class="item">
-		<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
-		<view style="margin-left: 0;" class="title">客户电话</view>			
+		<view class="title">客户电话</view>
 		<input  v-model="customer.phone" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户电话">
 	</view>
 	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
 		<view class="title">客户地址</view>
 		<input  v-model="customer.address" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入客户地址">
 	</view>
 	<view class="item">
-		<image class="img" style="margin-top: 3px;" :src="getImgUrl('static/image/cusomer/degree.png')"></image>
 		<view class="title">意向程度</view>
 		<view class="starLen">
 			<image class="star" @tap='changeStar(1)' :src="customer.grade>0? BASEURL+fullStarUrl:BASEURL+nullStarUrl"></image>
@@ -43,12 +38,10 @@
 		</view>
 	</view>
 	<view class="item">
-		<image class="img" :src="getImgUrl('static/image/cusomer/quoted_price.png')" mode=""></image>
 		<text class="title">报价:</text>
 		<input v-model="customer.quotation" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入您向客户的报价">
 	</view>
 	<view class="item">
-		<image class="img" style="margin-top: 1px;" :src="getImgUrl('static/image/cusomer/arrive.png')" mode=""></image>
 		<text class="title">备注:</text>			
 		<input v-model="customer.remark" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
 	</view>			
@@ -56,27 +49,41 @@
 		<view  class="product-total-number">货品数量:({{productNumberTotal}})</view>
 		<view  class="product-retail-price">总计金额:¥{{productRetailPriceTotal}}</view>
 	</view>
-	<view class="product"  v-for="(item,index) in customer.customerProducts" :key="index">
-		<image class="img" :src="getImgUrl('static/image/茶几.png')" mode=""></image>				
+	<view class="product" v-for="(item, index) in customer.customerProducts" :key="item.productId || index">
 		<view class="product-content">
 			<view class="grid">
-				<text class="info">品名：{{item.productName}}</text>
-				<text class="info">型号：{{item.type}}</text>
+				<view class="info">品名：{{item.productName}}</view>
+				<view class="info">型号：{{item.type}}</view>
 			</view>
 			<view class="grid">
-				<text class="info" >尺寸：{{item.size}}</text>
-				<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
+				 <view class="info">尺寸：{{item.size}}</view>
+				 <view class="info">产地：{{item.production}}</view>
 			</view>
-			<view class="grid">							
-				<text class="info">颜色：{{item.color}}</text>
-				<text class="info">材质：{{item.texture}}</text>	
+			 <view class="grid">
+			    <view class="info">材质：{{item.texture}}</view>
+				<view class="info">颜色：{{item.color}}</view>
 			</view>
-			<view class="grid">									
-				<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-				<text class="info">数量：{{item.number}}</text>	
+			<view class="grid">
+				<text class="info product-emphasis">数量：<text>{{item.number}}</text></text>
+				<view class="info product-emphasis">零售价：<text>￥{{item.retailPrice}}</text></view>
 			</view>
-		</view> 
-	</view>			
+		</view>
+		<view class="product-actions">
+			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)">
+				<i class="iconfont">&#xe612;</i>
+				<text class="product-action-label">移除</text>
+			</view>
+			<view class="product-action product-gallery" @click.stop="previewImage(item)">
+				<view class="gallery-icon">
+					<view class="gallery-dot"></view>
+					<view class="gallery-mountain gallery-mountain-left"></view>
+					<view class="gallery-mountain gallery-mountain-right"></view>
+					<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+				</view>
+				<text class="product-action-label">查看</text>
+			</view>
+		</view>
+	</view>
 	<view class="add_img" @click="addCustomerProduct()">
 		<image :src="getImgUrl('static/image/red_add.png')" mode=""></image>				
 	</view>
@@ -105,6 +112,26 @@
 			return { productStore } 
 		 },
 		methods: {
+			previewImage(item) {
+			  if (!item.productImages || item.productImages.length === 0) {
+			    uni.showToast({ title: '暂无更多图片', icon: 'none' })
+			    return
+			  }
+			  const urls = item.productImages.map(img => {
+			    let url = img.productUrl
+			    return this.BASEURL + (url.startsWith('/') ? url.substring(1) : url)
+			  })
+			    uni.previewImage({
+			      current: 0,        // 从第一张开始
+			      urls: urls,        // 所有图片地址
+			      indicator: 'number', // 显示 1/3 数字指示器
+			      loop: true         // 循环切换
+			    })
+			  },
+			deleteProduct(productId){
+				this.customer.customerProducts = this.customer.customerProducts.filter(item => item.productId != productId);
+				this.productStore.addProduct(this.customer.customerProducts);
+			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			},
@@ -132,7 +159,11 @@
 				}
 			 	let customerObj=JSON.parse(JSON.stringify(this.customer));
 				let productInfo = customerObj.customerProducts.map(product =>{
-					return {productId:product.productId,number:product.number}
+					return {
+						productId: product.productId,
+						number: product.number,
+						productImages: product.productImages || []
+					}
 				})
 				customerObj.customerProducts = productInfo;				
 				post("customer/insertAddCustomer",JSON.stringify(customerObj),'application/json').then(res =>{
@@ -196,18 +227,13 @@
 
 .item{
 	display: flex;	
-	padding: 8px 0;
+	padding: 8px 0 8px 8px;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
 }
-.item .img{
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;	
-}
 .item .title{
-	margin-left: 1px;
+	flex-shrink: 0;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
@@ -307,46 +333,134 @@
 	margin-bottom: 5px;
 }
 .product{
-	display: flex;	
-	align-items: center;
+	display: flex;
+	align-items: stretch;
 	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
+	border-bottom: 1px solid #e5e5e5;
+	box-sizing: border-box;
 }
-
-.product .img{
-	width: 80px;
-	height: 80px;
-}
-
 .product-content{
 	flex: 1;
-	margin-left: 5px;
+	min-width: 0;
+	padding: 8px 0 8px 8px;
+	box-sizing: border-box;
 }
 .grid {	
  	display: flex;
- 	line-height: 20px;
+	align-items: center;
+	min-height: 24px;
+	line-height: 20px;
 }
 .info {
-   width: 50%;
-   color: #030303ff;
-   font-size: 14px;
-   color: #333;
-   white-space: nowrap;  
-   overflow: hidden; /* 超出部分隐藏 */
-   text-overflow: ellipsis; /* 显示省略号 */
-   text-rendering: optimizeLegibility;
+  width: 50%;
+	min-width: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
-.delete{
-	position: absolute;
-	right: 10px;
-}
-.delete .iconfont{
-	color: #02a5e6ff;	
-	font-size: 20px;
+.product-emphasis{
+	color: #e96225ff;
 }
 
+.product-actions{
+	width: 64px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-remove .iconfont{
+	color: #38c1b9;
+	font-size: 22px;
+	line-height: 24px;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #38c1b9;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
+}
+
+/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+@media screen and (max-width: 375px) {
+	.product-content{
+		padding-left: 6px;
+	}
+	.product-actions{
+		width: 58px;
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+	.info{
+		font-size: 13px;
+	}
+}
 .add_img {
 	position: relative;
     border: 1px solid #CCCCCC;    

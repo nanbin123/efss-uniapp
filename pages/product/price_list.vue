@@ -13,17 +13,12 @@
 		</view>
 	</template>
 	
-	<navigator class="content" v-for="(item,index) in productList" :url="'/pages/product/price_detail?id='+item.id">
+	<view class="content" v-for="(item,index) in productList" :key="item.id">
 		<view class="product">
-			<!-- <view class="left">
-				<image class="left_img" :src="getImgUrl('static/image/red_add.png')"></image>
-				<view class="left_text">点击添加图片</view>			
-			</view> -->
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="right"> 
+			<navigator class="right" :url="'/pages/product/price_detail?id='+item.id">
 				<view class="grid">
-					<text class="info">品名：{{item.productName}}</text>
-					<text class="info">型号：{{item.type}}</text>
+					<view class="info">品名：{{item.productName}}</view>
+					<view class="info">型号：{{item.type || '未填写'}}</view>
 				</view>
 				<view class="grid">
 					<text class="info" >尺寸：{{item.size}}</text>
@@ -36,9 +31,20 @@
 				<view class="grid">
 					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 15px;">￥{{item.retailPrice}}</text></text>
 				</view>	
+			</navigator>
+			<view class="product-actions">
+				<view class="product-action product-gallery" @click.stop="previewImage(item)">
+					<view class="gallery-icon">
+						<view class="gallery-dot"></view>
+						<view class="gallery-mountain gallery-mountain-left"></view>
+						<view class="gallery-mountain gallery-mountain-right"></view>
+						<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+					</view>
+					<text class="product-action-label">查看</text>
+				</view>
 			</view>
 		</view>
-	</navigator>
+	</view>
 </z-paging>
 
 </template>
@@ -61,15 +67,53 @@
 			return {moreSearchStore}
 		},
 		methods: {
+			async previewImage(item) {
+				const res = await post("product/selectPriceById", { id: item.id });
+				if (!res || res.code !== 200 || !res.data) return;
+				item.productImages = res.data.productImages;
+				const images = Array.isArray(item.productImages) ? item.productImages : [];
+				const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+					.map(img => {
+						const url = img.productUrl.trim();
+						return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+					});
+				if (!urls.length) {
+					uni.showToast({ title: '暂无更多图片', icon: 'none' });
+					return;
+				}
+				uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+			},
 			getProductList(){//高级查询
 				let product = this.moreSearchStore.moreSearch;				
 				this.searchProduct =  product;
 				this.$refs.paging.reload();
 			},
-			refreshProductList(){
-				post("product/selectListProduct",this.searchProduct).then(res =>{
-					this.$refs.paging.complete(res.rows);
-				})
+			async refreshProductList(){
+				const res = await post("product/selectListProduct", this.searchProduct);
+				// complete 内部有延时，必须等待完成，不能仅等待一次 nextTick。
+				await this.$refs.paging.complete(res.rows);
+				await this.$nextTick();
+				const ids = new Set(res.rows.map(item => item.id));
+				const items = this.productList.filter(item => ids.has(item.id));
+				await this.loadProductImages(items);
+			},
+			async loadProductImages(items) {
+				// 限制并发，避免分页加载时同时发出过多图片详情请求。
+				let nextIndex = 0;
+				const loadNext = async () => {
+					while (nextIndex < items.length) {
+						const item = items[nextIndex++];
+						try {
+							const res = await post('product/selectPriceById', { id: item.id });
+							if (res && res.code == 200 && res.data) {
+								item.productImages = Array.isArray(res.data.productImages) ? res.data.productImages : [];
+							}
+						} catch (error) {
+							// 单个产品加载失败不影响其余产品，点击查看时仍可重试。
+						}
+					}
+				};
+				await Promise.all(Array.from({ length: Math.min(4, items.length) }, loadNext));
 			},
 			queryList(pageNo, pageSize) {
 				this.searchProduct.pageNum = pageNo;
@@ -145,49 +189,116 @@
 }
 
 .product{
+	position: relative;
 	display: flex;
 	align-items: center;
 	background-color: #fff; 
 	border-bottom: 1px solid #cbcbcbff;
 	padding: 2px 2px 2px 2px; 
 }
-.product .img{
-	width: 70px;
-	height: 80px;	
-}
-.left{
-	width: 20%;
-	height: 72px;
-	background-color: #f2f2f2ff;	
-    text-align: center;
-}
-.left_text{
-	font-size: 10px;	
-	padding: 2px;
-	text-align: center;
-	margin-top: 5px;
-	color: #a3a3a1ff;
-}
-.left_img {
-    width: 20px;
-    height: 20px;	
-	margin-top: 15px;	
-}
 .right{
-	width: 80%;
-	margin-left: 2px;
+	flex: 1;
+	min-width: 0;
+	padding: 8px 0 8px 8px;
+	box-sizing: border-box;
 }
 .grid {	
- 	display: flex;	
+	display: flex;
+	align-items: center;
+	min-height: 24px;
 	line-height: 20px;
 }
 .info {
+   flex: 0 0 50%;
+   min-width: 0;
+   box-sizing: border-box;
    width: 50%;
    color: #030303ff;
    font-size: 15px;
    white-space: nowrap; /* 文字不换行 */
    overflow: hidden; /* 超出部分隐藏 */
    text-overflow: ellipsis; /* 以省略号形式显示 */
+}
+
+.product-actions{
+	position: absolute;
+	right: 2px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 64px;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #00a7e2ff;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #00a7e2ff;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #00a7e2ff;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #00a7e2ff;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #00a7e2ff;
+	border-top: 1.5px solid #00a7e2ff;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #00a7e2ff;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
 }
 
 </style>

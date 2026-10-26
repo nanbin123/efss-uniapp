@@ -467,10 +467,10 @@ export default {
 	align-items: center;
 	justify-content: center;
 	box-sizing: border-box;
-	color: #38c1b9;
+	color: #00a7e2ff;
 }
 .product-remove .iconfont{
-	color: #38c1b9;
+	color: #00a7e2ff;
 	font-size: 22px;
 	line-height: 24px;
 }
@@ -478,13 +478,13 @@ export default {
 	margin-top: 2px;
 	font-size: 11px;
 	line-height: 14px;
-	color: #38c1b9;
+	color: #00a7e2ff;
 }
 .gallery-icon{
 	position: relative;
 	width: 24px;
 	height: 21px;
-	border: 1.5px solid #38c1b9;
+	border: 1.5px solid #00a7e2ff;
 	border-radius: 3px;
 	box-sizing: border-box;
 }
@@ -495,15 +495,15 @@ export default {
 	width: 3px;
 	height: 3px;
 	border-radius: 50%;
-	background-color: #38c1b9;
+	background-color: #00a7e2ff;
 }
 .gallery-mountain{
 	position: absolute;
 	bottom: 3px;
 	width: 8px;
 	height: 8px;
-	border-left: 1.5px solid #38c1b9;
-	border-top: 1.5px solid #38c1b9;
+	border-left: 1.5px solid #00a7e2ff;
+	border-top: 1.5px solid #00a7e2ff;
 	transform: rotate(45deg);
 	box-sizing: border-box;
 }
@@ -524,7 +524,7 @@ export default {
 	padding: 0 3px;
 	border-radius: 7px;
 	box-sizing: border-box;
-	background-color: #38c1b9;
+	background-color: #00a7e2ff;
 	color: #fff;
 	font-size: 9px;
 	line-height: 14px;

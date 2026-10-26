@@ -37,11 +37,23 @@
 	font-size: 15px;
 	color: #333;
 }
-.arriveAdd.data-v-50fb23cd{
-	width: 25px;
-	height: 25px;
+.item.section-header.data-v-50fb23cd{
+	padding-right: 8px;
+}
+.section-add.data-v-50fb23cd{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 24px;
 	margin-left: auto;
+	margin-right: 4px;
 	flex-shrink: 0;
+	box-sizing: border-box;
+	background-color: #fff;
+	color: #38c1b9;
+	font-size: 14px;
+	line-height: 20px;
 }
 .item .input-placeholder.data-v-50fb23cd{
 	font-size: 15px;
@@ -70,7 +82,7 @@
 /* 客户性别 */
 .gender.data-v-50fb23cd{
 	margin-left: auto;
-	padding-right: 15px;
+	padding-right: 0;
 }
 .data-v-50fb23cd .gender .radio-group svg {
 	display: none  !important;
@@ -156,16 +168,15 @@
 	text-overflow: ellipsis; /* 以省略号形式显示 */
 }
 .product.data-v-50fb23cd{
-	display: flex;
-	align-items: stretch;
+	position: relative;
 	background-color: #fff;
 	border-bottom: 1px solid #e5e5e5;
 	box-sizing: border-box;
 }
 .product-content.data-v-50fb23cd{
-	flex: 1;
+	width: 100%;
 	min-width: 0;
-	padding: 8px 0 8px 8px;
+	padding: 4px 0 4px 8px;
 	box-sizing: border-box;
 }
 .grid.data-v-50fb23cd {	
@@ -188,8 +199,13 @@
 	color: #e96225ff;
 }
 .product-actions.data-v-50fb23cd{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
 	width: 64px;
-	flex-shrink: 0;
+	pointer-events: none;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -198,6 +214,7 @@
 	box-sizing: border-box;
 }
 .product-action.data-v-50fb23cd{
+	pointer-events: auto;
 	width: 48px;
 	min-height: 44px;
 	display: flex;
@@ -269,8 +286,11 @@
 	text-align: center;
 }
 
-/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+/* 微信小程序窄屏：缩小浮动操作区，产品信息保持全宽 */
 @media screen and (max-width: 375px) {
+.item.section-header.data-v-50fb23cd{
+		padding-right: 5px;
+}
 .product-content.data-v-50fb23cd{
 		padding-left: 6px;
 }
@@ -278,9 +298,6 @@
 		width: 58px;
 		padding-left: 2px;
 		padding-right: 2px;
-}
-.info.data-v-50fb23cd{
-		font-size: 13px;
 }
 }
 .removeFollowing.data-v-50fb23cd{

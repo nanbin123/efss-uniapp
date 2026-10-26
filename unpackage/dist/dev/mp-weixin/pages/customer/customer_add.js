@@ -17,6 +17,30 @@ const _sfc_main = {
     return { productStore };
   },
   methods: {
+    previewImage(item) {
+      if (!item.productImages || item.productImages.length === 0) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      const urls = item.productImages.map((img) => {
+        let url = img.productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      });
+      common_vendor.index.previewImage({
+        current: 0,
+        // 从第一张开始
+        urls,
+        // 所有图片地址
+        indicator: "number",
+        // 显示 1/3 数字指示器
+        loop: true
+        // 循环切换
+      });
+    },
+    deleteProduct(productId) {
+      this.customer.customerProducts = this.customer.customerProducts.filter((item) => item.productId != productId);
+      this.productStore.addProduct(this.customer.customerProducts);
+    },
     getImgUrl(image) {
       return this.BASEURL + image;
     },
@@ -44,7 +68,11 @@ const _sfc_main = {
       }
       let customerObj = JSON.parse(JSON.stringify(this.customer));
       let productInfo = customerObj.customerProducts.map((product) => {
-        return { productId: product.productId, number: product.number };
+        return {
+          productId: product.productId,
+          number: product.number,
+          productImages: product.productImages || []
+        };
       });
       customerObj.customerProducts = productInfo;
       components_utils_request.post("customer/insertAddCustomer", JSON.stringify(customerObj), "application/json").then((res) => {
@@ -97,53 +125,51 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: $options.getImgUrl("static/image/cusomer/cusomer_name.png"),
-    b: $data.customerNameFocus,
-    c: common_vendor.o(($event) => $data.customerNameFocus = false, "0a"),
-    d: $data.customer.customerName,
-    e: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value, "12"),
-    f: $options.getImgUrl("static/image/cusomer/cusomer_gender.png"),
-    g: $data.customer.sex === "1" ? "#fff" : "#333",
-    h: $data.customer.sex === "2" ? "#fff" : "#333",
-    i: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "26"),
-    j: $options.getImgUrl("static/image/cusomer/customer_phone.png"),
-    k: $data.customer.phone,
-    l: common_vendor.o(($event) => $data.customer.phone = $event.detail.value, "fb"),
-    m: $options.getImgUrl("static/image/cusomer/cusomer_address.png"),
-    n: $data.customer.address,
-    o: common_vendor.o(($event) => $data.customer.address = $event.detail.value, "57"),
-    p: $options.getImgUrl("static/image/cusomer/degree.png"),
-    q: common_vendor.o(($event) => $options.changeStar(1), "0d"),
-    r: $data.customer.grade > 0 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    s: common_vendor.o(($event) => $options.changeStar(2), "3f"),
-    t: $data.customer.grade > 1 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    v: common_vendor.o(($event) => $options.changeStar(3), "c0"),
-    w: $data.customer.grade > 2 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
-    x: $options.getImgUrl("static/image/cusomer/quoted_price.png"),
-    y: $data.customer.quotation,
-    z: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value, "b1"),
-    A: $options.getImgUrl("static/image/cusomer/arrive.png"),
-    B: $data.customer.remark,
-    C: common_vendor.o(($event) => $data.customer.remark = $event.detail.value, "15"),
-    D: common_vendor.t($options.productNumberTotal),
-    E: common_vendor.t($options.productRetailPriceTotal),
-    F: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
-      return {
+    a: $data.customerNameFocus,
+    b: common_vendor.o(($event) => $data.customerNameFocus = false, "ef"),
+    c: $data.customer.customerName,
+    d: common_vendor.o(($event) => $data.customer.customerName = $event.detail.value, "82"),
+    e: $data.customer.sex === "1" ? "#fff" : "#333",
+    f: $data.customer.sex === "2" ? "#fff" : "#333",
+    g: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "48"),
+    h: $data.customer.phone,
+    i: common_vendor.o(($event) => $data.customer.phone = $event.detail.value, "81"),
+    j: $data.customer.address,
+    k: common_vendor.o(($event) => $data.customer.address = $event.detail.value, "29"),
+    l: common_vendor.o(($event) => $options.changeStar(1), "2c"),
+    m: $data.customer.grade > 0 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    n: common_vendor.o(($event) => $options.changeStar(2), "a9"),
+    o: $data.customer.grade > 1 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    p: common_vendor.o(($event) => $options.changeStar(3), "d6"),
+    q: $data.customer.grade > 2 ? _ctx.BASEURL + $data.fullStarUrl : _ctx.BASEURL + $data.nullStarUrl,
+    r: $data.customer.quotation,
+    s: common_vendor.o(($event) => $data.customer.quotation = $event.detail.value, "ef"),
+    t: $data.customer.remark,
+    v: common_vendor.o(($event) => $data.customer.remark = $event.detail.value, "a6"),
+    w: common_vendor.t($options.productNumberTotal),
+    x: common_vendor.t($options.productRetailPriceTotal),
+    y: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.size),
         d: common_vendor.t(item.production),
-        e: common_vendor.t(item.color),
-        f: common_vendor.t(item.texture),
-        g: common_vendor.t(item.retailPrice),
-        h: common_vendor.t(item.number),
-        i: index
-      };
+        e: common_vendor.t(item.texture),
+        f: common_vendor.t(item.color),
+        g: common_vendor.t(item.number),
+        h: common_vendor.t(item.retailPrice),
+        i: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index),
+        j: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        k: common_vendor.t(item.productImages.length)
+      } : {}, {
+        l: common_vendor.o(($event) => $options.previewImage(item), item.productId || index),
+        m: item.productId || index
+      });
     }),
-    G: $options.getImgUrl("static/image/茶几.png"),
-    H: $options.getImgUrl("static/image/red_add.png"),
-    I: common_vendor.o(($event) => $options.addCustomerProduct(), "68"),
-    J: common_vendor.o(($event) => $options.addCustomer(), "b7")
+    z: $options.getImgUrl("static/image/red_add.png"),
+    A: common_vendor.o(($event) => $options.addCustomerProduct(), "99"),
+    B: common_vendor.o(($event) => $options.addCustomer(), "41")
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-7f77e776"]]);

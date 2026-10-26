@@ -6,35 +6,47 @@ const _sfc_main = {
     return {
       isEditable: true,
       isEditImg: false,
+      uploading: false,
       productNameFocus: true,
       product: {}
     };
   },
   methods: {
     onChooseImage() {
-      if (!this.isEditImg) {
-        common_vendor.index.chooseImage({
-          count: 9,
-          //最多可以选择的图片张
-          sizeType: ["original", "compressed"],
-          //original 原图，compressed 压缩图
-          sourceType: ["album", "camera"],
-          //album 从相册选图，camera 使用相机
-          success: (res) => {
-            if (res.tempFiles.length > 0) {
-              for (var i = 0; i < res.tempFilePaths.length; i++) {
-                components_utils_request.uploadFiles("product/addPriceImage", res.tempFiles[i].path, { productId: this.product.id }).then((res2) => {
-                  if (200 == res2.code) {
-                    let that = this;
-                    that.product.productImages = that.product.productImages.concat(res2.data);
-                    common_vendor.index.hideLoading();
-                  }
-                });
-              }
-            }
+      if (this.isEditImg || this.uploading)
+        return;
+      common_vendor.index.chooseImage({
+        count: 9,
+        sizeType: ["original", "compressed"],
+        sourceType: ["album", "camera"],
+        success: async (res) => {
+          const paths = res.tempFilePaths || [];
+          if (!paths.length) {
+            common_vendor.index.showToast({ title: "未获取到图片文件，请重新选择", icon: "none" });
+            return;
           }
-        });
-      }
+          this.uploading = true;
+          try {
+            for (const path of paths) {
+              const result = await components_utils_request.uploadFiles("product/addPriceImage", path, { productId: this.product.id });
+              if (!result || result.code != 200)
+                break;
+              const images = Array.isArray(this.product.productImages) ? this.product.productImages : [];
+              this.product.productImages = images.concat(result.data || []);
+            }
+          } catch (error) {
+            common_vendor.index.hideLoading();
+            common_vendor.index.showToast({ title: "图片上传失败，请重试", icon: "none" });
+          } finally {
+            this.uploading = false;
+          }
+        },
+        fail: (error) => {
+          if (/cancel/i.test(error.errMsg || ""))
+            return;
+          common_vendor.index.showToast({ title: "选择图片失败，请检查相册或相机权限", icon: "none" });
+        }
+      });
     },
     onPreviewImage(index) {
       let imageUrl = [];

@@ -1,10 +1,11 @@
 <template>
-	<z-paging ref="paging" v-model="warehousingEntryList" @query="queryList">
+	<z-paging ref="paging" v-model="warehousingEntryList" @query="queryList" :safe-area-inset-bottom="true" bottom-bg-color="#38c1b9">
 		<template #top>
 			<view class="head">
 				<view class="status-search">
-					<view class="completion-status">
-						<view  v-for="(item,index) in completionStatusList" 
+					<view class="completion-status" @touchstart="onStatusTouchStart" @touchmove="onStatusTouchMove"
+						@touchend="onStatusTouchEnd" @touchcancel="onStatusTouchCancel">
+						<view  v-for="(item,index) in completionStatusList" :key="item"
 							class="normal-class" :class="{'active-class': completionStatus == item}" 
 							@click="changeCompletionStatus(item)">{{item}}
 						</view>
@@ -21,6 +22,8 @@
 			</view>
 		</template>
 
+		<view @touchstart="onStatusTouchStart" @touchmove="onStatusTouchMove"
+			@touchend="onStatusTouchEnd" @touchcancel="onStatusTouchCancel">
 		<navigator v-for="(item,index) in warehousingEntryList" :url="'/pages/warehousing/warehousing_details?id='+item.id"  :id="item.id">
 			<view class="container">
 				<view class="item">
@@ -37,6 +40,7 @@
 				</view>
 			</view>
 		</navigator>
+		</view>
 		
 		<template #bottom>
 			<view class="warehousing_footer">
@@ -58,6 +62,8 @@
 				searchVal:'',
 				completionStatus: '新单据',
 				completionStatusList:['新单据','未完成','已完成'],
+				statusTouchStart: null,
+				statusSwipeUntil: 0,
 				warehousingEntryList:[],
 				searchWarehousing:{}			
 				
@@ -69,6 +75,12 @@
 				moreSearchStore
 			}
 		 },
+		onShow() {
+			// 首次加载由 z-paging 自动查询，返回列表时重新加载当前筛选结果。
+			if (this.$refs.paging) {
+				this.$refs.paging.reload();
+			}
+		},
 		methods: {
 			refreshWarehousingList(){
 				post("warehousing/selectListWarehousingEntry",this.searchWarehousing).then(res =>{
@@ -87,8 +99,43 @@
 				this.$refs.paging.reload();
 			},
 			changeCompletionStatus(completionStatus){
+				if (Date.now() < this.statusSwipeUntil || completionStatus === this.completionStatus) return;
 				this.completionStatus = completionStatus;
 				this.$refs.paging.reload()
+			},
+			onStatusTouchStart(event) {
+				this.statusTouchStart = event.touches.length === 1
+					? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+			},
+			onStatusTouchMove(event) {
+				if (!this.statusTouchStart) return;
+				if (event.touches.length !== 1) {
+					this.onStatusTouchCancel();
+					return;
+				}
+				const dx = Math.abs(event.touches[0].clientX - this.statusTouchStart.x);
+				const dy = Math.abs(event.touches[0].clientY - this.statusTouchStart.y);
+				// 已开始纵向滚动时，本次手势不再切换状态。
+				if (dy > 10 && dy > dx) this.onStatusTouchCancel();
+			},
+			onStatusTouchEnd(event) {
+				const start = this.statusTouchStart;
+				this.onStatusTouchCancel();
+				if (!start || !event.changedTouches.length) return;
+				const dx = event.changedTouches[0].clientX - start.x;
+				const dy = event.changedTouches[0].clientY - start.y;
+				if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+				const index = this.completionStatusList.indexOf(this.completionStatus);
+				const nextIndex = index + (dx < 0 ? 1 : -1);
+				if (nextIndex >= 0 && nextIndex < this.completionStatusList.length) {
+					this.statusSwipeUntil = 0;
+					this.changeCompletionStatus(this.completionStatusList[nextIndex]);
+				}
+				// 避免状态按钮在滑动结束后触发合成点击。
+				this.statusSwipeUntil = Date.now() + 300;
+			},
+			onStatusTouchCancel() {
+				this.statusTouchStart = null;
 			},
 			getImgUrl(image){
 			   return this.BASEURL+image;
@@ -193,11 +240,23 @@
    -webkit-font-smoothing: antialiased;
 }
 .warehousing_footer{
-	font-size: 16px;
+	height: 80rpx;
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	height: 30px;
-	line-height: 30px;
 	background-color: #38c1b9;
 	color: #ffffff;	
+}
+.warehousing_footer navigator{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (max-height: 700px) {
+	.warehousing_footer{
+		height: 72rpx;
+	}
 }
 </style>

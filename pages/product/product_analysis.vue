@@ -7,27 +7,31 @@
 						<view class="bar-item-text">
 							{{titleText}}
 						</view>
-						<image :src="getImgUrl('static/image/product/arrow.png')"></image>
+						<view class="filter-chevron" :class="{'is-open': show}"></view>
 					</view>
  					<view class="datestartAndEnd">
 						<view class="dateStart">				
-							<view  @tap="toggle('start_date')">					
-								<text  v-if='dateStart  == ""' style="color: #a0a0a0;">开始时间</text>
-								<text  v-else style="color: #333;">{{dateStart}}</text>					
+							<view class="date-trigger" @tap="toggle('start_date')">
+								<text class="date-placeholder" v-if="!dateStart">开始时间</text>
+								<text class="date-value" v-else>{{dateStart}}</text>
+								<view class="filter-chevron date-chevron"></view>
 							</view>
 							<cPicker mode='date' @confirm="dateStartHand" ref="start_date"></cPicker>
 						</view>
 						<view class="dateEnd">				
-							<view  @tap="toggle('end_date')">
-								<text  v-if='dateEnd  == ""' style="color: #a0a0a0;">结束时间</text>
-								<text  v-else style="color: #333;">{{dateEnd}}</text>					
+							<view class="date-trigger" @tap="toggle('end_date')">
+								<text class="date-placeholder" v-if="!dateEnd">结束时间</text>
+								<text class="date-value" v-else>{{dateEnd}}</text>
+								<view class="filter-chevron date-chevron"></view>
 							</view>
 							<cPicker mode='date' @confirm="dateEndHand" ref="end_date"></cPicker>
 						</view>
 					</view>
+					<button class="reset-button" @tap.stop="resetSearch">重置</button>
 					<view class="dropdown-box" :style="{'opacity':show?'1':'0','display':show?'block':'none'}">				
-						<view class="dropdown-item" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
-							{{item['text']}}
+						<view class="dropdown-item" :class="{'is-selected': titleValue === item.value}" v-for="(item,index) in itemArr" :key="index" @tap.stop="subItemClick(index)">
+							<text>{{item.text}}</text>
+							<view class="selected-check" v-if="titleValue === item.value"></view>
 						</view>				
 					</view>
 				</view>
@@ -37,7 +41,6 @@
 		<view class="bg-mask" :class="[show?'bg-mask-show':'']" @tap="maskClose" @touchmove="touchControl"></view>
 		<!-- 产品列表 -->
 		<view class="product"  v-for="(item,index) in productAnalysisList"  :key="index">
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 			<view class="product-content">
 				<view  class="item">
 					<text class="info">品名：{{item.productName}}</text>
@@ -54,13 +57,23 @@
 				</view>
 				<view class="item">
 					<view class="info">零售价：<text style="color: #d6a950ff; ">￥{{item.retailPrice}}</text></view>
-					<text class="info">时间：{{item.orderCreateTime}}</text>	
+					<view class="info">销售额：<text style="color: #d6a950ff;">￥{{item.salesAmount}}</text></view>
 				</view>
 				<view class="item">
-					<view class="info">销售量：<text style="color: #d6a950ff; font-size: 12px;">{{item.salesQuantity}}</text></view>
-					<view class="info">销售额：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.salesAmount}}</text></view>
+					<view class="info">销售量：<text style="color: #d6a950ff;">{{item.salesQuantity}}</text></view>
 				</view>
-			</view>	
+			</view>
+			<view class="product-actions">
+				<view class="product-action product-gallery" @click.stop="previewImage(item)">
+					<view class="gallery-icon">
+						<view class="gallery-dot"></view>
+						<view class="gallery-mountain gallery-mountain-left"></view>
+						<view class="gallery-mountain gallery-mountain-right"></view>
+						<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+					</view>
+					<text class="product-action-label">查看</text>
+				</view>
+			</view>
 		</view>
 		
 	</z-paging>
@@ -79,8 +92,8 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 			return {
 				productAnalysisList:[],
 				show: false,
-				titleText: '全部',
-				titleValue: '',//排序默认全部
+				titleText: '按销额',
+				titleValue: 'salesAmount',//默认按销额排序
 				itemArr:  [
 					{
 						text: '全部',
@@ -99,10 +112,34 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		},
 	
 		methods: {
-			refreshOrderList(pageNo){
-				post("statistics/selectListProductAnalysis",{"pageNum":pageNo,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue}).then(res =>{
-					this.$refs.paging.complete(res.rows);
-				})
+			resetSearch() {
+				this.dateStart = '';
+				this.dateEnd = '';
+				this.titleText = '按销额';
+				this.titleValue = 'salesAmount';
+				this.show = false;
+				this.$refs.paging.reload();
+			},
+			previewImage(item) {
+				const images = Array.isArray(item.productImages) ? item.productImages : [];
+				const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+					.map(img => {
+						const url = img.productUrl.trim();
+						return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+					});
+				if (!urls.length) {
+					uni.showToast({ title: '暂无更多图片', icon: 'none' });
+					return;
+				}
+				uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+			},
+			async refreshOrderList(pageNo){
+				const res = await post("statistics/selectListProductAnalysis", {"pageNum":pageNo,"startTime":this.dateStart,"endTime":this.dateEnd,"sort":this.titleValue});
+				const rows = res.rows.map(item => ({
+					...item,
+					productImages: Array.isArray(item.productImages) ? item.productImages.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim()) : []
+				}));
+				await this.$refs.paging.complete(rows);
 			},
 			queryList(pageNo, pageSize) {
 				this.refreshOrderList(pageNo);
@@ -147,78 +184,128 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 </script>
 
 <style scoped>
-	.head{
-		border-top: 5px solid #efeef3ff;
-		border-bottom: 1px solid #efeef3ff;
-		line-height: 39px;
+	.head {
+		border-top: 5px solid #efeef3;
+		border-bottom: 1px solid #edf0f4;
 		width: 100%;
 	}
-	.head .screen-bar {
-		background-color: black;
-		display: flex;		
-		background-color: #fff;	
-		
-	}
-	.head .screen-bar .screen-bar-item {		
-		height: 100%;
-		width: 30%;
+	.screen-bar {
+		position: relative;
 		display: flex;
-		align-items: center;		
+		align-items: center;
+		padding: 8px 16rpx;
+		background-color: #fff;
+		box-sizing: border-box;
 	}
-	.head .screen-bar .screen-bar-item .bar-item-text {
-		font-size: 15px;
-		padding-left: 10px;
-		text-overflow: ellipsis;
-		overflow: hidden;
+	.screen-bar-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: 0 0 156rpx;
+		height: 34px;
+		padding: 0 18rpx;
+		box-sizing: border-box;
+		border-radius: 8px;
+		background-color: #eaf8ff;
+		color: #00a7e2;
+	}
+	.bar-item-text {
+		font-size: 28rpx;
+		font-weight: 500;
 		white-space: nowrap;
 	}
-	.head .screen-bar .screen-bar-item image {
-		width: 15px;
-		height: 15px;
-		padding-top: 2px;
-		padding-left: 7px;
-		display: block;
-		transition: all .3s;
+	.filter-chevron {
+		width: 6px;
+		height: 6px;
 		flex-shrink: 0;
-	}	
-	.head .screen-bar .datestartAndEnd{		
-		width: 50%;
+		border-right: 1.5px solid currentColor;
+		border-bottom: 1.5px solid currentColor;
+		transform: translateY(-2px) rotate(45deg);
+		transition: transform .2s;
+	}
+	.filter-chevron.is-open {
+		transform: translateY(2px) rotate(225deg);
+	}
+	.datestartAndEnd {
+		flex: 1;
+		min-width: 0;
 		display: flex;
-		width: 50%;
-		align-items: center;		
-		font-size: 15px;
-		color: #acacacff;
+		align-items: center;
+		margin-left: 12rpx;
 	}
-	.head .screen-bar .datestartAndEnd .dateStart{
-		
+	.dateStart, .dateEnd {
+		flex: 1;
+		min-width: 0;
+		border-left: 1px solid #edf0f4;
 	}
-	.head .screen-bar .datestartAndEnd .dateEnd{
-		padding-left: 30px;
+	.date-trigger {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 34px;
+		padding: 0 4rpx;
+		white-space: nowrap;
+		color: #747d89;
 	}
-	
-	.dropdown-box {
+	.date-placeholder {
+		font-size: 30rpx;
+	}
+	.date-value {
+		font-size: 30rpx;
+		color: #333;
+	}
+	.date-chevron {
+		width: 5px;
+		height: 5px;
+		margin-left: 6rpx;
+	}
+	.reset-button {
+		flex-shrink: 0;
+		margin: 0 0 0 10rpx;
+		padding: 0 12rpx;
+		font-size: 24rpx;
+		line-height: 24px;
+		color: #00a7e2;
 		background-color: #fff;
-		height: 210rpx;
-		width: 100%;
-		padding-left: 30rpx;
+		border: 1px solid #00a7e2;
+		border-radius: 5px;
+	}
+	.reset-button::after {
+		border: none;
+	}
+	.dropdown-box {
 		position: absolute;
-		left: 0;
-		top: 46px;
+		left: 16rpx;
+		top: calc(100% - 4px);
+		width: 220rpx;
+		padding: 4px 0;
+		box-sizing: border-box;
+		background-color: #fff;
+		border: 1px solid #e2e8ef;
+		border-radius: 10px;
+		box-shadow: 0 5px 16px rgba(30, 60, 80, .12);
 		z-index: 99;
 		overflow: hidden;
 	}
 	.dropdown-item {
-		height: 70rpx;
-		width: 100%;		
-		font-size: 28rpx;
-		color: #666;
 		display: flex;
 		align-items: center;
-		padding: 0 15rpx;
-		box-sizing: border-box;
+		justify-content: space-between;
+		min-height: 40px;
+		padding: 0 24rpx;
 		font-size: 28rpx;
-		color: #111111;
-		border-bottom: 1rpx solid #EEEEEE;
+		color: #333;
+	}
+	.dropdown-item.is-selected {
+		background-color: #eaf8ff;
+		color: #00a7e2;
+	}
+	.selected-check {
+		width: 6px;
+		height: 11px;
+		border-right: 2px solid currentColor;
+		border-bottom: 2px solid currentColor;
+		transform: translateY(-2px) rotate(45deg);
 	}
 	.bg-mask {		
 		position: absolute;
@@ -226,7 +313,7 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
+		background: transparent;
 		z-index: 98;
 		transition: all 0.3s ease-in-out;
 		opacity: 0;
@@ -238,19 +325,16 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 	}
 	
 	.product{ 		
+		position: relative;
 		display: flex;
 		align-items: center;
 		background-color: #fff; 
 		border-bottom: 1px solid #cbcbcbff;
-		padding: 5px 5px 0 0;
-	}
-	.product .img{
-		width: 70px;
-		height: 80px;	
+		padding: 8px 5px 8px 10px;
 	}
 	.product .product-content {
 	   flex: 1;
-	   margin-left: 1px;
+	   min-width: 0;
 	}
 	.product .product-content .item {
 	 	display: flex;
@@ -268,5 +352,86 @@ import cPicker from "../../components/c-picker/c-picker.vue"
 	  text-rendering: optimizeLegibility;
 	}
 	
+
+.product-actions{
+	position: absolute;
+	right: 2px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 64px;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #00a7e2ff;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #00a7e2ff;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #00a7e2ff;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #00a7e2ff;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #00a7e2ff;
+	border-top: 1.5px solid #00a7e2ff;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #00a7e2ff;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
+}
 
 </style>

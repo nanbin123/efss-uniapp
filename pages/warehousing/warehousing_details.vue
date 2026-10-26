@@ -2,42 +2,50 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>
-	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
+	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" class="details-scroll">
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 			<text class="title">入库单号</text>	
 			<text class="content">{{warehousingEntry.warehousingNumber}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')" mode=""></image>
 			<text class="title">记录日期</text>
 			<view  @tap="toggle('record_date')" class="time" :style="{color:isEmpty(warehousingEntry.recordDate) ?'#a0a0a0':'#333'}">{{isEmpty(warehousingEntry.recordDate)? "请选择记录日期":warehousingEntry.recordDate}}</view>
 			<cPicker mode='date' :pageData="warehousingEntry.recordDate" @confirm="deliveryHand" ref="record_date"></cPicker>
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/handled_by.png')" mode=""></image>
 			<text class="title">操作人</text>
 			<text class="content">{{warehousingEntry.handledBy}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
 			<text class="title">供应商</text>	
 			<text class="content">{{warehousingEntry.supplier}}</text>	
 		</view>		
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
 			<text  class="title">备注 </text>
 			<input v-model="warehousingEntry.remark" class="content" :disabled="isEditable">
 		</view>
 
 		
 		<view class="products">
-			<view class="item" style="border-bottom: 0;padding-bottom: 0;">
-				<image class="img" :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
+			<view class="item products-title">
 				<text class="title">产品明细</text>
 			</view>
 			
-			<view class="product-content" v-for="(item,index) in warehousingEntry.warehousingEntryProductList">
+			<view class="product-content" v-for="(item,index) in warehousingEntry.warehousingEntryProductList" :key="index">
+				<view class="product-actions">
+					<view class="product-action product-gallery" @click.stop="previewImage(item)">
+						<view class="gallery-icon">
+							<view class="gallery-dot"></view>
+							<view class="gallery-mountain gallery-mountain-left"></view>
+							<view class="gallery-mountain gallery-mountain-right"></view>
+							<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+						</view>
+						<text class="product-action-label">查看</text>
+					</view>
+					<checkbox-group class="choice" @change="onCheckchange($event,item)">
+						<checkbox value="isInWarehouse" :checked="item.isInWarehouse" :disabled="isDisabled(item.isEdit)" />
+					</checkbox-group>
+				</view>
 					<view class="grid">
 						<text class="info">品名：{{item.productName}}</text>
 						<text class="info">型号：{{item.type}}</text>
@@ -48,14 +56,12 @@
 					</view>
 					<view class="grid">
 						<text class="info">材质：{{item.texture}}</text>
-						<text class="info" style="width: 40%;">尺寸：{{item.size}}</text>
+						<text class="info">尺寸：{{item.size}}</text>
 					</view>	
-					<view class="grid">
-						<text class="info" style="color: #e96225ff;">数量：1</text>	
+					<view class="grid inventory-row">
+						<text class="info" style="color: #e96225ff;">数量：1</text>
 						<text class="info"  style="color: #e96225ff;">是否入库：{{item.isInWarehouse == true ?'已入库':'未入库'}}</text>
-						<checkbox-group class="choice" @change="onCheckchange($event,item)">							
-							<checkbox value="isInWarehouse":checked="item.isInWarehouse" :disabled="isDisabled(item.isEdit)" />
-						</checkbox-group>
+
 					</view>	
 			</view>
 		</view>
@@ -82,6 +88,20 @@ export default {
 		}
 	},
 	methods: {
+		previewImage(item) {
+			const images = Array.isArray(item.productImages) ? item.productImages : [];
+			const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+				.map(img => {
+					const url = img.productUrl.trim();
+					return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+				});
+			if (!urls.length) {
+				uni.showToast({ title: '暂无更多图片', icon: 'none' });
+				return;
+			}
+			uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+		},
+
 		isDisabled(itemIsEdit) {
 			if(this.isEditable){
 				return this.isEditable;
@@ -208,35 +228,50 @@ export default {
 }
 .item{
 	display: flex;	
-	padding: 8px 0;
+	min-height: 44px;
+	box-sizing: border-box;
+	padding: 8px 12px 8px 8px;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;	
 }
-.item .img{
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;	
-}
 .item .title{
-	margin-left: 1px;
+	width: 80px;
+	flex-shrink: 0;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap; /* 文字不换行 */
 	text-rendering: optimizeLegibility;
 }
 .item .time{
-	margin-left: auto;
+	flex: 1;
+	min-width: 0;
+	font-size: 15px;
+	line-height: 32px;
 	text-align: right;
-	padding-right: 12px;
+	color: #333;
+	text-rendering: optimizeLegibility;
 }
 .content{
-	flex-grow: 1;
-	padding-right: 12px;
+	flex: 1;
+	min-width: 0;
 	text-align: right;
-	white-space: nowrap;
+	white-space: normal;
+	word-break: break-all;
+	line-height: 24px;
 	font-size: 15px;
 	color: #333;
+	text-rendering: optimizeLegibility;
+}
+.item input.content{
+	height: 32px;
+}
+.details-scroll{
+	height: calc(100vh - 46px);
+	height: calc(100vh - 46px - env(safe-area-inset-bottom));
+}
+.products-title{
+	border-bottom: 0;
 }
 .products{
 	border-top: 2px solid #cbcbcbff;
@@ -244,17 +279,21 @@ export default {
 
 .products .product-content{
 	border-bottom: 1px solid #cbcbcbff;
-	margin-left: 5px ;
-	margin-top: 5px;
 	position: relative;
+	padding: 4px 60px 4px 8px;
+	box-sizing: border-box;
 }
 .products .product-content .grid{
 	display: flex;
+	align-items: center;
+	min-height: 24px;
 	line-height: 20px;
 }
 .products .product-content .grid .info{
 	width: 50%;
-	color: #030303ff;
+	min-width: 0;
+	box-sizing: border-box;
+	padding-right: 4px;
 	font-size: 14px;
 	color: #333;
 	white-space: nowrap;  
@@ -263,9 +302,27 @@ export default {
 	text-rendering: optimizeLegibility;
 }
 .choice {
-	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	min-height: 40px;
+}
+.choice checkbox /deep/ .uni-checkbox-input,
+.choice checkbox /deep/ .wx-checkbox-input{
+	margin-right: 0;
+}
+.products .product-content .inventory-row{
+	min-height: 40px;
+}
+.products .product-content .inventory-row .info{
+	width: auto;
+	flex: 1;
+	white-space: normal;
+}
+.products .product-content .inventory-row .info:first-child{
+	flex: 0 0 28%;
 }
 
 .bottom-bar {  
@@ -274,6 +331,8 @@ export default {
   left: 0;
   width: 100%;
   height: 39px;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: content-box;
   background-color: #fff;
   border-top: 1px solid #cbcbcbff;
   display: flex;
@@ -302,4 +361,88 @@ export default {
 	margin-right: 10px;
 }
 
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-remove .iconfont{
+	color: #38c1b9;
+	font-size: 22px;
+	line-height: 24px;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #38c1b9;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
+}
+
+
+.product-actions{
+	position: absolute;
+	right: 4px;
+	top: 4px;
+	bottom: 4px;
+	width: 48px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+}
 </style>

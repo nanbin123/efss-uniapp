@@ -68,8 +68,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("background-image:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "15"),
-    d: common_vendor.o(($event) => $options.moreSearch(), "4e"),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "8f"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "7d"),
     e: common_vendor.f($data.orderList, (item, index, i0) => {
       return {
         a: common_vendor.t(item.orderNumber),
@@ -90,6 +90,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     g: common_vendor.o($options.queryList, "48"),
     h: common_vendor.o(($event) => $data.orderList = $event, "fc"),
     i: common_vendor.p({
+      ["safe-area-inset-bottom"]: true,
+      ["bottom-bg-color"]: "#00a7e2ff",
       modelValue: $data.orderList
     })
   };

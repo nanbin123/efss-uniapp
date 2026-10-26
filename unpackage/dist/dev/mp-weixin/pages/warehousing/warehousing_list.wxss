@@ -83,10 +83,21 @@
    -webkit-font-smoothing: antialiased;
 }
 .warehousing_footer.data-v-44b24dac{
-	font-size: 16px;
+	height: 80rpx;
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	height: 30px;
-	line-height: 30px;
 	background-color: #38c1b9;
 	color: #ffffff;
+}
+.warehousing_footer navigator.data-v-44b24dac{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+@media screen and (max-height: 700px) {
+.warehousing_footer.data-v-44b24dac{
+		height: 72rpx;
+}
 }

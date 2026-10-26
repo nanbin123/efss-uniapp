@@ -44,9 +44,9 @@
 			<text class="title">备注</text>			
 			<input v-model="customer.remark" :disabled="isEditable" confirm-type="next" type="text" placeholder-class="input-placeholder" placeholder="请输入备注" >
 		</view>
-		<view class="item" @click="arriveAdd()">
+		<view class="item section-header" @click="arriveAdd()">
 			<text class="title">到店记录</text>
-			<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
+			<view class="section-add" v-if="!isEditable"><text>添加</text></view>
 		</view>
 		
 		<view v-for="(item,index) in customer.listCustomerArrival" :id="item.id">
@@ -58,15 +58,15 @@
 				<view class="arrive_content_line">
 					<text class="arrive_content_info" style="width: 100%;">到店记录：{{item.arrivalRecord}}</text>					
 				</view>
-				<view class="removeArrive" @click.stop="deleteCustomerArrival(item.id)" v-show="!isEditable">
+				<view class="removeArrive" @click.stop="deleteCustomerArrival(item.id)" v-if="!isEditable">
 					<i class="iconfont">&#xe612;</i>
 				</view>
 			</view>
 		</view>
 		
-		<view class="item" @click="trackAdd()">
+		<view class="item section-header" @click="trackAdd()">
 			<text class="title">跟踪记录</text>		
-			<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
+			<view class="section-add" v-if="!isEditable"><text>添加</text></view>
 		</view>
 		
 		<view  v-for="(item,index) in customer.listCustomerTailAfter" :id="item.id">
@@ -78,16 +78,16 @@
 				<view class="arrive_content_line">
 					<text class="arrive_content_info" style="width: 100%;">跟踪记录:{{item.arrivalRecord}}</text>
 				</view>
-				<view class="removeFollowing" @click.stop="deleteCustomerTailAfter(item.id)" v-show="!isEditable">
+				<view class="removeFollowing" @click.stop="deleteCustomerTailAfter(item.id)" v-if="!isEditable">
 					<i class="iconfont">&#xe612;</i>
 				</view>
 			</view>
 			
 		</view>
 	
-	<view class="item product-section-title" @click="addCustomerProduct()">
+	<view class="item section-header product-section-title" @click="addCustomerProduct()">
 		<text class="title">预购产品</text>		
-		<image class="arriveAdd" :src="getImgUrl('static/image/add.png')"></image>
+		<view class="section-add" v-if="!isEditable"><text>添加</text></view>
 	</view>
 	
 	<view class="product" v-for="(item, index) in customer.customerProducts" :key="item.productId || index">
@@ -110,7 +110,7 @@
 			</view>
 		</view>
 		<view class="product-actions">
-			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)" v-show="!isEditable">
+			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)" v-if="!isEditable">
 				<i class="iconfont">&#xe612;</i>
 				<text class="product-action-label">移除</text>
 			</view>
@@ -639,11 +639,23 @@
 	font-size: 15px;
 	color: #333;
 }
-.arriveAdd{
-	width: 25px;
-	height: 25px;
+.item.section-header{
+	padding-right: 8px;
+}
+.section-add{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 24px;
 	margin-left: auto;
+	margin-right: 4px;
 	flex-shrink: 0;
+	box-sizing: border-box;
+	background-color: #fff;
+	color: #38c1b9;
+	font-size: 14px;
+	line-height: 20px;
 }
 .item .input-placeholder{
 	font-size: 15px;
@@ -764,16 +776,15 @@
 
 
 .product{
-	display: flex;
-	align-items: stretch;
+	position: relative;
 	background-color: #fff;
 	border-bottom: 1px solid #e5e5e5;
 	box-sizing: border-box;
 }
 .product-content{
-	flex: 1;
+	width: 100%;
 	min-width: 0;
-	padding: 8px 0 8px 8px;
+	padding: 4px 0 4px 8px;
 	box-sizing: border-box;
 }
 .grid {	
@@ -797,8 +808,13 @@
 }
 
 .product-actions{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
 	width: 64px;
-	flex-shrink: 0;
+	pointer-events: none;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -807,6 +823,7 @@
 	box-sizing: border-box;
 }
 .product-action{
+	pointer-events: auto;
 	width: 48px;
 	min-height: 44px;
 	display: flex;
@@ -878,8 +895,11 @@
 	text-align: center;
 }
 
-/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+/* 微信小程序窄屏：缩小浮动操作区，产品信息保持全宽 */
 @media screen and (max-width: 375px) {
+	.item.section-header{
+		padding-right: 5px;
+	}
 	.product-content{
 		padding-left: 6px;
 	}
@@ -887,9 +907,6 @@
 		width: 58px;
 		padding-left: 2px;
 		padding-right: 2px;
-	}
-	.info{
-		font-size: 13px;
 	}
 }
 .removeFollowing{

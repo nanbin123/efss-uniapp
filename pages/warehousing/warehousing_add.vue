@@ -2,49 +2,59 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>	
-	<scroll-view scroll-y style="height: calc(100vh - 35px);">
+	<scroll-view scroll-y class="form-scroll">
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/record_date.png')"></image>
-			<text class="title">记录日期:</text>
+			<text class="title">记录日期</text>
 			<view @tap="toggle('record_date')" class="time" :style="{color:isEmpty(warehousingEntry.recordDate) ?'#a0a0a0':'#333'}">{{isEmpty(warehousingEntry.recordDate)? "请选择":warehousingEntry.recordDate}}</view>
 			<cPicker mode='date' @confirm="recordDateHand" ref="record_date"></cPicker>
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/supplier.png')"></image>
-			<text class="title">供应商:</text>
-			<input v-model="warehousingEntry.supplier" type="text" />
+			<text class="title">供应商</text>
+			<input v-model="warehousingEntry.supplier" type="text" placeholder="请输入供应商" />
 		</view>	
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/warehousing/warehousing-number.png')"></image>
-			<text class="title">备注 :</text>
-			<input v-model="warehousingEntry.remark" type="text" />
+			<text class="title">备注</text>
+			<input v-model="warehousingEntry.remark" type="text" placeholder="请输入备注" />
 		</view>
 		<view class="item choice_porduct" @click="addWarehousingProduct()">
-			<image class="img"  :src="getImgUrl('static/image/warehousing/choose_product.png')"></image>
 			<text class="title">选择产品</text>
 			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
 		</view>
-		<view class="product"  v-for="(item,index) in warehousingEntry.warehousingEntryProductList">			
-			<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
-			<view class="product-content" @click="open(item)">
-				<view class="grid">
-					<text class="info">品名：{{item.productName}}</text>
-					<text class="info">型号：{{item.type}}</text>
-				</view>
-				<view class="grid">
-					<text class="info" >尺寸：{{item.size}}</text>
-					<text class="info" style="color: #1aa1cfff;">产地：{{item.production}}</text>
-				</view>
-				<view class="grid">					
-					<text class="info">颜色：{{item.color}}</text>
-					<text class="info">材质：{{item.texture}}</text>	
-				</view>
-				<view class="grid">
-					<text class="info">零售价：<text style="color: #d6a950ff; font-size: 12px;">￥{{item.retailPrice}}</text></text>
-					<text class="info">数量：{{item.inventoryQuantity}}</text>
-				</view>
-			</view> 
+	<view class="product" v-for="(item, index) in warehousingEntry.warehousingEntryProductList" :key="item.productId || index">
+		<view class="product-content" @click="open(item)">
+			<view class="grid">
+				<view class="info">品名：{{item.productName}}</view>
+				<view class="info">型号：{{item.type}}</view>
+			</view>
+			<view class="grid">
+				 <view class="info">尺寸：{{item.size}}</view>
+				 <view class="info">产地：{{item.production}}</view>
+			</view>
+			 <view class="grid">
+			    <view class="info">材质：{{item.texture}}</view>
+				<view class="info">颜色：{{item.color}}</view>
+			</view>
+			<view class="grid">
+				<text class="info product-emphasis">数量：<text>{{item.inventoryQuantity}}</text></text>
+				<view class="info product-emphasis">零售价：<text>￥{{item.retailPrice}}</text></view>
+			</view>
 		</view>
+		<view class="product-actions">
+			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)">
+				<text class="iconfont">&#xe612;</text>
+				<text class="product-action-label">移除</text>
+			</view>
+			<view class="product-action product-gallery" @click.stop="previewImage(item)">
+				<view class="gallery-icon">
+					<view class="gallery-dot"></view>
+					<view class="gallery-mountain gallery-mountain-left"></view>
+					<view class="gallery-mountain gallery-mountain-right"></view>
+					<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+				</view>
+				<text class="product-action-label">查看</text>
+			</view>
+		</view>
+	</view>
 	</scroll-view>
 	<view class="footer" @click="addWarehousing()">
 		<view>保存</view>
@@ -76,7 +86,7 @@ export default {
 	options: {styleIsolation: 'shared'},
 	data() {
 		return {
-			warehousingEntry:{},
+			warehousingEntry:{warehousingEntryProductList:[]},
 			popupProduct:{
 				productId:"",
 				productName:"",
@@ -89,6 +99,25 @@ export default {
 		return { productStore } 
 	 },
 	methods: {
+		deleteProduct(productId) {
+			this.warehousingEntry.warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList
+				.filter(item => item.productId !== productId);
+			this.productStore.addProduct(this.warehousingEntry.warehousingEntryProductList);
+		},
+		previewImage(item) {
+			const images = Array.isArray(item.productImages) ? item.productImages : [];
+			const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+				.map(img => {
+					const url = img.productUrl.trim();
+					return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+				});
+			if (!urls.length) {
+				uni.showToast({ title: '暂无更多图片', icon: 'none' });
+				return;
+			}
+			uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+		},
+
 		//选择产品
 		addWarehousingProduct(){
 			let warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList
@@ -107,7 +136,11 @@ export default {
 		addWarehousing(){
 			let warehousingEntryObj=JSON.parse(JSON.stringify(this.warehousingEntry));			
 			let productInfo = warehousingEntryObj.warehousingEntryProductList.map(map =>{
-				return {productId:map.productId,inventoryQuantity:map.inventoryQuantity}
+				return {
+					productId: map.productId,
+					inventoryQuantity: map.inventoryQuantity,
+					productImages: map.productImages || []
+				}
 			})
 			warehousingEntryObj.warehousingEntryProductList = productInfo
 			post("warehousing/insertWarehousingEntry",JSON.stringify(warehousingEntryObj),'application/json').then(res =>{
@@ -171,33 +204,35 @@ export default {
 }
 .item{
 	display: flex;	
-	padding: 8px 0;
+	min-height: 48px;
+	box-sizing: border-box;
+	padding: 8px 12px;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
 }
-.item .img{
-	padding-left: 1px;
-	width: 19px;
-	height: 19px;	
-}
 .item .title{
-	margin-left: 1px;
+	width: 80px;
+	flex-shrink: 0;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
 }
 .item input{
-	flex-grow: 1;
-	padding-right: 13px;
+	flex: 1;
+	min-width: 0;
+	height: 32px;
+	font-size: 15px;
 	text-align: right;	
 	text-rendering: optimizeLegibility;
 }
 .item .time{
-	margin-left: auto;
+	flex: 1;
+	min-width: 0;
+	line-height: 32px;
+	font-size: 15px;
 	text-align: right;
-	padding-right: 13px;
 }
 .content{
 	white-space: nowrap;
@@ -218,48 +253,145 @@ export default {
 	text-align: right;
 }
 .choice_porduct{
-	position: relative;
 	margin-bottom: 5px;
-	padding-bottom: 5px;
-	padding-top: 5px;
 }
 .add_product{
 	width: 25px;
 	height: 25px;
-	position: absolute;
-	right: 20px;
+	flex-shrink: 0;
+	margin-left: auto;
 }
 
 .product{
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 5px;
-	margin-bottom: 5px;
+	border-bottom: 1px solid #e5e5e5;
+	box-sizing: border-box;
 }
-.product .img {
-	width: 80px;
-	height: 80px;
-}
-.product-content{	
+.product-content{
 	flex: 1;
-	margin-left: 5px;
+	min-width: 0;
+	padding: 8px 0 8px 8px;
+	box-sizing: border-box;
 }
 .grid {
- 	display: flex;	
+	display: flex;
+	align-items: center;
+	min-height: 24px;
 	line-height: 20px;
 }
 .info {
-   width: 50%;
-   color: #030303ff;
-   font-size: 14px;
-   color: #333;
-   white-space: nowrap;  
-   overflow: hidden; /* 超出部分隐藏 */
-   text-overflow: ellipsis; /* 显示省略号 */
-   text-rendering: optimizeLegibility;
+  width: 50%;
+	min-width: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
+.product-emphasis{
+	color: #e96225ff;
+}
+
+.product-actions{
+	width: 64px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-remove .iconfont{
+	color: #38c1b9;
+	font-size: 22px;
+	line-height: 24px;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #38c1b9;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
+}
+
+/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+@media screen and (max-width: 375px) {
+	.product-content{
+		padding-left: 6px;
+	}
+	.product-actions{
+		width: 58px;
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+	.info{
+		font-size: 13px;
+	}
+}
+
 .choice{
 	display: flex;
 	justify-content: space-between;
@@ -272,19 +404,39 @@ export default {
 	transform:scale(0.9);
 	margin-right: 30px;
 }
+.form-scroll{
+	height: calc(100vh - 5px - 80rpx);
+	height: calc(100vh - 5px - 80rpx - env(safe-area-inset-bottom));
+}
 .footer{
-	height: 30px;
-	font-size: 15px;
+	height: 80rpx;
+	box-sizing: content-box;
+	padding-bottom: env(safe-area-inset-bottom);
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	line-height: 30px;
-	background-color: #00a7e2ff;	
-	color: #daf2fbff;	
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #38c1b9;
+	color: #ffffff;
 	width: 100%;
+}
+
+@media screen and (max-height: 700px) {
+	.form-scroll{
+		height: calc(100vh - 5px - 72rpx);
+		height: calc(100vh - 5px - 72rpx - env(safe-area-inset-bottom));
+	}
+	.footer{
+		height: 72rpx;
+	}
 }
 
 .popup_content {
 	position: relative;
 	width: 260px;
+	max-width: calc(100vw - 32px);
 	height: 120px;
 	background-color: white;	
 	overflow: auto;
@@ -315,7 +467,7 @@ export default {
  }
 
 .popup_product_foot {
-	width: 260px;
+	width: 100%;
 	position: absolute;
 	bottom: 0;
 	left: 0;

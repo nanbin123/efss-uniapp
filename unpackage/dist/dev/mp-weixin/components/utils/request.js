@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const BASEURL = "https://www.efss.net.cn/";
+const BASEURL = "https://127.0.0.1/";
 function get(url, data = {}, contentType = "application/x-www-form-urlencoded;charset=UTF-8") {
   return request(url, data, "GET", contentType);
 }
@@ -11,11 +11,17 @@ function uploadFiles(url, files, formData = {}) {
   return uploadImg(url, files, formData);
 }
 function uploadImg(url, files, formData) {
-  common_vendor.index.__f__("log", "at components/utils/request.js:28", "files", files);
-  return new Promise(function(resolve, reject) {
-    common_vendor.index.showLoading({
-      title: "上传中"
-    });
+  return new Promise(function(resolve) {
+    const failUpload = (message) => {
+      common_vendor.index.hideLoading();
+      common_vendor.index.showToast({ title: message, icon: "none", duration: 4e3 });
+      resolve({ code: -1, msg: message });
+    };
+    if (!files) {
+      failUpload("未获取到图片文件，请重新选择");
+      return;
+    }
+    common_vendor.index.showLoading({ title: "上传中", mask: true });
     common_vendor.index.uploadFile({
       url: BASEURL + url,
       filePath: files,
@@ -26,27 +32,32 @@ function uploadImg(url, files, formData) {
       },
       formData,
       success(res) {
-        if (res.data) {
-          let resData = JSON.parse(res.data);
-          if (resData.code == 401 || resData.code == 403) {
-            common_vendor.index.removeStorageSync("token");
-            common_vendor.index.showToast({
-              title: "登录失效，请重新登录",
-              icon: "none"
-            });
-            setTimeout(() => {
-              common_vendor.index.reLaunch({
-                url: "/pages/login/login"
-              });
-            }, 1e3);
-          }
-          if (resData.code == 200) {
-            resolve(resData);
-          }
-        } else {
-          resolve(null);
-          common_vendor.index.hideLoading();
+        let resData;
+        try {
+          resData = typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+        } catch (error) {
+          failUpload("上传失败，服务器响应异常（" + res.statusCode + "）");
+          return;
         }
+        if (res.statusCode === 401 || res.statusCode === 403 || resData && (resData.code == 401 || resData.code == 403)) {
+          common_vendor.index.removeStorageSync("token");
+          failUpload("登录失效，请重新登录");
+          setTimeout(() => common_vendor.index.reLaunch({ url: "/pages/login/login" }), 1e3);
+          return;
+        }
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          failUpload("上传失败，服务器状态码：" + res.statusCode);
+          return;
+        }
+        if (!resData || resData.code != 200) {
+          failUpload(resData && resData.msg || "图片上传失败，请重试");
+          return;
+        }
+        common_vendor.index.hideLoading();
+        resolve(resData);
+      },
+      fail(error) {
+        failUpload("上传失败：" + (error.errMsg || "请检查网络后重试"));
       }
     });
   });

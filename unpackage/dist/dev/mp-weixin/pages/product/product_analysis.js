@@ -1,6 +1,6 @@
 "use strict";
-const components_utils_request = require("../../components/utils/request.js");
 const common_vendor = require("../../common/vendor.js");
+const components_utils_request = require("../../components/utils/request.js");
 const cPicker = () => "../../components/c-picker/c-picker.js";
 const _sfc_main = {
   components: {
@@ -10,9 +10,9 @@ const _sfc_main = {
     return {
       productAnalysisList: [],
       show: false,
-      titleText: "全部",
-      titleValue: "",
-      //排序默认全部
+      titleText: "按销额",
+      titleValue: "salesAmount",
+      //默认按销额排序
       itemArr: [
         {
           text: "全部",
@@ -32,10 +32,33 @@ const _sfc_main = {
     };
   },
   methods: {
-    refreshOrderList(pageNo) {
-      components_utils_request.post("statistics/selectListProductAnalysis", { "pageNum": pageNo, "startTime": this.dateStart, "endTime": this.dateEnd, "sort": this.titleValue }).then((res) => {
-        this.$refs.paging.complete(res.rows);
+    resetSearch() {
+      this.dateStart = "";
+      this.dateEnd = "";
+      this.titleText = "按销额";
+      this.titleValue = "salesAmount";
+      this.show = false;
+      this.$refs.paging.reload();
+    },
+    previewImage(item) {
+      const images = Array.isArray(item.productImages) ? item.productImages : [];
+      const urls = images.filter((img) => img && typeof img.productUrl === "string" && img.productUrl.trim()).map((img) => {
+        const url = img.productUrl.trim();
+        return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
       });
+      if (!urls.length) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      common_vendor.index.previewImage({ current: urls[0], urls, indicator: "number", loop: true });
+    },
+    async refreshOrderList(pageNo) {
+      const res = await components_utils_request.post("statistics/selectListProductAnalysis", { "pageNum": pageNo, "startTime": this.dateStart, "endTime": this.dateEnd, "sort": this.titleValue });
+      const rows = res.rows.map((item) => ({
+        ...item,
+        productImages: Array.isArray(item.productImages) ? item.productImages.filter((img) => img && typeof img.productUrl === "string" && img.productUrl.trim()) : []
+      }));
+      await this.$refs.paging.complete(rows);
     },
     queryList(pageNo, pageSize) {
       this.refreshOrderList(pageNo);
@@ -89,55 +112,62 @@ if (!Math) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.t($data.titleText),
-    b: $options.getImgUrl("static/image/product/arrow.png"),
+    b: $data.show ? 1 : "",
     c: common_vendor.o((...args) => $options.itemClick && $options.itemClick(...args), "c1"),
-    d: $data.dateStart == ""
-  }, $data.dateStart == "" ? {} : {
+    d: !$data.dateStart
+  }, !$data.dateStart ? {} : {
     e: common_vendor.t($data.dateStart)
   }, {
-    f: common_vendor.o(($event) => $options.toggle("start_date"), "df"),
+    f: common_vendor.o(($event) => $options.toggle("start_date"), "32"),
     g: common_vendor.sr("start_date", "9d2bcbee-1,9d2bcbee-0"),
-    h: common_vendor.o($options.dateStartHand, "52"),
+    h: common_vendor.o($options.dateStartHand, "c0"),
     i: common_vendor.p({
       mode: "date"
     }),
-    j: $data.dateEnd == ""
-  }, $data.dateEnd == "" ? {} : {
+    j: !$data.dateEnd
+  }, !$data.dateEnd ? {} : {
     k: common_vendor.t($data.dateEnd)
   }, {
-    l: common_vendor.o(($event) => $options.toggle("end_date"), "ae"),
+    l: common_vendor.o(($event) => $options.toggle("end_date"), "1e"),
     m: common_vendor.sr("end_date", "9d2bcbee-2,9d2bcbee-0"),
-    n: common_vendor.o($options.dateEndHand, "1d"),
+    n: common_vendor.o($options.dateEndHand, "37"),
     o: common_vendor.p({
       mode: "date"
     }),
-    p: common_vendor.f($data.itemArr, (item, index, i0) => {
-      return {
-        a: common_vendor.t(item["text"]),
-        b: index,
-        c: common_vendor.o(($event) => $options.subItemClick(index), index)
-      };
+    p: common_vendor.o((...args) => $options.resetSearch && $options.resetSearch(...args), "54"),
+    q: common_vendor.f($data.itemArr, (item, index, i0) => {
+      return common_vendor.e({
+        a: common_vendor.t(item.text),
+        b: $data.titleValue === item.value
+      }, $data.titleValue === item.value ? {} : {}, {
+        c: $data.titleValue === item.value ? 1 : "",
+        d: index,
+        e: common_vendor.o(($event) => $options.subItemClick(index), index)
+      });
     }),
-    q: $data.show ? "1" : "0",
-    r: $data.show ? "block" : "none",
-    s: common_vendor.n($data.show ? "bg-mask-show" : ""),
-    t: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args), "e9"),
-    v: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args), "90"),
-    w: common_vendor.f($data.productAnalysisList, (item, index, i0) => {
-      return {
+    r: $data.show ? "1" : "0",
+    s: $data.show ? "block" : "none",
+    t: common_vendor.n($data.show ? "bg-mask-show" : ""),
+    v: common_vendor.o((...args) => $options.maskClose && $options.maskClose(...args), "41"),
+    w: common_vendor.o((...args) => $options.touchControl && $options.touchControl(...args), "18"),
+    x: common_vendor.f($data.productAnalysisList, (item, index, i0) => {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.production),
         d: common_vendor.t(item.texture),
         e: common_vendor.t(item.color),
         f: common_vendor.t(item.retailPrice),
-        g: common_vendor.t(item.orderCreateTime),
+        g: common_vendor.t(item.salesAmount),
         h: common_vendor.t(item.salesQuantity),
-        i: common_vendor.t(item.salesAmount),
-        j: index
-      };
+        i: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        j: common_vendor.t(item.productImages.length)
+      } : {}, {
+        k: common_vendor.o(($event) => $options.previewImage(item), index),
+        l: index
+      });
     }),
-    x: $options.getImgUrl("static/image/茶几.png"),
     y: common_vendor.sr("paging", "9d2bcbee-0"),
     z: common_vendor.o($options.queryList, "23"),
     A: common_vendor.o(($event) => $data.productAnalysisList = $event, "7e"),

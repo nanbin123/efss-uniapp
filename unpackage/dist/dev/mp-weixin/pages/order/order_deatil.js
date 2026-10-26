@@ -32,6 +32,19 @@ const _sfc_main = {
     return { productStore };
   },
   methods: {
+    // 查看产品图片，支持左右滑动预览。
+    previewImage(item) {
+      const images = Array.isArray(item.productImages) ? item.productImages : [];
+      const urls = images.filter((img) => img && typeof img.productUrl === "string" && img.productUrl.trim()).map((img) => {
+        const url = img.productUrl.trim();
+        return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
+      });
+      if (!urls.length) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      common_vendor.index.previewImage({ current: urls[0], urls, indicator: "number", loop: true });
+    },
     open(item) {
       if (this.isEditable == false) {
         this.popupProduct.productName = item.productName;
@@ -51,11 +64,12 @@ const _sfc_main = {
       this.$refs.popup.close();
     },
     //移除指定产品
-    deleteProduct() {
-      let productId = this.popupProduct.productId;
+    deleteProduct(productId) {
       let orderProductList = this.orderForm.orderProductList;
       let index = orderProductList.findIndex((item) => item.productId == productId);
-      orderProductList.splice(index, 1);
+      if (index !== -1) {
+        orderProductList.splice(index, 1);
+      }
     },
     // 校验电话号码
     checkPhone() {
@@ -130,7 +144,11 @@ const _sfc_main = {
         }
         let orderForm = JSON.parse(JSON.stringify(this.orderForm));
         let orderProductList = orderForm.orderProductList.map((item) => {
-          return { productId: item.productId, number: item.number };
+          return {
+            productId: item.productId,
+            number: item.number,
+            productImages: item.productImages || []
+          };
         });
         orderForm.orderProductList = orderProductList;
         components_utils_request.post("order/updateOrderFormById", JSON.stringify(orderForm), "application/json").then((res) => {
@@ -242,70 +260,61 @@ if (!Math) {
   _easycom_uni_popup();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: $options.getImgUrl("static/image/order/order_number.png"),
-    b: common_vendor.o(($event) => $data.customerNameFocus = false, "0e"),
-    c: $data.orderForm.orderNumber,
-    d: common_vendor.o(($event) => $data.orderForm.orderNumber = $event.detail.value, "fa"),
-    e: $options.getImgUrl("static/image/order/cusomer_name_add.png"),
-    f: $data.customerNameFocus,
-    g: common_vendor.o(($event) => $data.customerNameFocus = false, "ac"),
-    h: $data.isEditable,
-    i: $data.isEditable ? "" : "请输入姓名",
-    j: $data.orderForm.customerName,
-    k: common_vendor.o(($event) => $data.orderForm.customerName = $event.detail.value, "65"),
-    l: $options.getImgUrl("static/image/order/cusomer_gender.png"),
-    m: $data.orderForm.sex === "1" ? "#fff" : "#333",
-    n: $data.isEditable,
-    o: $data.orderForm.sex === "1" ? "#00a7e2ff" : "#fff",
-    p: $data.orderForm.sex === "1",
-    q: $data.orderForm.sex === "2" ? "#fff" : "#333",
-    r: $data.isEditable,
-    s: $data.orderForm.sex === "2" ? "#00a7e2ff" : "#fff",
-    t: $data.orderForm.sex === "2",
-    v: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "db"),
-    w: $options.getImgUrl("static/image/order/cusomer_phone.png"),
-    x: $data.phoneFocus,
-    y: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args), "46"),
-    z: $data.isEditable,
-    A: $data.isEditable ? "" : "请输入客户电话",
-    B: $data.orderForm.customerPhone,
-    C: common_vendor.o(($event) => $data.orderForm.customerPhone = $event.detail.value, "43"),
-    D: $options.getImgUrl("static/image/order/cusomer_address.png"),
-    E: $data.addressFocus,
-    F: common_vendor.o(($event) => $data.addressFocus = false, "f5"),
-    G: $data.isEditable,
-    H: $data.isEditable ? "" : "请客户输入地址",
-    I: $data.orderForm.customerAddress,
-    J: common_vendor.o(($event) => $data.orderForm.customerAddress = $event.detail.value, "6f"),
-    K: $options.getImgUrl("static/image/order/total_amount.png"),
-    L: $options.productRetailPriceTotal,
-    M: common_vendor.o(($event) => $options.productRetailPriceTotal = $event.detail.value, "d0"),
-    N: $options.getImgUrl("static/image/order/order_actual_amount.png"),
-    O: $data.actualmoneyFocus,
-    P: common_vendor.o(($event) => $data.actualmoneyFocus = false, "84"),
-    Q: $data.isEditable,
-    R: $data.isEditable ? "" : "请输入收款金额",
-    S: $data.orderForm.actualmoney,
-    T: common_vendor.o(($event) => $data.orderForm.actualmoney = $event.detail.value, "b7"),
-    U: $options.getImgUrl("static/image/order/discount.png"),
-    V: $options.discount,
-    W: common_vendor.o(($event) => $options.discount = $event.detail.value, "68"),
-    X: $options.getImgUrl("static/image/order/delivery_time.png"),
-    Y: common_vendor.t($options.isEmpty($data.orderForm.deliveryTime) ? "请选择" : $data.orderForm.deliveryTime),
-    Z: common_vendor.o(($event) => $options.toggle("delivery_time"), "35"),
-    aa: $options.isEmpty($data.orderForm.deliveryTime) ? "#a0a0a0" : "#333",
-    ab: common_vendor.sr("delivery_time", "c7fdb702-0"),
-    ac: common_vendor.o($options.deliveryHand, "67"),
-    ad: common_vendor.p({
+  return common_vendor.e({
+    a: common_vendor.o(($event) => $data.customerNameFocus = false, "20"),
+    b: $data.orderForm.orderNumber,
+    c: common_vendor.o(($event) => $data.orderForm.orderNumber = $event.detail.value, "3e"),
+    d: $data.customerNameFocus,
+    e: common_vendor.o(($event) => $data.customerNameFocus = false, "0e"),
+    f: $data.isEditable,
+    g: $data.isEditable ? "" : "请输入姓名",
+    h: $data.orderForm.customerName,
+    i: common_vendor.o(($event) => $data.orderForm.customerName = $event.detail.value, "67"),
+    j: $data.orderForm.sex === "1" ? "#fff" : "#333",
+    k: $data.isEditable,
+    l: $data.orderForm.sex === "1" ? "#00a7e2ff" : "#fff",
+    m: $data.orderForm.sex === "1",
+    n: $data.orderForm.sex === "2" ? "#fff" : "#333",
+    o: $data.isEditable,
+    p: $data.orderForm.sex === "2" ? "#00a7e2ff" : "#fff",
+    q: $data.orderForm.sex === "2",
+    r: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "9d"),
+    s: $data.phoneFocus,
+    t: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args), "79"),
+    v: $data.isEditable,
+    w: $data.isEditable ? "" : "请输入客户电话",
+    x: $data.orderForm.customerPhone,
+    y: common_vendor.o(($event) => $data.orderForm.customerPhone = $event.detail.value, "9c"),
+    z: $data.addressFocus,
+    A: common_vendor.o(($event) => $data.addressFocus = false, "7c"),
+    B: $data.isEditable,
+    C: $data.isEditable ? "" : "请客户输入地址",
+    D: $data.orderForm.customerAddress,
+    E: common_vendor.o(($event) => $data.orderForm.customerAddress = $event.detail.value, "c0"),
+    F: $options.productRetailPriceTotal,
+    G: common_vendor.o(($event) => $options.productRetailPriceTotal = $event.detail.value, "79"),
+    H: $data.actualmoneyFocus,
+    I: common_vendor.o(($event) => $data.actualmoneyFocus = false, "9d"),
+    J: $data.isEditable,
+    K: $data.isEditable ? "" : "请输入收款金额",
+    L: $data.orderForm.actualmoney,
+    M: common_vendor.o(($event) => $data.orderForm.actualmoney = $event.detail.value, "77"),
+    N: $options.discount,
+    O: common_vendor.o(($event) => $options.discount = $event.detail.value, "87"),
+    P: common_vendor.t($options.isEmpty($data.orderForm.deliveryTime) ? "请选择" : $data.orderForm.deliveryTime),
+    Q: common_vendor.o(($event) => $options.toggle("delivery_time"), "8a"),
+    R: $options.isEmpty($data.orderForm.deliveryTime) ? "#a0a0a0" : "#333",
+    S: common_vendor.sr("delivery_time", "c7fdb702-0"),
+    T: common_vendor.o($options.deliveryHand, "4a"),
+    U: common_vendor.p({
       mode: "date",
       pageData: $data.orderForm.deliveryTime
     }),
-    ae: $options.getImgUrl("static/image/order/choice.png"),
-    af: $options.getImgUrl("static/image/add.png"),
-    ag: common_vendor.o(($event) => $options.addOrderProduct(), "3b"),
-    ah: common_vendor.f($data.orderForm.orderProductList, (item, index, i0) => {
-      return {
+    V: !$data.isEditable
+  }, !$data.isEditable ? {} : {}, {
+    W: common_vendor.o(($event) => $options.addOrderProduct(), "a0"),
+    X: common_vendor.f($data.orderForm.orderProductList, (item, index, i0) => {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.size),
@@ -314,28 +323,34 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.color),
         g: common_vendor.t(item.number),
         h: common_vendor.t(item.retailPrice),
-        i: common_vendor.o(($event) => $options.open(item), item.id),
-        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.id),
-        k: item.id
-      };
+        i: common_vendor.o(($event) => $options.open(item), item.productId || index)
+      }, !$data.isEditable ? {
+        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index)
+      } : {}, {
+        k: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        l: common_vendor.t(item.productImages.length)
+      } : {}, {
+        m: common_vendor.o(($event) => $options.previewImage(item), item.productId || index),
+        n: item.productId || index
+      });
     }),
-    ai: $options.getImgUrl("static/image/茶几.png"),
-    aj: !$data.isEditable,
-    ak: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    al: common_vendor.o(($event) => $options.deleteOrderForm(), "4f"),
-    am: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    an: common_vendor.o(($event) => $options.editOrderForm(), "e9"),
-    ao: common_vendor.t($data.popupProduct.productName),
-    ap: $data.popupProduct.number,
-    aq: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "4e"),
-    ar: common_vendor.o(($event) => $options.cancelTrack(), "5e"),
-    as: common_vendor.o(($event) => $options.submitTrack(), "47"),
-    at: common_vendor.sr("popup", "c7fdb702-1"),
-    av: common_vendor.p({
+    Y: !$data.isEditable,
+    Z: common_vendor.t($data.isEditable ? "删除" : "取消"),
+    aa: common_vendor.o(($event) => $options.deleteOrderForm(), "9f"),
+    ab: common_vendor.t($data.isEditable ? "编辑" : "保存"),
+    ac: common_vendor.o(($event) => $options.editOrderForm(), "ba"),
+    ad: common_vendor.t($data.popupProduct.productName),
+    ae: $data.popupProduct.number,
+    af: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "f7"),
+    ag: common_vendor.o(($event) => $options.cancelTrack(), "08"),
+    ah: common_vendor.o(($event) => $options.submitTrack(), "0c"),
+    ai: common_vendor.sr("popup", "c7fdb702-1"),
+    aj: common_vendor.p({
       type: "bottom",
       ["border-radius"]: "10px 10px 0 0"
     })
-  };
+  });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-c7fdb702"]]);
 wx.createPage(MiniProgramPage);

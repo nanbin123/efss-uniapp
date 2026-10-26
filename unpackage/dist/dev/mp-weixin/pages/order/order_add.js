@@ -31,6 +31,18 @@ const _sfc_main = {
     return { productStore, transferOrderStore };
   },
   methods: {
+    previewImage(item) {
+      const images = Array.isArray(item.productImages) ? item.productImages : [];
+      const urls = images.filter((img) => img && typeof img.productUrl === "string" && img.productUrl.trim()).map((img) => {
+        const url = img.productUrl.trim();
+        return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
+      });
+      if (!urls.length) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      common_vendor.index.previewImage({ current: urls[0], urls, indicator: "number", loop: true });
+    },
     open(item) {
       this.popupProduct.productName = item.productName;
       this.popupProduct.number = item.number;
@@ -141,7 +153,11 @@ const _sfc_main = {
       }
       let orderForm = JSON.parse(JSON.stringify(this.orderForm));
       let productInfo = orderForm.orderProductList.map((product) => {
-        return { productId: product.productId, number: product.number };
+        return {
+          productId: product.productId,
+          number: product.number,
+          productImages: product.productImages || []
+        };
       });
       orderForm.orderProductList = productInfo;
       components_utils_request.post("order/insertOrderForm", JSON.stringify(orderForm), "application/json").then((res) => {
@@ -221,73 +237,69 @@ if (!Math) {
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: $options.getImgUrl("static/image/order/cusomer_name_add.png"),
-    b: $data.customerNameFocus,
-    c: common_vendor.o(($event) => $data.customerNameFocus = false, "54"),
-    d: $data.orderForm.customerName,
-    e: common_vendor.o(($event) => $data.orderForm.customerName = $event.detail.value, "6d"),
-    f: $options.getImgUrl("static/image/order/cusomer_gender.png"),
-    g: $data.orderForm.sex === "1" ? "#fff" : "#333",
-    h: $data.orderForm.sex === "1",
-    i: $data.orderForm.sex === "2" ? "#fff" : "#333",
-    j: $data.orderForm.sex === "2",
-    k: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "10"),
-    l: $options.getImgUrl("static/image/order/cusomer_phone.png"),
-    m: $data.phoneFocus,
-    n: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args), "70"),
-    o: $data.orderForm.customerPhone,
-    p: common_vendor.o(($event) => $data.orderForm.customerPhone = $event.detail.value, "33"),
-    q: $options.getImgUrl("static/image/order/cusomer_address.png"),
-    r: $data.addressFocus,
-    s: common_vendor.o(($event) => $data.addressFocus = false, "12"),
-    t: $data.orderForm.customerAddress,
-    v: common_vendor.o(($event) => $data.orderForm.customerAddress = $event.detail.value, "3f"),
-    w: $options.getImgUrl("static/image/order/order_actual_amount.png"),
-    x: $data.actualmoneyFocus,
-    y: common_vendor.o(($event) => $data.actualmoneyFocus = false, "99"),
-    z: $data.orderForm.actualmoney,
-    A: common_vendor.o(($event) => $data.orderForm.actualmoney = $event.detail.value, "be"),
-    B: $options.getImgUrl("static/image/order/delivery_time.png"),
-    C: common_vendor.t($options.isEmpty($data.orderForm.deliveryTime) ? "请选择" : $data.orderForm.deliveryTime),
-    D: common_vendor.o(($event) => $options.toggle("delivery_time"), "d0"),
-    E: $options.isEmpty($data.orderForm.deliveryTime) ? "#a0a0a0" : "#333",
-    F: common_vendor.sr("delivery_time", "104119aa-0"),
-    G: common_vendor.o($options.deliveryHand, "2d"),
-    H: common_vendor.p({
+    a: $data.customerNameFocus,
+    b: common_vendor.o(($event) => $data.customerNameFocus = false, "20"),
+    c: $data.orderForm.customerName,
+    d: common_vendor.o(($event) => $data.orderForm.customerName = $event.detail.value, "51"),
+    e: $data.orderForm.sex === "1" ? "#fff" : "#333",
+    f: $data.orderForm.sex === "1",
+    g: $data.orderForm.sex === "2" ? "#fff" : "#333",
+    h: $data.orderForm.sex === "2",
+    i: common_vendor.o((...args) => $options.radioChange && $options.radioChange(...args), "67"),
+    j: $data.phoneFocus,
+    k: common_vendor.o((...args) => $options.checkPhone && $options.checkPhone(...args), "f6"),
+    l: $data.orderForm.customerPhone,
+    m: common_vendor.o(($event) => $data.orderForm.customerPhone = $event.detail.value, "c5"),
+    n: $data.addressFocus,
+    o: common_vendor.o(($event) => $data.addressFocus = false, "f3"),
+    p: $data.orderForm.customerAddress,
+    q: common_vendor.o(($event) => $data.orderForm.customerAddress = $event.detail.value, "b7"),
+    r: $data.actualmoneyFocus,
+    s: common_vendor.o(($event) => $data.actualmoneyFocus = false, "0f"),
+    t: $data.orderForm.actualmoney,
+    v: common_vendor.o(($event) => $data.orderForm.actualmoney = $event.detail.value, "4a"),
+    w: common_vendor.t($options.isEmpty($data.orderForm.deliveryTime) ? "请选择" : $data.orderForm.deliveryTime),
+    x: common_vendor.o(($event) => $options.toggle("delivery_time"), "b8"),
+    y: $options.isEmpty($data.orderForm.deliveryTime) ? "#a0a0a0" : "#333",
+    z: common_vendor.sr("delivery_time", "104119aa-0"),
+    A: common_vendor.o($options.deliveryHand, "45"),
+    B: common_vendor.p({
       mode: "date"
     }),
-    I: $options.getImgUrl("static/image/order/total_amount.png"),
-    J: $options.productRetailPriceTotal,
-    K: common_vendor.o(($event) => $options.productRetailPriceTotal = $event.detail.value, "08"),
-    L: $options.getImgUrl("static/image/order/discount.png"),
-    M: $options.discount,
-    N: common_vendor.o(($event) => $options.discount = $event.detail.value, "a2"),
-    O: $options.getImgUrl("static/image/order/choice.png"),
-    P: $options.getImgUrl("static/image/add.png"),
-    Q: common_vendor.o(($event) => $options.addOrderProduct(), "8d"),
-    R: common_vendor.f($data.orderForm.orderProductList, (item, index, i0) => {
-      return {
+    C: $options.productRetailPriceTotal,
+    D: common_vendor.o(($event) => $options.productRetailPriceTotal = $event.detail.value, "d1"),
+    E: $options.discount,
+    F: common_vendor.o(($event) => $options.discount = $event.detail.value, "c6"),
+    G: $options.getImgUrl("static/image/add.png"),
+    H: common_vendor.o(($event) => $options.addOrderProduct(), "3d"),
+    I: common_vendor.f($data.orderForm.orderProductList, (item, index, i0) => {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.size),
         d: common_vendor.t(item.production),
-        e: common_vendor.t(item.color),
-        f: common_vendor.t(item.texture),
-        g: common_vendor.t(item.retailPrice),
-        h: common_vendor.t(item.number),
-        i: common_vendor.o(($event) => $options.open(item), "5b"),
-        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), "53")
-      };
+        e: common_vendor.t(item.texture),
+        f: common_vendor.t(item.color),
+        g: common_vendor.t(item.number),
+        h: common_vendor.t(item.retailPrice),
+        i: common_vendor.o(($event) => $options.open(item), item.productId || index),
+        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index),
+        k: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        l: common_vendor.t(item.productImages.length)
+      } : {}, {
+        m: common_vendor.o(($event) => $options.previewImage(item), item.productId || index),
+        n: item.productId || index
+      });
     }),
-    S: $options.getImgUrl("static/image/茶几.png"),
-    T: common_vendor.o(($event) => $options.addOrderForm(), "e0"),
-    U: common_vendor.t($data.popupProduct.productName),
-    V: $data.popupProduct.number,
-    W: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "9f"),
-    X: common_vendor.o(($event) => $options.cancelTrack(), "2e"),
-    Y: common_vendor.o(($event) => $options.submitTrack(), "a4"),
-    Z: common_vendor.sr("popup", "104119aa-1"),
-    aa: common_vendor.p({
+    J: common_vendor.o(($event) => $options.addOrderForm(), "2d"),
+    K: common_vendor.t($data.popupProduct.productName),
+    L: $data.popupProduct.number,
+    M: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "9d"),
+    N: common_vendor.o(($event) => $options.cancelTrack(), "3b"),
+    O: common_vendor.o(($event) => $options.submitTrack(), "4c"),
+    P: common_vendor.sr("popup", "104119aa-1"),
+    Q: common_vendor.p({
       type: "bottom",
       ["border-radius"]: "10px 10px 0 0"
     })

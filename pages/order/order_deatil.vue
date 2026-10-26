@@ -57,7 +57,7 @@
 		</view>
 		<view class="item choice_porduct"  @click="addOrderProduct()">
 			<text class="title">选择产品</text>
-			<image class="add_product" :src="getImgUrl('static/image/add.png')"></image>
+			<view class="add_product" v-if="!isEditable"><text>添加</text></view>
 		</view>		
 	<view class="product" v-for="(item, index) in orderForm.orderProductList" :key="item.productId || index">
 		<view class="product-content" @click="open(item)">
@@ -79,7 +79,7 @@
 			</view>
 		</view>
 		<view class="product-actions">
-			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)" v-show="!isEditable">
+			<view class="product-action product-remove" @click.stop="deleteProduct(item.productId)" v-if="!isEditable">
 				<text class="iconfont">&#xe612;</text>
 				<text class="product-action-label">移除</text>
 			</view>
@@ -435,23 +435,31 @@ export default {
 	padding-bottom: 4px;
 }
 .add_product{
-	width: 25px;
-	height: 25px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 24px;
 	margin-left: auto;
+	margin-right: 4px;
 	flex-shrink: 0;
+	box-sizing: border-box;
+	background-color: #fff;
+	color: #00a7e2;
+	font-size: 14px;
+	line-height: 20px;
 }
 
 .product{
-	display: flex;
-	align-items: stretch;
+	position: relative;
 	background-color: #fff;
 	border-bottom: 1px solid #e5e5e5;
 	box-sizing: border-box;
 }
 .product-content{
-	flex: 1;
+	width: 100%;
 	min-width: 0;
-	padding: 8px 0 8px 8px;
+	padding: 4px 0 4px 8px;
 	box-sizing: border-box;
 }
 .grid {	
@@ -475,8 +483,13 @@ export default {
 }
 
 .product-actions{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
 	width: 64px;
-	flex-shrink: 0;
+	pointer-events: none;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -485,6 +498,7 @@ export default {
 	box-sizing: border-box;
 }
 .product-action{
+	pointer-events: auto;
 	width: 48px;
 	min-height: 44px;
 	display: flex;
@@ -492,10 +506,10 @@ export default {
 	align-items: center;
 	justify-content: center;
 	box-sizing: border-box;
-	color: #38c1b9;
+	color: #00a7e2ff;
 }
 .product-remove .iconfont{
-	color: #38c1b9;
+	color: #00a7e2ff;
 	font-size: 22px;
 	line-height: 24px;
 }
@@ -503,13 +517,13 @@ export default {
 	margin-top: 2px;
 	font-size: 11px;
 	line-height: 14px;
-	color: #38c1b9;
+	color: #00a7e2ff;
 }
 .gallery-icon{
 	position: relative;
 	width: 24px;
 	height: 21px;
-	border: 1.5px solid #38c1b9;
+	border: 1.5px solid #00a7e2ff;
 	border-radius: 3px;
 	box-sizing: border-box;
 }
@@ -520,15 +534,15 @@ export default {
 	width: 3px;
 	height: 3px;
 	border-radius: 50%;
-	background-color: #38c1b9;
+	background-color: #00a7e2ff;
 }
 .gallery-mountain{
 	position: absolute;
 	bottom: 3px;
 	width: 8px;
 	height: 8px;
-	border-left: 1.5px solid #38c1b9;
-	border-top: 1.5px solid #38c1b9;
+	border-left: 1.5px solid #00a7e2ff;
+	border-top: 1.5px solid #00a7e2ff;
 	transform: rotate(45deg);
 	box-sizing: border-box;
 }
@@ -549,7 +563,7 @@ export default {
 	padding: 0 3px;
 	border-radius: 7px;
 	box-sizing: border-box;
-	background-color: #38c1b9;
+	background-color: #00a7e2ff;
 	color: #fff;
 	font-size: 9px;
 	line-height: 14px;
@@ -565,9 +579,6 @@ export default {
 		width: 58px;
 		padding-left: 2px;
 		padding-right: 2px;
-	}
-	.info{
-		font-size: 13px;
 	}
 }
 

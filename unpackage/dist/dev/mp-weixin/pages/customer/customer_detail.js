@@ -425,34 +425,41 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     H: $data.isEditable,
     I: $data.customer.remark,
     J: common_vendor.o(($event) => $data.customer.remark = $event.detail.value, "7b"),
-    K: $options.getImgUrl("static/image/add.png"),
-    L: common_vendor.o(($event) => $options.arriveAdd(), "25"),
+    K: !$data.isEditable
+  }, !$data.isEditable ? {} : {}, {
+    L: common_vendor.o(($event) => $options.arriveAdd(), "6f"),
     M: common_vendor.f($data.customer.listCustomerArrival, (item, index, i0) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.t(item.arrivalTime),
         b: common_vendor.t(item.arrivalLength),
-        c: common_vendor.o(($event) => $options.editCustomerArrival(item), "7c"),
-        d: common_vendor.t(item.arrivalRecord),
-        e: common_vendor.o(($event) => $options.deleteCustomerArrival(item.id), "56"),
+        c: common_vendor.o(($event) => $options.editCustomerArrival(item), "d4"),
+        d: common_vendor.t(item.arrivalRecord)
+      }, !$data.isEditable ? {
+        e: common_vendor.o(($event) => $options.deleteCustomerArrival(item.id), "ac")
+      } : {}, {
         f: item.id
-      };
+      });
     }),
     N: !$data.isEditable,
-    O: $options.getImgUrl("static/image/add.png"),
-    P: common_vendor.o(($event) => $options.trackAdd(), "df"),
+    O: !$data.isEditable
+  }, !$data.isEditable ? {} : {}, {
+    P: common_vendor.o(($event) => $options.trackAdd(), "47"),
     Q: common_vendor.f($data.customer.listCustomerTailAfter, (item, index, i0) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.t(item.arrivalTime),
         b: common_vendor.t(item.arrivalLength),
-        c: common_vendor.t(item.arrivalRecord),
-        d: common_vendor.o(($event) => $options.deleteCustomerTailAfter(item.id), "82"),
-        e: common_vendor.o(($event) => $options.editCustomerTailAfter(item), "de"),
+        c: common_vendor.t(item.arrivalRecord)
+      }, !$data.isEditable ? {
+        d: common_vendor.o(($event) => $options.deleteCustomerTailAfter(item.id), "68")
+      } : {}, {
+        e: common_vendor.o(($event) => $options.editCustomerTailAfter(item), "9b"),
         f: item.id
-      };
+      });
     }),
     R: !$data.isEditable,
-    S: $options.getImgUrl("static/image/add.png"),
-    T: common_vendor.o(($event) => $options.addCustomerProduct(), "2e"),
+    S: !$data.isEditable
+  }, !$data.isEditable ? {} : {}, {
+    T: common_vendor.o(($event) => $options.addCustomerProduct(), "79"),
     U: common_vendor.f($data.customer.customerProducts, (item, index, i0) => {
       return common_vendor.e({
         a: common_vendor.t(item.productName),
@@ -463,8 +470,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.color),
         g: common_vendor.t(item.number),
         h: common_vendor.t(item.retailPrice),
-        i: common_vendor.o(($event) => $options.openPopupProductNumber(item), item.productId || index),
-        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index),
+        i: common_vendor.o(($event) => $options.openPopupProductNumber(item), item.productId || index)
+      }, !$data.isEditable ? {
+        j: common_vendor.o(($event) => $options.deleteProduct(item.productId), item.productId || index)
+      } : {}, {
         k: item.productImages && item.productImages.length
       }, item.productImages && item.productImages.length ? {
         l: common_vendor.t(item.productImages.length)
@@ -475,28 +484,28 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     V: !$data.isEditable,
     W: common_vendor.t($data.isEditable ? "删除" : "取消"),
-    X: common_vendor.o(($event) => $options.deleteCustomerForm(), "ae"),
+    X: common_vendor.o(($event) => $options.deleteCustomerForm(), "aa"),
     Y: $data.isEditable == true
   }, $data.isEditable == true ? {
-    Z: common_vendor.o(($event) => $options.transferOrder(), "d1")
+    Z: common_vendor.o(($event) => $options.transferOrder(), "09")
   } : {}, {
     aa: common_vendor.t($data.isEditable ? "编辑" : "保存"),
-    ab: common_vendor.o(($event) => $options.editCustomerForm(), "42"),
+    ab: common_vendor.o(($event) => $options.editCustomerForm(), "5e"),
     ac: common_vendor.t($data.addOrEditArrival),
     ad: common_vendor.t($data.arrivalFormData.arrivalTime),
-    ae: common_vendor.o(($event) => $options.toggle("arrival_date"), "b0"),
+    ae: common_vendor.o(($event) => $options.toggle("arrival_date"), "70"),
     af: $data.arrivalFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
     ag: common_vendor.sr("arrival_date", "50fb23cd-1,50fb23cd-0"),
-    ah: common_vendor.o($options.arrivalTimeHand, "49"),
+    ah: common_vendor.o($options.arrivalTimeHand, "cf"),
     ai: common_vendor.p({
       mode: "date"
     }),
     aj: $data.arrivalFormData.arrivalLength,
-    ak: common_vendor.o(($event) => $data.arrivalFormData.arrivalLength = $event.detail.value, "fa"),
+    ak: common_vendor.o(($event) => $data.arrivalFormData.arrivalLength = $event.detail.value, "c0"),
     al: $data.arrivalFormData.arrivalRecord,
-    am: common_vendor.o(($event) => $data.arrivalFormData.arrivalRecord = $event.detail.value, "90"),
-    an: common_vendor.o(($event) => $options.cancelArrival(), "d8"),
-    ao: common_vendor.o(($event) => $options.submitArrival(), "20"),
+    am: common_vendor.o(($event) => $data.arrivalFormData.arrivalRecord = $event.detail.value, "7b"),
+    an: common_vendor.o(($event) => $options.cancelArrival(), "a5"),
+    ao: common_vendor.o(($event) => $options.submitArrival(), "18"),
     ap: common_vendor.sr("arrival_popup", "50fb23cd-0"),
     aq: common_vendor.p({
       type: "bottom",
@@ -504,19 +513,19 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     ar: common_vendor.t($data.addOrEditArrival),
     as: common_vendor.t($data.tailAfterFormData.arrivalTime),
-    at: common_vendor.o(($event) => $options.tailAfterToggle("tail_after_date"), "62"),
+    at: common_vendor.o(($event) => $options.tailAfterToggle("tail_after_date"), "41"),
     av: $data.tailAfterFormData.arrivalTime == "yyyy-MM-dd" ? "#a0a0a0" : "#333",
     aw: common_vendor.sr("tail_after_date", "50fb23cd-3,50fb23cd-2"),
-    ax: common_vendor.o($options.tailAfterTimeHand, "b4"),
+    ax: common_vendor.o($options.tailAfterTimeHand, "c1"),
     ay: common_vendor.p({
       mode: "date"
     }),
     az: $data.tailAfterFormData.arrivalLength,
-    aA: common_vendor.o(($event) => $data.tailAfterFormData.arrivalLength = $event.detail.value, "02"),
+    aA: common_vendor.o(($event) => $data.tailAfterFormData.arrivalLength = $event.detail.value, "8b"),
     aB: $data.tailAfterFormData.arrivalRecord,
-    aC: common_vendor.o(($event) => $data.tailAfterFormData.arrivalRecord = $event.detail.value, "19"),
-    aD: common_vendor.o(($event) => $options.cancelTrack(), "2a"),
-    aE: common_vendor.o(($event) => $options.submitTrack(), "a6"),
+    aC: common_vendor.o(($event) => $data.tailAfterFormData.arrivalRecord = $event.detail.value, "d8"),
+    aD: common_vendor.o(($event) => $options.cancelTrack(), "43"),
+    aE: common_vendor.o(($event) => $options.submitTrack(), "e0"),
     aF: common_vendor.sr("tailafter_popup", "50fb23cd-2"),
     aG: common_vendor.p({
       type: "bottom",
@@ -524,9 +533,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     aH: common_vendor.t($data.popupProduct.productName),
     aI: $data.popupProduct.number,
-    aJ: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "7a"),
-    aK: common_vendor.o(($event) => $options.cancelProductNumber(), "58"),
-    aL: common_vendor.o(($event) => $options.submitProductNumber(), "c5"),
+    aJ: common_vendor.o(($event) => $data.popupProduct.number = $event.detail.value, "f2"),
+    aK: common_vendor.o(($event) => $options.cancelProductNumber(), "6a"),
+    aL: common_vendor.o(($event) => $options.submitProductNumber(), "00"),
     aM: common_vendor.sr("popup_product_number", "50fb23cd-4"),
     aN: common_vendor.p({
       type: "bottom",

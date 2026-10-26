@@ -26,44 +26,55 @@ function uploadFiles(url, files, formData = {}) {
 }
 
 function uploadImg(url, files, formData) {
-	console.log("files",files)
-	return new Promise(function(resolve, reject) {
-		uni.showLoading({
-			title: "上传中"
-		});
+	return new Promise(function(resolve) {
+		const failUpload = (message) => {
+			uni.hideLoading();
+			uni.showToast({ title: message, icon: 'none', duration: 4000 });
+			resolve({ code: -1, msg: message });
+		};
+		if (!files) {
+			failUpload('未获取到图片文件，请重新选择');
+			return;
+		}
+		uni.showLoading({ title: '上传中', mask: true });
 		uni.uploadFile({
 			url: BASEURL + url,
 			filePath: files,
 			name: 'file',
 			header: {
 				'Authorization': uni.getStorageSync("token"),
-				"Accept": "application/json"
+				'Accept': 'application/json'
 			},
-			formData: formData,
+			formData,
 			success(res) {
-				if (res.data) {
-					let resData = JSON.parse(res.data)					
-					if (resData.code == 401 || resData.code == 403) {
-						uni.removeStorageSync('token');
-						uni.showToast({
-							title: '登录失效，请重新登录',
-							icon: 'none'
-						});
-						setTimeout(() => {
-							uni.reLaunch({
-								url: '/pages/login/login'
-							});
-						}, 1000);
-					}
-					if (resData.code == 200) {
-						resolve(resData);
-					}
-				} else {
-					resolve(null);
-					uni.hideLoading();
+				let resData;
+				try {
+					resData = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+				} catch (error) {
+					failUpload('上传失败，服务器响应异常（' + res.statusCode + '）');
+					return;
 				}
+				if (res.statusCode === 401 || res.statusCode === 403 || (resData && (resData.code == 401 || resData.code == 403))) {
+					uni.removeStorageSync('token');
+					failUpload('登录失效，请重新登录');
+					setTimeout(() => uni.reLaunch({ url: '/pages/login/login' }), 1000);
+					return;
+				}
+				if (res.statusCode < 200 || res.statusCode >= 300) {
+					failUpload('上传失败，服务器状态码：' + res.statusCode);
+					return;
+				}
+				if (!resData || resData.code != 200) {
+					failUpload((resData && resData.msg) || '图片上传失败，请重试');
+					return;
+				}
+				uni.hideLoading();
+				resolve(resData);
+			},
+			fail(error) {
+				failUpload('上传失败：' + (error.errMsg || '请检查网络后重试'));
 			}
-		})
+		});
 	});
 }
 

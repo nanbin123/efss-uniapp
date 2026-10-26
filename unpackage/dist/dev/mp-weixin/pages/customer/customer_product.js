@@ -20,6 +20,9 @@ const _sfc_main = {
     return { productStore, moreSearchStore };
   },
   methods: {
+    getProductImageCount(item) {
+      return Array.isArray(item.productImages) ? item.productImages.length : 0;
+    },
     //获取商品第一张图片（空数组时显示默认图）
     getProductImg(item) {
       if (item.productImages && item.productImages.length > 0) {
@@ -160,28 +163,33 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "c2"),
     d: common_vendor.o(($event) => $options.moreSearch(), "ad"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
-      return {
-        a: $options.getProductImg(item),
-        b: common_vendor.o(($event) => $options.previewImage(item), index),
-        c: common_vendor.t(item.productName),
-        d: common_vendor.t(item.type),
-        e: common_vendor.t(item.size),
-        f: common_vendor.t(item.production),
-        g: common_vendor.t(item.texture),
-        h: common_vendor.t(item.color),
-        i: common_vendor.t(item.number),
-        j: common_vendor.t(item.retailPrice),
+      return common_vendor.e({
+        a: common_vendor.t(item.productName),
+        b: common_vendor.t(item.type),
+        c: common_vendor.t(item.size),
+        d: common_vendor.t(item.production),
+        e: common_vendor.t(item.texture),
+        f: common_vendor.t(item.color),
+        g: common_vendor.t(item.number),
+        h: common_vendor.t(item.retailPrice),
+        i: common_vendor.o(($event) => $options.selectProduct(item), index),
+        j: item.selected,
         k: common_vendor.o(() => {
         }, index),
-        l: item.selected,
-        m: common_vendor.o(($event) => $options.onCheckchange($event, item), index),
-        n: common_vendor.o(($event) => $options.selectProduct(item), index),
-        o: index
-      };
+        l: common_vendor.o(($event) => $options.onCheckchange($event, item), index),
+        m: $options.getProductImageCount(item)
+      }, $options.getProductImageCount(item) ? {
+        n: common_vendor.t($options.getProductImageCount(item) > 99 ? "99+" : $options.getProductImageCount(item))
+      } : {}, {
+        o: $options.getProductImageCount(item) ? "查看产品图片，共" + $options.getProductImageCount(item) + "张" : "暂无产品图片",
+        p: $options.getProductImageCount(item) ? "preview-button-active" : "none",
+        q: common_vendor.o(($event) => $options.previewImage(item), index),
+        r: index
+      });
     }),
     f: common_vendor.t($data.totalNumber),
     g: common_vendor.t($data.totalMoney),
-    h: common_vendor.o(($event) => $options.confirm(), "0c"),
+    h: common_vendor.o(($event) => $options.confirm(), "d3"),
     i: common_vendor.sr("paging", "e68c9f1c-0"),
     j: common_vendor.o($options.queryList, "ef"),
     k: common_vendor.o(($event) => $data.productList = $event, "2c"),

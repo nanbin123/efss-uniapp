@@ -19,6 +19,29 @@ const _sfc_main = {
     return { productStore, moreSearchStore };
   },
   methods: {
+    getProductImageCount(item) {
+      return Array.isArray(item.productImages) ? item.productImages.length : 0;
+    },
+    previewImage(item) {
+      if (!item.productImages || item.productImages.length === 0) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      const urls = item.productImages.map((img) => {
+        let url = img.productUrl;
+        return this.BASEURL + (url.startsWith("/") ? url.substring(1) : url);
+      });
+      common_vendor.index.previewImage({
+        current: 0,
+        // 从第一张开始
+        urls,
+        // 所有图片地址
+        indicator: "number",
+        // 显示 1/3 数字指示器
+        loop: true
+        // 循环切换
+      });
+    },
     getProductList() {
       let product = this.moreSearchStore.moreSearch;
       this.searchProduct = product;
@@ -125,10 +148,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.s("backgroundImage:url(" + $options.getImgUrl("static/image/search.png") + ")"),
     b: $data.searchVal,
-    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "82"),
-    d: common_vendor.o(($event) => $options.moreSearch(), "29"),
+    c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "df"),
+    d: common_vendor.o(($event) => $options.moreSearch(), "a9"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
         b: common_vendor.t(item.type),
         c: common_vendor.t(item.size),
@@ -137,24 +160,32 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.color),
         g: common_vendor.t(item.number),
         h: common_vendor.t(item.retailPrice),
-        i: item.selected,
-        j: common_vendor.o(($event) => $options.onCheckchange($event, item), item.id),
-        k: common_vendor.o(($event) => $options.selectProduct(item), item.id),
-        l: item.id
-      };
+        i: common_vendor.o(($event) => $options.selectProduct(item), item.id),
+        j: item.selected,
+        k: common_vendor.o(() => {
+        }, item.id),
+        l: common_vendor.o(($event) => $options.onCheckchange($event, item), item.id),
+        m: $options.getProductImageCount(item)
+      }, $options.getProductImageCount(item) ? {
+        n: common_vendor.t($options.getProductImageCount(item) > 99 ? "99+" : $options.getProductImageCount(item))
+      } : {}, {
+        o: $options.getProductImageCount(item) ? "查看产品图片，共" + $options.getProductImageCount(item) + "张" : "暂无产品图片",
+        p: $options.getProductImageCount(item) ? "preview-button-active" : "none",
+        q: common_vendor.o(($event) => $options.previewImage(item), item.id),
+        r: item.id
+      });
     }),
-    f: $options.getImgUrl("static/image/茶几.png"),
-    g: common_vendor.t($data.totalNumber),
-    h: common_vendor.t($data.totalMoney),
-    i: common_vendor.o(($event) => $options.confirm(), "a6"),
-    j: common_vendor.sr("paging", "9121884e-0"),
-    k: common_vendor.o($options.queryList, "ef"),
-    l: common_vendor.o(($event) => $data.productList = $event, "2c"),
-    m: common_vendor.p({
+    f: common_vendor.t($data.totalNumber),
+    g: common_vendor.t($data.totalMoney),
+    h: common_vendor.o(($event) => $options.confirm(), "e6"),
+    i: common_vendor.sr("paging", "e69ff4b5-0"),
+    j: common_vendor.o($options.queryList, "75"),
+    k: common_vendor.o(($event) => $data.productList = $event, "ed"),
+    l: common_vendor.p({
       modelValue: $data.productList
     })
   };
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e69ff4b5"]]);
 wx.createPage(MiniProgramPage);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/pages/order/order_product.js.map

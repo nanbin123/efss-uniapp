@@ -19,15 +19,50 @@ const _sfc_main = {
     return { moreSearchStore };
   },
   methods: {
+    async previewImage(item) {
+      const res = await components_utils_request.post("product/selectPriceById", { id: item.id });
+      if (!res || res.code !== 200 || !res.data)
+        return;
+      item.productImages = res.data.productImages;
+      const images = Array.isArray(item.productImages) ? item.productImages : [];
+      const urls = images.filter((img) => img && typeof img.productUrl === "string" && img.productUrl.trim()).map((img) => {
+        const url = img.productUrl.trim();
+        return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, "") + "/" + url.replace(/^\//, "");
+      });
+      if (!urls.length) {
+        common_vendor.index.showToast({ title: "暂无更多图片", icon: "none" });
+        return;
+      }
+      common_vendor.index.previewImage({ current: urls[0], urls, indicator: "number", loop: true });
+    },
     getProductList() {
       let product = this.moreSearchStore.moreSearch;
       this.searchProduct = product;
       this.$refs.paging.reload();
     },
-    refreshProductList() {
-      components_utils_request.post("product/selectListProduct", this.searchProduct).then((res) => {
-        this.$refs.paging.complete(res.rows);
-      });
+    async refreshProductList() {
+      const res = await components_utils_request.post("product/selectListProduct", this.searchProduct);
+      await this.$refs.paging.complete(res.rows);
+      await this.$nextTick();
+      const ids = new Set(res.rows.map((item) => item.id));
+      const items = this.productList.filter((item) => ids.has(item.id));
+      await this.loadProductImages(items);
+    },
+    async loadProductImages(items) {
+      let nextIndex = 0;
+      const loadNext = async () => {
+        while (nextIndex < items.length) {
+          const item = items[nextIndex++];
+          try {
+            const res = await components_utils_request.post("product/selectPriceById", { id: item.id });
+            if (res && res.code == 200 && res.data) {
+              item.productImages = Array.isArray(res.data.productImages) ? res.data.productImages : [];
+            }
+          } catch (error) {
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(4, items.length) }, loadNext));
     },
     queryList(pageNo, pageSize) {
       this.searchProduct.pageNum = pageNo;
@@ -67,22 +102,27 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: common_vendor.o(($event) => $data.searchVal = $event.detail.value, "82"),
     d: common_vendor.o(($event) => $options.moreSearch(), "ad"),
     e: common_vendor.f($data.productList, (item, index, i0) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.t(item.productName),
-        b: common_vendor.t(item.type),
+        b: common_vendor.t(item.type || "未填写"),
         c: common_vendor.t(item.size),
         d: common_vendor.t(item.production),
         e: common_vendor.t(item.color),
         f: common_vendor.t(item.texture),
         g: common_vendor.t(item.retailPrice),
-        h: "/pages/product/price_detail?id=" + item.id
-      };
+        h: "/pages/product/price_detail?id=" + item.id,
+        i: item.productImages && item.productImages.length
+      }, item.productImages && item.productImages.length ? {
+        j: common_vendor.t(item.productImages.length)
+      } : {}, {
+        k: common_vendor.o(($event) => $options.previewImage(item), item.id),
+        l: item.id
+      });
     }),
-    f: $options.getImgUrl("static/image/茶几.png"),
-    g: common_vendor.sr("paging", "1c84ae56-0"),
-    h: common_vendor.o($options.queryList, "57"),
-    i: common_vendor.o(($event) => $data.productList = $event, "a0"),
-    j: common_vendor.p({
+    f: common_vendor.sr("paging", "1c84ae56-0"),
+    g: common_vendor.o($options.queryList, "57"),
+    h: common_vendor.o(($event) => $data.productList = $event, "a0"),
+    i: common_vendor.p({
       modelValue: $data.productList
     })
   };

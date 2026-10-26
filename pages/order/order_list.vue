@@ -1,5 +1,5 @@
 <template>
-	<z-paging ref="paging" v-model="orderList" @query="queryList">
+	<z-paging ref="paging" v-model="orderList" @query="queryList" :safe-area-inset-bottom="true" bottom-bg-color="#00a7e2ff">
 		<template #top>
 			<view class="head">
 				<view class="search">
@@ -180,14 +180,23 @@
 }
 
 .footer{
-	height: 30px;
-	font-size: 15px;
+	height: 80rpx;
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	line-height: 30px;
 	background-color: #00a7e2ff;	
 	color: #fff;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
+}
+.footer navigator{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (max-height: 700px) {
+	.footer{
+		height: 72rpx;
+	}
 }
 </style>

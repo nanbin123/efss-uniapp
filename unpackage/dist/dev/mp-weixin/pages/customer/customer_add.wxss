@@ -5,18 +5,13 @@
 }
 .item.data-v-7f77e776{
 	display: flex;	
-	padding: 8px 0;
+	padding: 8px 0 8px 8px;
 	border-bottom: 1px solid #f1f1f1ff;	
 	align-items: center;
 	background-color: #fff;
 }
-.item .img.data-v-7f77e776{
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;
-}
 .item .title.data-v-7f77e776{
-	margin-left: 1px;
+	flex-shrink: 0;
 	font-size: 15px;
 	color: #333;
 	white-space: nowrap;
@@ -112,42 +107,132 @@
 	margin-bottom: 5px;
 }
 .product.data-v-7f77e776{
-	display: flex;	
-	align-items: center;
+	display: flex;
+	align-items: stretch;
 	background-color: #fff;
-	border-bottom: 1px solid #cbcbcbff;
-	padding-bottom: 10rpx;
-	margin-bottom: 15rpx;
-}
-.product .img.data-v-7f77e776{
-	width: 80px;
-	height: 80px;
+	border-bottom: 1px solid #e5e5e5;
+	box-sizing: border-box;
 }
 .product-content.data-v-7f77e776{
 	flex: 1;
-	margin-left: 5px;
+	min-width: 0;
+	padding: 8px 0 8px 8px;
+	box-sizing: border-box;
 }
 .grid.data-v-7f77e776 {	
  	display: flex;
- 	line-height: 20px;
+	align-items: center;
+	min-height: 24px;
+	line-height: 20px;
 }
 .info.data-v-7f77e776 {
-   width: 50%;
-   color: #030303ff;
-   font-size: 14px;
-   color: #333;
-   white-space: nowrap;  
-   overflow: hidden; /* 超出部分隐藏 */
-   text-overflow: ellipsis; /* 显示省略号 */
-   text-rendering: optimizeLegibility;
+  width: 50%;
+	min-width: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  text-rendering: optimizeLegibility;
 }
-.delete.data-v-7f77e776{
+.product-emphasis.data-v-7f77e776{
+	color: #e96225ff;
+}
+.product-actions.data-v-7f77e776{
+	width: 64px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 7px 4px;
+	box-sizing: border-box;
+}
+.product-action.data-v-7f77e776{
+	width: 48px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-remove .iconfont.data-v-7f77e776{
+	color: #38c1b9;
+	font-size: 22px;
+	line-height: 24px;
+}
+.product-action-label.data-v-7f77e776{
+	margin-top: 2px;
+	font-size: 11px;
+	line-height: 14px;
+	color: #38c1b9;
+}
+.gallery-icon.data-v-7f77e776{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot.data-v-7f77e776{
 	position: absolute;
-	right: 10px;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
 }
-.delete .iconfont.data-v-7f77e776{
-	color: #02a5e6ff;	
-	font-size: 20px;
+.gallery-mountain.data-v-7f77e776{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left.data-v-7f77e776{
+	left: 4px;
+}
+.gallery-mountain-right.data-v-7f77e776{
+	right: 3px;
+	width: 7px;
+	height: 7px;
+}
+.gallery-count.data-v-7f77e776{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	border-radius: 7px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 9px;
+	line-height: 14px;
+	text-align: center;
+}
+
+/* 微信小程序窄屏：保持操作区可点击，同时尽量给产品信息留出宽度 */
+@media screen and (max-width: 375px) {
+.product-content.data-v-7f77e776{
+		padding-left: 6px;
+}
+.product-actions.data-v-7f77e776{
+		width: 58px;
+		padding-left: 2px;
+		padding-right: 2px;
+}
+.info.data-v-7f77e776{
+		font-size: 13px;
+}
 }
 .add_img.data-v-7f77e776 {
 	position: relative;
