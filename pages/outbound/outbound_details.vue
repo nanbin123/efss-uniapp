@@ -2,45 +2,37 @@
 	<view style="height: 5px;">
 		<view class="head"></view>
 	</view>
-	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 46px);" @scrolltolower="onReachBottom">
+	<scroll-view scroll-y :show-scrollbar="false" :enhanced="true" style="height: calc(100vh - 49px);" @scrolltolower="onReachBottom">
 		<view class="item">
-			<image class="img" style="width: 19px;height: 20px;" :src="getImgUrl('static/image/outbound/order_number.png')"></image>
 			<text class="title">订单编号:</text>	
 			<text class="content">{{outbound.orderNumber}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_name.png')" ></image>
 			<text class="title">客户姓名:</text>	
 			<text class="content">{{outbound.customerName}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/customer_phone.png')"></image>
 			<text class="title">电话:</text>	
 			<text class="content">{{outbound.phone}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/cusomer/cusomer_address.png')"></image>
 			<text class="title">地址:</text>	
 			<text class="content">{{outbound.address}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/outbound/sales_name.png')"></image>
 			<text class="title">销售人姓名:</text>	
 			<text class="content">{{outbound.orderOperator}}</text>	
 		</view>
 		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/outbound/sales_telephone.png')" ></image>
 			<text class="title">销售人电话:</text>	
 			<text class="content">{{outbound.orderOperatorPhone}}</text>	
 		</view>	
 		<view class="products">
 			<view class="product-details">
-				<image class="img" :src="getImgUrl('static/image/outbound/product_details.png')"></image>
 				<text class="title">产品明细</text>
 			</view>
 			<view class="product" v-for="(item,index) in outbound.outboundProductList">
 				<view class="product-basic">
-					<image class="img" :src="getImgUrl('static/image/茶几.png')"></image>
 					<view class="product-content" @click="checkOutboundProduct(item)">
 						<view class="grid">
 							<text class="info">品名：{{item.productName}}</text>
@@ -56,10 +48,21 @@
 						</view>
 					</view>				
 				</view>
-				<view class="product-inventory"  @click="open(item)">
-					<text class="info" style="width: 30%;">库存数：100</text>
-					<text class="info" style="width: 30%;">订单数：{{item.orderProductNumber}}</text>
-					<text class="info"  style="width: 30%;color: #e96225ff;">是否出库：{{item.isOutbound == true ?'已出库':'未出库'}}</text>
+				<view class="product-inventory">
+					<text class="info">库存数：100</text>
+					<text class="info">订单数：{{item.orderProductNumber}}</text>
+					<text class="info inventory-status">是否出库：{{item.isOutbound == true ?'已出库':'未出库'}}</text>
+				</view>
+				<view class="product-actions">
+					<view class="product-action product-gallery" @click.stop="previewImage(item)">
+						<view class="gallery-icon">
+							<view class="gallery-dot"></view>
+							<view class="gallery-mountain gallery-mountain-left"></view>
+							<view class="gallery-mountain gallery-mountain-right"></view>
+							<text class="gallery-count" v-if="item.productImages && item.productImages.length">{{item.productImages.length}}</text>
+						</view>
+						<text class="product-action-label">查看</text>
+					</view>
 				</view>
 				<view class="is_outbound">
 					<checkbox-group class="choice" @change="onCheckchange($event,item)">
@@ -90,6 +93,20 @@
 			}
 		},
 		methods: {
+			// 查看已保存在出库产品图片表中的图片，支持左右滑动预览。
+			previewImage(item) {
+				const images = Array.isArray(item.productImages) ? item.productImages : [];
+				const urls = images.filter(img => img && typeof img.productUrl === 'string' && img.productUrl.trim())
+					.map(img => {
+						const url = img.productUrl.trim();
+						return /^https?:\/\//i.test(url) ? url : this.BASEURL.replace(/\/$/, '') + '/' + url.replace(/^\//, '');
+					});
+				if (!urls.length) {
+					uni.showToast({ title: '暂无更多图片', icon: 'none' });
+					return;
+				}
+				uni.previewImage({ current: urls[0], urls, indicator: 'number', loop: true });
+			},
 			checkOutboundProduct(item){
 				if(!this.isEditable){
 					item.isOutbound = !item.isOutbound;
@@ -222,44 +239,40 @@
 .item{
 	display: flex;
 	align-items: center;
-	padding: 8px 0;
+	box-sizing: border-box;
+	min-height: 48px;
+	padding: 9px 12px;
 	border-bottom: 1px solid #efeef3ff;
 }
-.item .img{
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;
-}
 .item .title{
-	margin-left: 3px;
+	flex-shrink: 0;
 	font-size: 14px;
 	color: #333;
 	white-space: nowrap;
 	text-rendering: optimizeLegibility;
 }
 .content{
+	flex: 1;
+	min-width: 0;
 	white-space: nowrap;
-	font-size: 15px;
+	font-size: 14px;
 	color: #333;	
-	margin-left: auto;
-	margin-right: 10px;
+	margin-left: 10px;
 	text-align: right;	
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .products{
-	border-top: 10px solid #efeef3ff;
+	border-top: 7px solid #efeef3ff;
 }
 .product-details{
 	display: flex;
 	align-items: center;
-	padding: 8px 0;
-}
-.product-details .img{	
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;
+	box-sizing: border-box;
+	min-height: 44px;
+	padding: 9px 12px;
 }
 .product-details .title{
-	margin-left: 3px;
 	font-size: 15px;
 	font-weight: 600;	
 	color: #949494ff;	
@@ -273,46 +286,169 @@
 .product-basic{
 	display: flex;
 	align-items: center;
+	padding: 6px 12px 2px;
 }
 .product .product-inventory{
 	display: flex;
 	align-items: center;
-	font-size: 14px;
+	gap: 3px;
+	font-size: 15px;
 	color: rgb(233, 98, 37);
-	padding-left: 3px;
-}
-.product .img {
-	width: 50px;
-	height: 50px;
+	padding: 4px 44px 8px 12px;
+	box-sizing: border-box;
 }
 .product .product-content{	
 	flex: 1;
-	margin-left: 2px;
+	min-width: 0;
+	padding-right: 56px;
+	box-sizing: border-box;
 }
 .product .product-content .grid{
 	display: flex;
-	line-height: 17px;
+	line-height: 20px;
 }
 .product .grid .info{
-	width: 50%;
-	font-size: 14px;
+	flex: 1;
+	min-width: 0;
+	font-size: 15px;
 	color: #333;
 	white-space: nowrap;  
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 显示省略号 */
 	text-rendering: optimizeLegibility;
+	padding-right: 5px;
+	box-sizing: border-box;
+}
+.product-inventory .info{
+	flex: 1;
+	min-width: 0;
+	font-size: 15px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.product-inventory .inventory-status{
+	color: #e96225ff;
 }
 .product .is_outbound{
 	position: absolute;
-	bottom: 30%;
-	right: 10px;
+	bottom: 8px;
+	right: 2px;
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+}
+.product .is_outbound .choice{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.product .is_outbound checkbox{
+	transform: scale(1.1);
+	transform-origin: center;
+}
+.product-actions{
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	pointer-events: none;
+}
+.product-action{
+	pointer-events: auto;
+	width: 46px;
+	min-height: 44px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	color: #38c1b9;
+}
+.product-action-label{
+	margin-top: 2px;
+	font-size: 15px;
+	line-height: 20px;
+	color: #38c1b9;
+}
+.gallery-icon{
+	position: relative;
+	width: 24px;
+	height: 21px;
+	border: 1.5px solid #38c1b9;
+	border-radius: 3px;
+	box-sizing: border-box;
+}
+.gallery-dot{
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	width: 3px;
+	height: 3px;
+	border-radius: 50%;
+	background-color: #38c1b9;
+}
+.gallery-mountain{
+	position: absolute;
+	bottom: 3px;
+	width: 8px;
+	height: 8px;
+	border-left: 1.5px solid #38c1b9;
+	border-top: 1.5px solid #38c1b9;
+	transform: rotate(45deg);
+	box-sizing: border-box;
+}
+.gallery-mountain-left{
+	left: 4px;
+}
+.gallery-mountain-right{
+	right: 3px;
+	width: 7px;
+}
+.gallery-count{
+	position: absolute;
+	top: -7px;
+	right: -8px;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 3px;
+	border-radius: 9px;
+	box-sizing: border-box;
+	background-color: #38c1b9;
+	color: #fff;
+	font-size: 12px;
+	line-height: 18px;
+	text-align: center;
+}
+@media screen and (max-width: 430px) {
+	.product .product-content .grid{
+		flex-direction: column;
+		align-items: flex-start;
+		line-height: 24px;
+	}
+	.product .grid .info{
+		flex: none;
+		width: 100%;
+		line-height: 24px;
+	}
 }
 .bottom-bar {  
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 39px;
+  height: 44px;
+  box-sizing: border-box;
   background-color: #fff;
   border-top: 1px solid #cbcbcbff;
   display: flex;
@@ -320,22 +456,22 @@
 }
 .delete {
   flex: 1;
-  height: 39px;
-  line-height: 39px;
+  height: 44px;
+  line-height: 44px;
   color: #38c1b9;
   margin-left: 10px;
 }
 .transferOrder{
 	flex: 1;
-	height: 39px;
-	line-height: 39px;
+	height: 44px;
+	line-height: 44px;
 	text-align:center;
 	color: #38c1b9;
 }
 .edit {
 	flex: 1;
 	height: 100%;
-	line-height: 39px;
+	line-height: 44px;
 	text-align:right;
 	color: #38c1b9;
 	margin-right: 10px;

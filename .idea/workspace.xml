@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a7789ee0-379e-4ae7-9d79-e7ecf616a36f" name="Changes" comment="销售订单修改图片">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a7789ee0-379e-4ae7-9d79-e7ecf616a36f" name="Changes" comment="图片修改" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,6 +107,7 @@
     <MESSAGE value="提交" />
     <MESSAGE value="意向客户修改图片" />
     <MESSAGE value="销售订单修改图片" />
-    <option name="LAST_COMMIT_MESSAGE" value="销售订单修改图片" />
+    <MESSAGE value="图片修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="图片修改" />
   </component>
 </project>
