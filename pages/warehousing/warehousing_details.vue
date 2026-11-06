@@ -31,7 +31,7 @@
 				<text class="title">产品明细</text>
 			</view>
 			
-			<view class="product-content" v-for="(item,index) in warehousingEntry.warehousingEntryProductList" :key="index">
+			<view class="product-content" v-for="(item,index) in pendingProductList" :key="item.id + '-' + index">
 				<view class="product-actions">
 					<view class="product-action product-gallery" @click.stop="previewImage(item)">
 						<view class="gallery-icon">
@@ -42,7 +42,7 @@
 						</view>
 						<text class="product-action-label">查看</text>
 					</view>
-					<checkbox-group class="choice" @change="onCheckchange($event,item)">
+					<checkbox-group v-if="item.canReceive" class="choice" @change="onCheckchange($event,item)">
 						<checkbox value="isInWarehouse" :checked="item.isInWarehouse" :disabled="isDisabled(item.isEdit)" />
 					</checkbox-group>
 				</view>
@@ -59,9 +59,8 @@
 						<text class="info">尺寸：{{item.size}}</text>
 					</view>	
 					<view class="grid inventory-row">
-						<text class="info" style="color: #e96225ff;">数量：1</text>
-						<text class="info"  style="color: #e96225ff;">是否入库：{{item.isInWarehouse == true ?'已入库':'未入库'}}</text>
-
+						<text class="info" style="color: #e96225ff;">库存数量：{{item.stock == null ? 0 : item.stock}}</text>
+						<text class="info" style="color: #e96225ff;">未入库数量：{{item.unreceivedQuantity}}</text>
 					</view>	
 			</view>
 		</view>
@@ -84,7 +83,8 @@ export default {
 	data() {
 		return {
 			isEditable:true,
-			warehousingEntry:{warehousingEntryProductList:[]}
+			warehousingEntry:{warehousingEntryProductList:[]},
+			pendingProductList:[]
 		}
 	},
 	methods: {
@@ -103,11 +103,7 @@ export default {
 		},
 
 		isDisabled(itemIsEdit) {
-			if(this.isEditable){
-				return this.isEditable;
-			}else{
-				return itemIsEdit;
-			}
+			return this.isEditable || itemIsEdit;
 		},
 		onCheckchange(e,item){			
 			item.isInWarehouse = e.detail.value.includes("isInWarehouse");
@@ -116,18 +112,15 @@ export default {
 			if(this.isEditable == true){
 				this.isEditable = false					
 			}else if(this.isEditable == false){
-				const data = this.warehousingEntry.warehousingEntryProductList;
-				const groupSum = data.reduce((result, currentItem) => {
-					if(currentItem.isInWarehouse === true){ 
-						const group = currentItem["id"];
-						result[group] = result[group] || { "id": group, "receivedQuantity": 0 };						
-						result[group].receivedQuantity++;
-					} 
-					return result;
-				}, {});	
 				let warehousingEntry=JSON.parse(JSON.stringify(this.warehousingEntry));
-				warehousingEntry.warehousingEntryProductList = Object.keys(groupSum).map(function(key) {
-					return groupSum[key];
+				warehousingEntry.warehousingEntryProductList = this.warehousingEntry.warehousingEntryProductList.map(product => {
+					const selectedPendingCount = this.pendingProductList.reduce((count, pendingProduct) => {
+						return pendingProduct.canReceive && String(pendingProduct.id) === String(product.id) && pendingProduct.isInWarehouse ? count + 1 : count;
+					}, 0);
+					return {
+						id: product.id,
+						receivedQuantity: Number(product.receivedQuantity || 0) + selectedPendingCount
+					};
 				});
 				post("warehousing/updateWarehousingEntryById",JSON.stringify(warehousingEntry),'application/json').then(res =>{
 					if(200 == res.code){
@@ -137,6 +130,7 @@ export default {
 						  icon: 'none', 
 						  duration: 2000 
 						});
+						this.loadWarehousingEntry();
 					}
 				}) 
 			}
@@ -164,7 +158,8 @@ export default {
 				  }
 				});
 			}else if(_this.isEditable == false){
-				_this.isEditable = true			
+				_this.isEditable = true;
+				_this.loadWarehousingEntry();
 			}
 		},
 		toggle(val) {
@@ -180,39 +175,52 @@ export default {
 		},
 		getImgUrl(image){
 		   return this.BASEURL+image;
+		},
+		loadWarehousingEntry(){
+			const entryId = this.warehousingEntry.id;
+			this.pendingProductList = [];
+			post("warehousing/selectWarehousingEntryById",{"id":entryId}).then(res =>{
+				if(200 == res.code){
+					const entry = res.data;
+					const products = entry.warehousingEntryProductList || [];
+					this.warehousingEntry = {
+						id: entry.id,
+						warehousingNumber: entry.warehousingNumber,
+						recordDate: entry.recordDate,
+						handledBy: entry.handledBy,
+						supplier: entry.supplier,
+						remark: entry.remark,
+						warehousingEntryProductList: products
+					};
+					products.forEach(product => {
+						const receivedQuantity = Math.max(Number(product.receivedQuantity) || 0, 0);
+						const inventoryQuantity = Math.max(Number(product.inventoryQuantity) || 0, 0);
+						const unreceivedQuantity = Math.max(inventoryQuantity - receivedQuantity, 0);
+						if (unreceivedQuantity === 0) {
+							const receivedProduct = JSON.parse(JSON.stringify(product));
+							receivedProduct.isInWarehouse = true;
+							receivedProduct.isEdit = true;
+							receivedProduct.canReceive = false;
+							receivedProduct.unreceivedQuantity = 0;
+							this.pendingProductList.push(receivedProduct);
+							return;
+						}
+						for (let i = 0; i < unreceivedQuantity; i++) {
+							const pendingProduct = JSON.parse(JSON.stringify(product));
+							pendingProduct.isInWarehouse = false;
+							pendingProduct.isEdit = false;
+							pendingProduct.canReceive = true;
+							pendingProduct.unreceivedQuantity = 1;
+							this.pendingProductList.push(pendingProduct);
+						}
+					});
+				}
+			});
 		}
 	},
 	onLoad(option) {
-		this.warehousingEntry.id = option.id				
-		post("warehousing/selectWarehousingEntryById",{"id":this.warehousingEntry.id}).then(res =>{				
-			if(200 == res.code){
-				this.warehousingEntry.id = res.data.id;
-				this.warehousingEntry.warehousingNumber = res.data.warehousingNumber;
-				this.warehousingEntry.recordDate = res.data.recordDate;
-				this.warehousingEntry.handledBy = res.data.handledBy;
-				this.warehousingEntry.supplier = res.data.supplier;
-				this.warehousingEntry.remark = res.data.remark;
-				let dataProduct = res.data.warehousingEntryProductList;
-				for (var i = 0; i < dataProduct.length; i++) {
-					// 已入库单产品数量
-					let receivedQuantity = dataProduct[i].receivedQuantity;
-					for (var j = 0; j < receivedQuantity; j++) {
-						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
-						warehousingEntryProduct.isInWarehouse=true;
-						warehousingEntryProduct.isEdit = true;
-						this.warehousingEntry.warehousingEntryProductList.push(warehousingEntryProduct)
-					}
-					// 未入库单产品数量
-					let unInventoryQuantity = dataProduct[i].inventoryQuantity - receivedQuantity;
-					for (var k = 0; k < unInventoryQuantity; k++) {
-						let warehousingEntryProduct = JSON.parse(JSON.stringify(dataProduct[i]))
-						warehousingEntryProduct.isInWarehouse=false;
-						warehousingEntryProduct.isEdit = false;
-						this.warehousingEntry.warehousingEntryProductList.push(warehousingEntryProduct)
-					}
-				}
-			}
-		})
+		this.warehousingEntry.id = option.id;
+		this.loadWarehousingEntry();
 	}	
 }
 </script>
@@ -322,7 +330,7 @@ export default {
 	white-space: normal;
 }
 .products .product-content .inventory-row .info:first-child{
-	flex: 0 0 28%;
+	flex: 0 0 50%;
 }
 
 .bottom-bar {  

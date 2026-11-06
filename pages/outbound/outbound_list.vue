@@ -198,11 +198,23 @@
 }
 
 .outbound_footer{
-	height: 30px;
-	font-size: 16px;
+	height: 80rpx;
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	line-height: 30px;
 	background-color: #38c1b9;
 	color: #ffffff;	
+}
+.outbound_footer navigator{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (max-height: 700px) {
+	.outbound_footer{
+		height: 72rpx;
+	}
 }
 </style>
