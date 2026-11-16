@@ -98,6 +98,8 @@
 		data() {
 			return {
 				outbound:{},
+				isSaving: false,
+				isSaved: false,
 				popupProduct:{
 					orderProductId:"",
 					productName:"",
@@ -144,9 +146,15 @@
 			},
 			 //确认
 			confirm(){
+				if (this.isSaving || this.isSaved) return;
+				const productChooseArray = this.outbound.outboundProductList || [];
+				if (!this.outbound.orderId || !productChooseArray.length) {
+					uni.showToast({ title: '请先导入订单', icon: 'none' });
+					return;
+				}
+				this.isSaving = true;
 				let outboundObj= new Object();
 				outboundObj.orderId = this.outbound.orderId;
- 				let productChooseArray = this.outbound.outboundProductList;				
 				let outboundProductList = new Array(); 
 				for (var i = 0; i < productChooseArray.length; i++) {					
 					let outboundProduct= new Object();
@@ -156,19 +164,34 @@
 				}
 				outboundObj.outboundProductList = outboundProductList;
 				post("outbound/insertOutbound", {"outboundJson":JSON.stringify(outboundObj)}).then(res => {
+					if (!res || res.code !== 200) {
+						this.isSaving = false;
+						return;
+					}
 					uni.hideLoading();
+					this.isSaving = false;
+					this.isSaved = true;
+					this.outbound = {};
+					this.popupProduct = {
+						orderProductId: "",
+						productName: "",
+						outboundNumber: ""
+					};
+					if (this.$refs.popup) this.$refs.popup.close();
 					uni.showToast({
 						title: '出库单添加成功',
 						icon: 'none',
 						duration: 2000
 					})
-					
+				}).catch(() => {
+					this.isSaving = false;
 				})
 			},
 			getList(orderId){
 				post("outbound/selectOrderById",{"orderFormId":orderId}).then(res =>{
 					if(200 == res.code){
 						this.outbound = res.data
+						this.isSaved = false;
 					}
 				})
 			},
