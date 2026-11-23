@@ -37,8 +37,11 @@
 					<text  class="info">操作人:{{item.operator}}</text>
 				</view>
 				<view class="item outbound-status-row">
+					<view class="outbound-status-column">
 					<text class="outbound-status-label">出库状态：</text>
 					<text class="outbound-status" :class="item.outboundStatus.className">{{item.outboundStatus.text}}</text>
+					</view>
+					<text class="info">已收款:{{item.received == null ? 0 : item.received}}</text>
 				</view>
 			</view>			
 		</navigator>
@@ -227,6 +230,13 @@
 	align-items: center;
 	font-size: 14px;
 	line-height: 20px;
+}
+.outbound-status-column{
+	display: flex;
+	align-items: center;
+	width: 50%;
+	min-width: 0;
+	white-space: nowrap;
 }
 .outbound-status-label{
 	color: #030303;

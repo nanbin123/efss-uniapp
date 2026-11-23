@@ -149,7 +149,16 @@
 					return;
 				}
 				post("receipt/insertReceipt",JSON.stringify(this.receipt),'application/json').then(res =>{
-					if(200 == res.code){
+					if(res && 200 == res.code){
+						this.receipt = {
+							customerPhone: '',
+							customerAddress: '',
+							amountCollected: '',
+							remark: '',
+							voucherList: []
+						};
+						this.textateaL = 0;
+						this.amountCollectedFocus = false;
 						uni.showToast({
 							title: '添加收款单成功',
 							icon: 'none',
