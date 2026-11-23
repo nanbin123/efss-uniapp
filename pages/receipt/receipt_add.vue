@@ -1,72 +1,74 @@
 <template>
-	<view style="height: 5px;">
+	<view class="receipt-page">
 		<view class="head"></view>
-	</view>
-	<scroll-view scroll-y style="height: calc(100vh - 35px);">
-		<view class="item"   @click="importOrder()">
-			<image class="img" :src="getImgUrl('static/image/receipt/import-order.png')" ></image>
-			<text class="title">导入订单</text>
-			<image class="right-img" :src="getImgUrl('static/image/receipt/add.png')"></image>
-		</view>
-		<view class="item">
-			<image class="img" style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')" ></image>
-			<text class="title">订单编号 :</text>
-			<text class="right-content">{{receipt.orderNumber}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
-			<text class="title">客户姓名 :</text>
-			<text class="right-content">{{receipt.customerName}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/total_amount.png')" ></image>
-			<text class="title">订单总金额:</text>
-			<text class="right-content">{{receipt.totalAmount}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/receipt/price_after_discount.png')"></image>
-			<text  class="title">折扣:</text>
-			<input class="right-content" style="padding-right: 0" disabled="disabled" v-model="discount">
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
-			<text  class="title">订单实收金额:</text>
-			<text class="right-content">{{receipt.actualmoney}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/order/order_actual_amount.png')"></image>
-			<text  class="title">已收款:</text>
-			<text class="right-content">{{receipt.received}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/receipt/to_be_received.png')"></image>
-			<text  class="title">待收款:</text>
-			<text class="right-content">{{receipt.tobeReceived}}</text>
-		</view>
-		<view class="item">
-			<image class="img" :src="getImgUrl('static/image/receipt/amount_collected.png')"></image>
-			<text  class="title">收款金额:</text>
-			<input v-model="receipt.amountCollected"  confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
-		</view>
-		<view class="voucher">
-			<text  class="voucher-title">上传收款凭证</text>
-			<view class="voucher-img">
-				<view class="voucher-item" v-for="(item, index) in receipt.voucherList">				 
-					<image @tap="onPreviewImage(index)" :src="getVoucherUrl(item.voucherUrl)" class="voucher-item-img"></image> 
-					<view  @tap="onDeleteThis(index)" class="voucher-remove ">
-						<text>X</text>
-					</view>
-				</view>
-				<image @tap="onChooseImage" class="voucher-add" :src="getImgUrl('static/image/receipt/upload-voucher.png')"></image>
+		<scroll-view scroll-y class="receipt-content">
+			<view class="item"   @click="importOrder()">
+				<text class="title">导入订单</text>
+				<image class="right-img" :src="getImgUrl('static/image/receipt/add.png')"></image>
 			</view>
+			<view class="item">
+				<text class="title">订单编号</text>
+				<text class="iconfont">&#xe639;</text>
+				<text class="right-content">{{receipt.orderNumber}}</text>
+			</view>
+			<view class="item">
+				<text class="title">客户姓名</text>
+				<text class="iconfont">&#xe639;</text>
+				<text class="right-content">{{receipt.customerName}}</text>
+			</view>
+			<view class="item">
+				<text class="title">客户电话</text>
+				<input v-model="receipt.customerPhone" type="text" maxlength="20" confirm-type="next" placeholder-class="input-placeholder" placeholder="请输入客户电话">
+			</view>
+			<view class="item">
+				<text class="title">客户地址</text>
+				<input v-model="receipt.customerAddress" type="text" maxlength="100" confirm-type="next" placeholder-class="input-placeholder" placeholder="请输入客户地址">
+			</view>
+			<view class="item">
+				<text class="title">订单总金额</text>
+				<text class="right-content">{{receipt.totalAmount}}</text>
+			</view>
+			<view class="item">
+				<text  class="title">折扣</text>
+				<input class="right-content" disabled="disabled" :value="discount">
+			</view>
+			<view class="item">
+				<text  class="title">订单实收金额</text>
+				<text class="right-content">{{receipt.actualmoney}}</text>
+			</view>
+			<view class="item">
+				<text  class="title">已收款</text>
+				<text class="right-content">{{receipt.received}}</text>
+			</view>
+<!-- 			<view class="item">
+				<text  class="title">待收款</text>
+				<text class="right-content">{{receipt.tobeReceived}}</text>
+			</view> -->
+			<view class="item">
+				<text  class="title">收款金额</text>
+				<text class="iconfont">&#xe639;</text>
+				<input :focus="amountCollectedFocus" @blur="amountCollectedFocus = false" v-model="receipt.amountCollected" confirm-type="next" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
+			</view>
+			<view class="voucher">
+				<text  class="voucher-title">上传收款凭证</text>
+				<view class="voucher-img">
+					<view class="voucher-item" v-for="(item, index) in receipt.voucherList">
+						<image @tap="onPreviewImage(index)" :src="getVoucherUrl(item.voucherUrl)" class="voucher-item-img"></image>
+						<view  @tap="onDeleteThis(index)" class="voucher-remove ">
+							<text>X</text>
+						</view>
+					</view>
+					<image @tap="onChooseImage" class="voucher-add" :src="getImgUrl('static/image/receipt/upload-voucher.png')"></image>
+				</view>
+			</view>
+			<view class="remarks">
+				<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" @input="handInput"></textarea>
+				<label for="forFocus" class="textarea-count ">{{textateaL}}/{{maxlength}}</label>
+			</view>
+		</scroll-view>
+		<view class="footer" @click="addReceiptForm()">
+			<view>保存</view>
 		</view>
-		<view class="remarks">
-			<textarea v-model="receipt.remark" maxlength="200" placeholder="请输入备注:" placeholder-class="textarea-placeholder" @input="handInput"></textarea>
-			<label for="forFocus" class="textarea-count ">{{textateaL}}/{{maxlength}}</label>
-		</view>
-	</scroll-view>
-	<view class="footer" @click="addReceiptForm()">
-		<view>保存</view>
 	</view>
 
 </template>
@@ -78,21 +80,28 @@
 			return {				
 				textateaL: 0,
 				maxlength:200,
+				amountCollectedFocus: false,
 				receipt:{
+					customerPhone: '',
+					customerAddress: '',
 					voucherList:[]
 				}
 			}
 		},
 		computed:{
-			discount(){//折扣计算		
-				if(this.receipt.totalAmount == 0  || typeof this.receipt.totalAmount == 'undefined'){
-					return ''
+			discount(){
+				const total = Number(this.receipt.totalAmount);
+				const actual = this.receipt.actualmoney;
+				if (!Number.isFinite(total) || total <= 0 || actual === null || actual === undefined ||
+					String(actual).trim() === '') {
+					return '—';
 				}
-				if(this.receipt.actualmoney == 0 || typeof this.receipt.actualmoney == 'undefined'){
-					return ''
+				const received = Number(actual);
+				if (!Number.isFinite(received) || received < 0) {
+					return '—';
 				}
-				let discount = this.receipt.actualmoney/this.receipt.totalAmount*100;				
-				return discount == 0 ? '':discount*100;
+				// 与订单详情一致：实收 / 原价 × 10，例如 800 / 1000 = 8 折。
+				return Number((received / total * 10).toFixed(2)) + '折';
 			}
 		},
 		methods: {
@@ -105,12 +114,40 @@
 			getOrderById(orderId){
 				post("receipt/selectOrderById",{"orderFormId":orderId}).then(res =>{
 					if(200 == res.code){
-						this.receipt = res.data
+						this.receipt = {
+							...res.data,
+							customerPhone: res.data.customerPhone || '',
+							customerAddress: res.data.customerAddress || ''
+						}
 						uni.hideLoading();
 					}
 				})
 			},
 			addReceiptForm(){
+				if (this.receipt.orderNumber == null || String(this.receipt.orderNumber).trim() === '') {
+					uni.showToast({
+						title: '订单编号不能为空，请先导入订单',
+						icon: 'none'
+					});
+					return;
+				}
+				if (this.receipt.customerName == null || String(this.receipt.customerName).trim() === '') {
+					uni.showToast({
+						title: '客户姓名不能为空，请重新导入订单',
+						icon: 'none'
+					});
+					return;
+				}
+				if (this.receipt.amountCollected == null || String(this.receipt.amountCollected).trim() === '') {
+					this.$nextTick(() => {
+						this.amountCollectedFocus = true;
+					});
+					uni.showToast({
+						title: '收款金额不能为空',
+						icon: 'none'
+					});
+					return;
+				}
 				post("receipt/insertReceipt",JSON.stringify(this.receipt),'application/json').then(res =>{
 					if(200 == res.code){
 						uni.showToast({
@@ -188,88 +225,99 @@
 </script>
 
 <style scoped>
+.receipt-page{
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
+	overflow: hidden;
+	background-color: #fff;
+}
 .head{
-	height: 5px;
+	flex-shrink: 0;
+	height: 10rpx;
 	width: 100%;
 	background-color:  #efeef3ff;
-	position: fixed;
-	z-index: 999;
+}
+.receipt-content{
+	flex: 1;
+	height: 0;
+	min-height: 0;
 }
 .item{
 	display: flex;
-	padding: 8px 0;
+	box-sizing: border-box;
+	min-height: 44px;
+	padding: 8px 12px 8px 8px;
 	border-bottom: 1px solid #efeef3ff;
 	align-items: center;	
 	background-color: #fff;	
 }
-.item .img{
-	margin-left: 2px;
-	width: 18px;
-	height: 18px;		
-}
 .item .title{
-	margin-left: 3px;
-	font-size: 15px;
+	flex-shrink: 0;
+	font-size: 14px;
+	line-height: 22px;
 	color: #333;
 	white-space: nowrap; /* 文字不换行 */
 	text-rendering: optimizeLegibility;
 }
-.item .right-content{
-	flex-grow: 1;
-	padding-right: 12px;
+.item .iconfont{
+	flex-shrink: 0;
+	color: red;
+	font-size: 12px;
+	margin-left: -5px;
+}
+.item .right-content,
+.item input{
+	flex: 1;
+	min-width: 0;
 	text-align: right;
-	margin-left: 20px;
+	margin-left: 12px;
 	text-rendering: optimizeLegibility;
-	font-size: 15px;
+	font-size: 14px;
+	line-height: 22px;
 	color: #333;
 }
-.item input{
-	flex-grow: 1;
-	padding-right: 12px;
-	text-align: right;
-	margin-left: 20px;
-	text-rendering: optimizeLegibility;
-	font-size: 15px;
-	color: #333;
+.item .right-content{
+	word-break: break-all;
 }
 .item .right-img{
+	flex-shrink: 0;
 	margin-left: auto;
-	margin-right: 15px;
-	width: 25px;
-	height: 25px;
+	width: 22px;
+	height: 22px;
 }
 .item .input-placeholder{
-	font-size: 16px;
+	font-size: 14px;
 	text-align: right;
 	color: #aaa;
 }
 .voucher{	
-	padding: 7px 0 0 15px;	
+	padding: 12px 12px 12px 8px;
 }
 .voucher-title{
-	font-size: 18px;
+	font-size: 15px;
+	line-height: 22px;
 	font-weight: 600;
 }
 .voucher-img{
 	display: flex;
 	flex-wrap: wrap;
 }
-.voucher-add{
-	width: 80px;
-	height: 80px;
-	margin-top: 20px;
-	margin-left: 20px;
+.voucher-add,
+.voucher-item{
+	flex-shrink: 0;
+	width: 160rpx;
+	height: 160rpx;
+	margin: 20rpx 20rpx 0 0;
 }
 .voucher-item{	
 	position: relative;
-	margin-top: 15px;
-	margin-right:15px;
-	flex: 0 calc(33.3% - 15px);	
 }
 .voucher-item-img{
 	display: block;
 	width: 100%;
-	height: 100px;
+	height: 100%;
 }
 .voucher-remove{
 	background-color: #D1372C;
@@ -294,34 +342,37 @@
 	right: 3px;
 }
 .textarea-placeholder{
-	font-size: 15px;
+	font-size: 14px;
 }
 .remarks{
 	overflow: hidden;
 	position: relative;	
 	border-bottom: 1px solid #f1f1f1ff;	
-	padding: 10px;
+	padding: 10px 12px 22px 8px;
 }
 .remarks textarea {
-	height: 60px;	
+	height: 140rpx;
 	width: 100%;	
-	font-size: 15px;
+	font-size: 14px;
+	line-height: 22px;
 	color: #333;
 }
 .textarea-count {
 	position: absolute;
 	font-size: 12px;
 	line-height: 16px;
-	bottom: 5px;
-	right: 0px;
+	bottom: 12rpx;
+	right: 12px;
 	color: #999;
 }
 
 .footer{
-	height: 30px;
-	font-size: 15px;
+	flex-shrink: 0;
+	padding-bottom: constant(safe-area-inset-bottom);
+	padding-bottom: env(safe-area-inset-bottom);
+	font-size: 16px;
 	text-align: center;
-	line-height: 30px;
+	line-height: 44px;
 	background-color: #00a7e2ff;	
 	color: #daf2fbff;	
 	width: 100%;

@@ -53,7 +53,7 @@
 				</view>	
 			</view>
 			<view class="product-inventory">
-				<text class="info">库存数：100</text>
+				<text class="info">库存数：{{item.stock == null ? 0 : item.stock}}</text>
 				<text class="info">待出库：{{item.toBeShippedOutNumber}}</text>
 				<text class="info">已出库：{{item.outboundNumber}}</text>
 			</view>
@@ -80,7 +80,7 @@
 			<view class="popup_title">{{popupProduct.productName}}</view>
 			<view class="popup_item">
 				<text class="popup_item_title">已出库:</text>
-				<view class="popup_item_text"><input v-model="popupProduct.outboundNumber" type="number"/></view>
+				<view class="popup_item_text"><input :value="popupProduct.outboundNumber" type="number" @input="onOutboundNumberInput"/></view>
 			</view>
 			<view class="popup_product_foot">
 				<view class="cancel" @click="cancelTrack()">取消</view>			
@@ -103,7 +103,8 @@
 				popupProduct:{
 					orderProductId:"",
 					productName:"",
-					outboundNumber:""
+					outboundNumber:"",
+					toBeShippedOutNumber:0
 				}
 			}
 		},
@@ -130,9 +131,29 @@
 			},
 			open(item){
 				this.popupProduct.productName = item.productName;
-				this.popupProduct.outboundNumber = item.outboundNumber;
+				this.popupProduct.toBeShippedOutNumber = Math.max(0, Number(item.toBeShippedOutNumber) || 0);
+				this.popupProduct.outboundNumber = Math.min(
+					Math.max(0, Number(item.outboundNumber) || 0),
+					this.popupProduct.toBeShippedOutNumber
+				);
 				this.popupProduct.orderProductId = item.orderProductId;
 				this.$refs.popup.open('center');
+			},
+			onOutboundNumberInput(event){
+				const rawValue = event.detail.value;
+				if (rawValue === '') {
+					this.popupProduct.outboundNumber = '';
+					return;
+				}
+				const maxQuantity = Math.max(0, Number(this.popupProduct.toBeShippedOutNumber) || 0);
+				const parsedValue = Number(rawValue);
+				const quantity = Number.isFinite(parsedValue) ? Math.max(0, Math.floor(parsedValue)) : 0;
+				if (quantity > maxQuantity) {
+					this.popupProduct.outboundNumber = maxQuantity;
+					uni.showToast({ title: '已出库数量不能大于待出库数量', icon: 'none' });
+					return;
+				}
+				this.popupProduct.outboundNumber = quantity;
 			},
 			cancelTrack(){
 				this.$refs.popup.close()
@@ -141,7 +162,13 @@
 				let outboundProductList = this.outbound.outboundProductList;
 				let orderProductId = this.popupProduct.orderProductId;
 				let outboundProduct = outboundProductList.filter(obj =>obj.orderProductId == orderProductId)[0]
-				outboundProduct.outboundNumber = this.popupProduct.outboundNumber;
+				if (outboundProduct) {
+					const maxQuantity = Math.max(0, Number(this.popupProduct.toBeShippedOutNumber) || 0);
+					const requestedQuantity = Number(this.popupProduct.outboundNumber);
+					outboundProduct.outboundNumber = Number.isFinite(requestedQuantity)
+						? Math.min(maxQuantity, Math.max(0, Math.floor(requestedQuantity)))
+						: 0;
+				}
 				this.$refs.popup.close()
 			},
 			 //确认
@@ -159,7 +186,11 @@
 				for (var i = 0; i < productChooseArray.length; i++) {					
 					let outboundProduct= new Object();
 					outboundProduct.orderProductId =  productChooseArray[i].id;
-					outboundProduct.outboundNumber = productChooseArray[i].outboundNumber;				
+					const maxQuantity = Math.max(0, Number(productChooseArray[i].toBeShippedOutNumber) || 0);
+					const requestedQuantity = Number(productChooseArray[i].outboundNumber);
+					outboundProduct.outboundNumber = Number.isFinite(requestedQuantity)
+						? Math.min(maxQuantity, Math.max(0, Math.floor(requestedQuantity)))
+						: 0;
 					outboundProductList.push(outboundProduct);					
 				}
 				outboundObj.outboundProductList = outboundProductList;
@@ -168,6 +199,10 @@
 						this.isSaving = false;
 						return;
 					}
+					const insufficientProducts = (res.data && res.data.insufficientProducts) || [];
+					const insufficientTip = insufficientProducts.length
+						? '出库单已保存。以下产品库存不足，无法出库：' + insufficientProducts.join('、')
+						: '';
 					uni.hideLoading();
 					this.isSaving = false;
 					this.isSaved = true;
@@ -175,14 +210,23 @@
 					this.popupProduct = {
 						orderProductId: "",
 						productName: "",
-						outboundNumber: ""
+						outboundNumber: "",
+						toBeShippedOutNumber: 0
 					};
 					if (this.$refs.popup) this.$refs.popup.close();
-					uni.showToast({
-						title: '出库单添加成功',
-						icon: 'none',
-						duration: 2000
-					})
+					if (insufficientTip) {
+						uni.showModal({
+							title: '出库结果',
+							content: insufficientTip,
+							showCancel: false
+						});
+					} else {
+						uni.showToast({
+							title: '出库单添加成功',
+							icon: 'none',
+							duration: 2000
+						})
+					}
 				}).catch(() => {
 					this.isSaving = false;
 				})

@@ -36,6 +36,10 @@
 					<text  class="info">下单时间：{{item.createTime}}</text>
 					<text  class="info">操作人:{{item.operator}}</text>
 				</view>
+				<view class="item outbound-status-row">
+					<text class="outbound-status-label">出库状态：</text>
+					<text class="outbound-status" :class="item.outboundStatus.className">{{item.outboundStatus.text}}</text>
+				</view>
 			</view>			
 		</navigator>
 		
@@ -58,6 +62,7 @@
 		data() {
 			return {
 				orderList:[],
+				needsOrderRefresh: false,
 				pageNum: 1,
 				searchVal:'',
 				searchOrder:{}
@@ -68,9 +73,35 @@
 			return { moreSearchStore }
 		},
 		methods: {
+			markOrderListChanged() {
+				this.needsOrderRefresh = true;
+			},
+			getOutboundStatus(item) {
+				const quantity = item.pOutboundQuantity ?? item.p_outbound_quantity;
+				if (quantity === null || quantity === undefined) {
+					return { text: '未出库', className: 'outbound-pending' };
+				}
+				const total = item.orderProductNumber ?? item.order_product_number;
+				const outbound = Number(quantity);
+				const ordered = Number(total);
+				if (String(quantity).trim() !== '' && total !== null && total !== undefined &&
+					String(total).trim() !== '' && Number.isFinite(outbound) && Number.isFinite(ordered) && outbound >= 0) {
+					if (outbound === ordered) {
+						return { text: '出库已完成', className: 'outbound-completed' };
+					}
+					if (outbound < ordered) {
+						return { text: '出库未完成', className: 'outbound-partial' };
+					}
+				}
+				// 不将缺少总数量或超量等异常数据误判为已完成。
+				return { text: '—', className: 'outbound-pending' };
+			},
 			refreshOrderList(){
 				post("order/selectOrder",this.searchOrder).then(res =>{	
-					this.$refs.paging.complete(res.rows);
+					this.$refs.paging.complete(res.rows.map(item => ({
+						...item,
+						outboundStatus: this.getOutboundStatus(item)
+					})));
 				})
 			},
 			queryList(pageNo, pageSize) {
@@ -106,6 +137,19 @@
 		},
 		onLoad() {
 			this.moreSearchStore.clearMoreSearchStore();
+			uni.$on('order-list-changed', this.markOrderListChanged);
+		},
+		onShow() {
+			if (!this.needsOrderRefresh) return;
+			this.$nextTick(() => {
+				if (this.needsOrderRefresh && this.$refs.paging) {
+					this.needsOrderRefresh = false;
+					this.$refs.paging.reload();
+				}
+			});
+		},
+		onUnload() {
+			uni.$off('order-list-changed', this.markOrderListChanged);
 		}
 	}
 
@@ -177,6 +221,33 @@
 	white-space: nowrap; /* 文字不换行 */
 	overflow: hidden; /* 超出部分隐藏 */
 	text-overflow: ellipsis; /* 以省略号形式显示 */
+}
+
+.outbound-status-row{
+	align-items: center;
+	font-size: 14px;
+	line-height: 20px;
+}
+.outbound-status-label{
+	color: #030303;
+}
+.outbound-status{
+	padding: 1px 8px;
+	border-radius: 4px;
+	font-size: 13px;
+	line-height: 20px;
+}
+.outbound-pending{
+	color: #888;
+	background-color: #f1f1f1;
+}
+.outbound-partial{
+	color: #ef8b22;
+	background-color: #fff2e6;
+}
+.outbound-completed{
+	color: #00a7e2;
+	background-color: #e5f6fc;
 }
 
 .footer{

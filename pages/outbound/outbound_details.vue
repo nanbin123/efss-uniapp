@@ -31,7 +31,7 @@
 			<view class="product-details">
 				<text class="title">产品明细</text>
 			</view>
-			<view class="product" v-for="(item,index) in outbound.outboundProductList">
+			<view class="product" v-for="(item,index) in outbound.outboundProductList" :key="item.id + '-' + index">
 				<view class="product-basic">
 					<view class="product-content" @click="checkOutboundProduct(item)">
 						<view class="grid">
@@ -49,9 +49,9 @@
 					</view>				
 				</view>
 				<view class="product-inventory">
-					<text class="info">库存数：100</text>
-					<text class="info">订单数：{{item.orderProductNumber}}</text>
-					<text class="info inventory-status">是否出库：{{item.isOutbound == true ?'已出库':'未出库'}}</text>
+					<text class="info">库存数：{{item.stock == null ? 0 : item.stock}}</text>
+					<text class="info">待出库：{{item.orderProductNumber - item.outboundNumber}}</text>
+					<text class="info inventory-status">已出库：{{item.outboundNumber}}</text>
 				</view>
 				<view class="product-actions">
 					<view class="product-action product-gallery" @click.stop="previewImage(item)">
@@ -144,11 +144,22 @@
 						if(200 == res.code){
 							this.getOutboundById();
 							this.isEditable = true
-							uni.showToast({
-								title: '出库成功',
-								icon: 'none',
-								duration: 2000
-							})
+							const result = res.data || {};
+							const insufficientProducts = result.insufficientProducts || [];
+							if (insufficientProducts.length) {
+								const successTip = result.updatedCount > 0 ? '有库存的产品已正常出库。\n' : '';
+								uni.showModal({
+									title: '出库结果',
+									content: successTip + '以下产品库存不足，无法出库：' + insufficientProducts.join('、'),
+									showCancel: false
+								});
+							} else {
+								uni.showToast({
+									title: result.updatedCount > 0 ? '出库成功' : '没有可出库的产品',
+									icon: 'none',
+									duration: 2000
+								})
+							}
 						}
 					})
 				}
@@ -156,6 +167,13 @@
 			deleteOutbound(){
 				let _this = this	
 				if(_this.isEditable == true){					 
+					const outboundProductList = _this.outbound.outboundProductList || [];
+					const hasShippedProduct = _this.outbound.hasShippedProducts === true
+						|| outboundProductList.some(item => Number(item.outboundNumber) > 0);
+					if (hasShippedProduct) {
+						uni.showToast({ title: '已有产品出库，禁止删除出库单', icon: 'none' });
+						return;
+					}
 					uni.showModal({
 					  title: '提示',
 					  content: '是否删除出库单',
@@ -182,9 +200,8 @@
 			getOutboundById(){
 				post("outbound/selectOutboundById",{"id":this.outbound.id}).then(res =>{
 					if(200 == res.code){
-						this.outbound = {outboundProductList:[]};
+						this.outbound = {outboundProductList:[], hasShippedProducts:false};
 						let resData = res.data;
-						console.log("resData",JSON.stringify(resData))
 						this.outbound.id = resData.id;
 						this.outbound.orderNumber = resData.orderNumber;
 						this.outbound.customerName = resData.customerName;
@@ -192,18 +209,12 @@
 						this.outbound.address = resData.address;
 						this.outbound.orderOperator = resData.orderOperator;
 						this.outbound.orderOperatorPhone = resData.orderOperatorPhone;
-						let dataProduct = res.data.outboundProductList;
+						let dataProduct = resData.outboundProductList || [];
+						this.outbound.hasShippedProducts = dataProduct.some(item => Number(item.outboundNumber) > 0);
 						for (var i = 0; i < dataProduct.length; i++) {				
 							// 已出库数量
-							let outboundNumber = dataProduct[i].outboundNumber;	
-							console.log("outboundNumber",outboundNumber)
-							for (var j = 0; j < outboundNumber; j++) {
-								let outboundProduct = JSON.parse(JSON.stringify(dataProduct[i]))
-								outboundProduct.isOutbound=true;
-								outboundProduct.isEdit = true;
-								this.outbound.outboundProductList.push(outboundProduct)
-							}
-							//销售订单数量
+							let outboundNumber = dataProduct[i].outboundNumber;
+							// 销售订单数量
 							let orderProductNumber = dataProduct[i].orderProductNumber;
 							// 待出库数量
 							let toBeShippedOutNumber = orderProductNumber - outboundNumber;

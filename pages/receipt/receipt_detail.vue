@@ -4,42 +4,34 @@
 	</view>
 	<scroll-view scroll-y style="height: calc(100vh - 90px);">
 		<view class="item">
-			<image class="img" style="width: 19px;height: 21px;" :src="getImgUrl('static/image/order/order_number.png')"></image>
 			<text class="title">订单编号 :</text>
 			<text class="right-content">{{receipt.orderNumber}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/order/cusomer_name_add.png')"></image>
 			<text class="title">客户姓名 :</text>
 			<text class="right-content">{{receipt.customerName}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/order/total_amount.png')"></image>
 			<text class="title">订单总金额:</text>
 			<text class="right-content">{{receipt.totalAmount}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/receipt/price_after_discount.png')" ></image>
 			<text  class="title">折扣:</text>
-			<input class="right-content" style="padding-right: 0" disabled="disabled" v-model="discount">
+			<input class="right-content" disabled="disabled" v-model="discount">
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/order/order_actual_amount.png')" ></image>
 			<text  class="title">订单实收金额:</text>
 			<text class="right-content">{{receipt.actualmoney}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/order/order_actual_amount.png')" ></image>
 			<text  class="title">已收款:</text>
 			<text  class="right-content">{{receipt.received}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/receipt/to_be_received.png')" ></image>
 			<text  class="title">待收款:</text>
 			<text  class="right-content">{{receipt.tobeReceived}}</text>
 		</view>
 		<view class="item">
-			<image class="img"  :src="getImgUrl('static/image/receipt/amount_collected.png')"></image>
 			<text  class="title">收款金额:</text>
 			<input class="right-content" v-model="receipt.amountCollected" 
 				:focus='amountCollectedFocus'  @blur='amountCollectedFocus = false' :disabled="isEditable" type="number" placeholder-class="input-placeholder" placeholder="请输入收款金额">
@@ -242,44 +234,38 @@
 }
 .item{	
 	display: flex;	
-	padding: 8px 0;
+	box-sizing: border-box;
+	min-height: 44px;
+	padding: 8px 12px 8px 8px;
 	border-bottom: 1px solid #efeef3ff;
 	align-items: center;
 	background-color: #fff;	
 }
-.item .img{
-	margin-left: 2px;
-	width: 20px;
-	height: 20px;	
-}
 .item .title{
-	margin-left: 3px;
-	font-size: 15px;
+	flex-shrink: 0;
+	font-size: 14px;
+	line-height: 22px;
 	color: #333;
 	white-space: nowrap; /* 文字不换行 */
 	text-rendering: optimizeLegibility;
 }
-.item .right-content{
-	flex-grow: 1;
-	padding-right: 12px;
+.item .right-content,
+.item input {
+	flex: 1;
+	min-width: 0;
 	text-align: right;
-	margin-left: 20px;
+	margin-left: 12px;
 	text-rendering: optimizeLegibility;
-	font-size: 15px;
+	font-size: 14px;
+	line-height: 22px;
 	color: #333;
 }
-.item input {
-	flex-grow: 1;
-	padding-right: 12px;
-	text-align: right;
-	margin-left: 20px;
-	text-rendering: optimizeLegibility;
-	font-size: 15px;
-	color: #333;
+.item .right-content{
+	word-break: break-all;
 }
 
 .item .input-placeholder{
-	font-size: 16px;
+	font-size: 14px;
 	text-align: right;
 	color: #aaa;
 }

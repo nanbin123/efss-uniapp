@@ -48,7 +48,7 @@
 		</view>
 		<view class="item">
 			<text class="title">折扣</text>
-			<input disabled="disabled" v-model="discount">
+			<input disabled="disabled" :value="discount">
 		</view>
 		<view class="item">
 			<text class="title">送货时间</text>
@@ -132,6 +132,8 @@ export default {
 			orderForm:{
 				orderProductList:[],
 			},
+			initialProductSignature: null,
+			initialTotalAmount: null,
 			condition: false ,// 根据条件设置是否显示 placeholder 内容
 			isEditable: true,				
 			customerNameFocus:true,
@@ -150,6 +152,11 @@ export default {
 		return { productStore }
 	 },
 	methods: {
+		getProductSignature(products) {
+			return JSON.stringify((products || []).map(item => [
+				String(item.productId), Number(item.retailPrice), Number(item.number)
+			]).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))));
+		},
 		// 查看产品图片，支持左右滑动预览。
 		previewImage(item) {
 			const images = Array.isArray(item.productImages) ? item.productImages : [];
@@ -262,7 +269,8 @@ export default {
 					return
 				}
 				
-				let orderForm=JSON.parse(JSON.stringify(this.orderForm));		
+				let orderForm=JSON.parse(JSON.stringify(this.orderForm));
+				orderForm.totalAmount = this.productRetailPriceTotal;
 				let orderProductList = orderForm.orderProductList.map(item =>{
 					return {
 						productId: item.productId,
@@ -273,6 +281,7 @@ export default {
 				orderForm.orderProductList = orderProductList;				
 				post("order/updateOrderFormById",JSON.stringify(orderForm),'application/json').then(res =>{
 					if(200 == res.code){
+					uni.$emit('order-list-changed');
 						this.isEditable = true
 						uni.showToast({
 						  title: '修改销售订单成功',
@@ -286,6 +295,17 @@ export default {
 		deleteOrderForm(){
 			let that = this
 			if(this.isEditable == true){					 
+				const outboundQuantity = this.orderForm.pOutboundQuantity ?? this.orderForm.p_outbound_quantity;
+				// 空值不视为 0；出库数量为 0 时也表示已被出库单引用。
+				if (outboundQuantity !== null && outboundQuantity !== undefined &&
+					String(outboundQuantity).trim() !== '' && Number(outboundQuantity) >= 0) {
+					uni.showToast({
+						title: '该订单已被出库单引用，不允许删除',
+						icon: 'none',
+						duration: 3000
+					});
+					return;
+				}
 				uni.showModal({
 				  title: '提示',
 				  content: '是否删除销售订单',
@@ -342,29 +362,47 @@ export default {
 	},
 	computed:{
 		productRetailPriceTotal(){
-			 let productRetailPriceTotal = 0;		  
-			 if(typeof(this.orderForm.orderProductList) !="undefined"){
-				for(let i= 0 ;i< this.orderForm.orderProductList.length; i++) {
-					productRetailPriceTotal += parseFloat(this.orderForm.orderProductList[i].retailPrice) * parseFloat(this.orderForm.orderProductList[i].number);
-				}
-			 }
-			 this.orderForm.totalAmount = productRetailPriceTotal
-			return productRetailPriceTotal;
-		} ,
+			const products = this.orderForm.orderProductList || [];
+			const savedTotal = this.initialTotalAmount;
+			const unchanged = this.getProductSignature(products) === this.initialProductSignature;
+			if (unchanged && savedTotal !== null && savedTotal !== undefined &&
+				String(savedTotal).trim() !== '' && Number.isFinite(Number(savedTotal))) {
+				return Number(savedTotal);
+			}
+			return products.reduce((total, item) => {
+				const price = parseFloat(item.retailPrice);
+				const number = parseFloat(item.number);
+				return total + (Number.isFinite(price) && Number.isFinite(number) ? price * number : 0);
+			}, 0);
+		},
 		discount(){
-			if(this.orderForm.totalAmount == 0  || typeof this.orderForm.totalAmount == 'undefined'){
-				return 0
+			const total = Number(this.productRetailPriceTotal);
+			const actual = this.orderForm.actualmoney;
+			if (!Number.isFinite(total) || total <= 0 || actual === null || actual === undefined ||
+				String(actual).trim() === '') {
+				return '—';
 			}
-			if(this.orderForm.actualmoney == 0 || typeof this.orderForm.actualmoney == 'undefined'){
-				return 0
+			const received = Number(actual);
+			if (!Number.isFinite(received) || received < 0) {
+				return '—';
 			}
-			 let discount = this.orderForm.actualmoney/this.orderForm.totalAmount;				 
-			return discount*100
+			// 实收 / 原价 × 10，例如 800 / 1000 = 8 折。
+			return Number((received / total * 10).toFixed(2)) + '折';
+		}
+	},
+	watch: {
+		productRetailPriceTotal: {
+			immediate: true,
+			handler(value) {
+				this.orderForm.totalAmount = value;
+			}
 		}
 	},
 	onLoad(option) {
 		post("order/selectOrderById",{"orderFormId":option.id}).then(res =>{				
 			if(200 == res.code){
+				this.initialTotalAmount = res.data.totalAmount;
+				this.initialProductSignature = this.getProductSignature(res.data.orderProductList);
 				this.orderForm = res.data;
 			}
 		})

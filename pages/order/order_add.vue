@@ -279,6 +279,7 @@ export default {
 			orderForm.orderProductList = productInfo;
 			post("order/insertOrderForm",JSON.stringify(orderForm),'application/json').then(res =>{
 				if(200 == res.code){
+					uni.$emit('order-list-changed');
 					 uni.showToast({
 						title: '添加销售订单成功',
 						icon: 'none',

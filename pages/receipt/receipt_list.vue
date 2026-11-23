@@ -128,7 +128,7 @@
 	border-radius: 3px;
 	text-align: center;
 	line-height: 39px;
-	background-color: #00b6aaff;
+	background-color: #00a7e2ff;
 	margin-left: 5px; 
 	margin-right: 7px;
 	
@@ -151,17 +151,28 @@
 .info {
    width: 50%;
    color: #030303ff;
-   font-size: 13px;
+   font-size: 14px;
    white-space: nowrap;  
 }
 
 .footer{
-	height: 30px;
-	font-size: 15px;
+	height: 80rpx;
+	font-size: 17px;
+	font-weight: 500;
 	text-align: center;
-	line-height: 30px;
 	background-color: #00a7e2ff;	
 	color: #daf2fbff;
 	width: 100%;
+}
+.footer navigator{
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+@media screen and (max-height: 700px) {
+	.footer{
+		height: 72rpx;
+	}
 }
 </style>
