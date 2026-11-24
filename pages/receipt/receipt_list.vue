@@ -55,10 +55,14 @@
 			return {
 				receiptList:[],
 				searchVal:'',
-				searchReceipt:{}
+				searchReceipt:{},
+				needsReceiptRefresh: false
 			}
 		},
 		methods: {
+			markReceiptListChanged(){
+				this.needsReceiptRefresh = true;
+			},
 			discount(item){//折扣计算
 				if(item.totalAmount == 0  || typeof item.totalAmount == 'undefined'){
 					return ''
@@ -81,6 +85,21 @@
 			getImgUrl(image){
 			   return this.BASEURL+image;
 			}
+		},
+		onLoad() {
+			uni.$on('receipt-list-changed', this.markReceiptListChanged);
+		},
+		onShow() {
+			if (!this.needsReceiptRefresh) return;
+			this.$nextTick(() => {
+				if (this.needsReceiptRefresh && this.$refs.paging) {
+					this.needsReceiptRefresh = false;
+					this.$refs.paging.reload();
+				}
+			});
+		},
+		onUnload() {
+			uni.$off('receipt-list-changed', this.markReceiptListChanged);
 		},
 		watch:{
 			searchVal(newVal, oldVal) {

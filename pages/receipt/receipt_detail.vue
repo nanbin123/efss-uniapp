@@ -120,7 +120,8 @@
 					});
 					receipt.voucherList = voucherList;		
 					post("receipt/updateReceiptById",JSON.stringify(receipt),'application/json').then(res =>{
-						if(200 == res.code){
+						if(res && 200 == res.code){
+							uni.$emit('receipt-list-changed');
 							this.isEditable = true
 							uni.showToast({
 							  title: '修改收款单成功',
@@ -143,7 +144,8 @@
 					  success: (res)=> {						 
 						if (res.confirm) {
 							post("receipt/deleteReceiptById",{"id":that.receipt.id}).then(res =>{
-								if(200 == res.code){
+								if(res && 200 == res.code){
+									uni.$emit('receipt-list-changed');
 									this.isEditable = true;
 									that.receipt ={};
 									uni.showToast({

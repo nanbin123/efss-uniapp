@@ -150,6 +150,7 @@
 				}
 				post("receipt/insertReceipt",JSON.stringify(this.receipt),'application/json').then(res =>{
 					if(res && 200 == res.code){
+						uni.$emit('receipt-list-changed');
 						this.receipt = {
 							customerPhone: '',
 							customerAddress: '',
